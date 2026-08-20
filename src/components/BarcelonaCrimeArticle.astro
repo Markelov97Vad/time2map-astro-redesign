@@ -1,0 +1,106 @@
+---
+---
+<div class="crime-article">
+  <blockquote class="crime-lead">
+    Crime statistics in Catalunya are publicly available — but understanding them takes patience. I built this map to make sense of the data: a composite safety index across 12 crime types, mapped by police zone, with trends since 2019 and a comparison against Spain's national average.
+  </blockquote>
+
+  <section class="crime-map-block" aria-labelledby="crime-map-heading">
+    <div class="crime-section-heading">
+      <span>Interactive map</span>
+      <h2 id="crime-map-heading">Explore all 59<br/><em>police zones.</em></h2>
+    </div>
+    <div class="crime-map-frame">
+      <iframe src="https://catalunya-crimes.time2map.com/" title="Barcelona Crime Map — interactive safety index" loading="lazy" allowfullscreen></iframe>
+      <a href="https://catalunya-crimes.time2map.com/" target="_blank" rel="noopener"><img src="/images/icons/expand.svg" alt="" width="18" height="18"/> Open full screen</a>
+    </div>
+    <div class="crime-map-hints">
+      <div><img src="/images/icons/sidebar.svg" alt="" width="28" height="28"/><p>Choose a crime type — or select Safety Index against Catalunya or Spain.</p></div>
+      <div><img src="/images/icons/sliders.svg" alt="" width="28" height="28"/><p>Drag the year slider to explore changes between 2019 and 2025.</p></div>
+      <div><img src="/images/icons/cursor-click.svg" alt="" width="28" height="28"/><p>Select any zone for its crime breakdown and regional and national scores.</p></div>
+    </div>
+  </section>
+
+  <section class="crime-copy" aria-labelledby="context-heading">
+    <div class="crime-section-heading">
+      <span>Context</span>
+      <h2 id="context-heading">This map vs.<br/><em>the official map.</em></h2>
+    </div>
+    <div class="crime-prose">
+      <p>The Mossos d'Esquadra publish detailed crime statistics through the <a href="https://visors.icgc.cat/mapa-delinquencial/" target="_blank" rel="noopener">ICGC crime map viewer</a> — a solid resource covering all 59 ABP police zones across Catalunya, with yearly data going back to 2019. There you can filter by crime type, see charts per zone, and compare against the Catalan average. It's a useful starting point, and I used it constantly while building this.</p>
+      <p>After spending time with it, though, I kept running into the same gaps. There's no composite safety score — you have to click through each crime type one by one, which makes it hard to get an overall feel for a zone. There's no comparison with Spain, only with Catalunya. And spatial trends are invisible: you can pull a chart for a single zone, but not a regional view of which areas are getting better or worse over time.</p>
+    </div>
+  </section>
+
+  <section class="crime-findings" aria-labelledby="findings-heading">
+    <div class="crime-section-heading crime-findings-heading">
+      <span>Findings</span>
+      <h2 id="findings-heading">What the data<br/><em>revealed.</em></h2>
+    </div>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">01</span>
+      <div class="crime-finding-copy"><h3>Barcelona averages 2–4× worse than the Spanish national average</h3><p>For an average Spanish person relocating to Barcelona, crime rates feel dramatically higher than back home. Across the zones shown — <strong>Sant Martí</strong> (×2.9), <strong>Eixample</strong> (×3.6), <strong>Gràcia</strong> (×1.9) — the pattern is consistent. Catalunya's average is already elevated compared to most Spanish regions, and Barcelona pulls it further.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/safety-indexes.png" alt="Safety Index comparison for Sant Martí, Eixample, and Gràcia" loading="lazy"/><figcaption>Safety Index vs Spain, 2025. Values above 1.0 indicate higher crime rates than the Spanish average.</figcaption></figure>
+    </article>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">02</span>
+      <div class="crime-finding-copy"><h3>Cornellà de Llobregat is one of the safest zones in the metro area</h3><p>Safety index vs. Catalonia: <strong>0.775</strong>, rank 23 of 59. Cornellà consistently comes out among the safest neighborhoods in the Barcelona metropolitan area — a fact that rarely gets attention because it isn't a central district. The subjective feeling matches the numbers.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/cornella-safety-ranking.png" alt="Cornellà de Llobregat on the Safety Index map" loading="lazy"/><figcaption>Cornellà on the Safety Index vs Catalunya map. Lighter colour means a lower crime rate relative to the regional average.</figcaption></figure>
+    </article>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">03</span>
+      <div class="crime-finding-copy"><h3>Sants-Montjuïc ranks 57 out of 59 — which surprised me</h3><p>Safety index vs. Catalonia: <strong>1.672</strong>, rank 57 of 59. That puts Sants-Montjuïc near the bottom of the ranking, yet Sants feels safe day-to-day. The likely explanation is that the ABP zone also includes Montjuïc hill, the port, and industrial areas that pull the average up.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/sants-montjuic-safety-rank.png" alt="Sants-Montjuïc Safety Index ranking" loading="lazy"/><figcaption>The large Sants-Montjuïc ABP boundary contains areas with very different character.</figcaption></figure>
+    </article>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">04</span>
+      <div class="crime-finding-copy"><h3>Roses has the highest home intrusion rate in Catalunya</h3><p>The Alt Empordà – Roses zone recorded the highest home intrusion rate in Catalunya in 2025 — <strong>0.087 per 1,000 residents</strong>, ×10 the Catalan average. Seasonal vacancy is likely a driver: empty holiday homes are a well-documented target.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/roses-home-intrusion.png" alt="Home intrusion rates across Catalonia with Roses highlighted" loading="lazy"/><figcaption>Roses, circled on the map, has the highest home intrusion rate in the region.</figcaption></figure>
+    </article>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">05</span>
+      <div class="crime-finding-copy"><h3>Home intrusion hasn't declined anywhere in five years</h3><p>Across all 59 ABP zones, the 2019–2025 trend is flat or rising. Not a single zone shows a sustained downward trend over the full period. This isn't isolated spikes, but a consistent pattern across both urban and rural zones.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/home-intrusion-trend.png" alt="Home intrusion trend across Catalunya from 2019 to 2025" loading="lazy"/><figcaption>Arrows show the direction of change per zone — none point down.</figcaption></figure>
+    </article>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">06</span>
+      <div class="crime-finding-copy"><h3>Assault is rising across the entire region</h3><p>The trend map shows upward arrows across virtually every zone. This is not a city-specific phenomenon: rural and coastal zones are affected as well.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/assault-trend.png" alt="Assault trend across Catalunya between 2023 and 2025" loading="lazy"/><figcaption>Up arrows indicate an increasing assault rate — a near-universal pattern.</figcaption></figure>
+    </article>
+
+    <article class="crime-finding">
+      <span class="crime-finding-index">07</span>
+      <div class="crime-finding-copy"><h3>Theft in Barcelona is actually declining</h3><p>Despite Barcelona's reputation for pickpocketing, theft rates have been falling across most central zones over the last two years. It is a notable counterpoint to the rising assault numbers, although Barcelona's overall indexes remain high.</p></div>
+      <figure><img src="/images/lab/barcelona-crime-map/theft-decline.png" alt="Declining theft trends in central Barcelona" loading="lazy"/><figcaption>Blue tones and down arrows show declining theft rates between 2023 and 2025.</figcaption></figure>
+    </article>
+  </section>
+
+  <section class="crime-method" aria-labelledby="method-heading">
+    <div class="crime-section-heading">
+      <span>Methodology</span>
+      <h2 id="method-heading">How the index<br/><em>was built.</em></h2>
+    </div>
+    <ol>
+      <li><strong>Open data from Mossos d'Esquadra.</strong><p>Crime statistics downloaded from the ICGC viewer — 1,520 vector tiles across every ABP zone. Spanish national averages were parsed from the Ministry of Interior annual report.</p></li>
+      <li><strong>Composite safety index.</strong><p>A weighted mean across 12 crime types, normalised against Catalan and Spanish averages. Homicide, assault, sexual crimes, robbery, and theft are weighted higher than drug offences or public disorder.</p></li>
+    </ol>
+    <blockquote><strong>A note on limitations.</strong> Crime weights are subjective and reflect my priorities for outdoor safety. The Spain comparison covers 9 of 12 crime types for 2025. ABP zones are large areas; a high-crime zone can contain safe and unsafe pockets the data cannot distinguish.</blockquote>
+  </section>
+
+  <section class="crime-author-card" aria-labelledby="crime-author-heading">
+    <img src="/images/alex-semenov.jpg" alt="Alexander Semenov" width="88" height="88" loading="lazy"/>
+    <div class="crime-author-copy">
+      <h2 id="crime-author-heading">Alexander Semenov</h2>
+      <p>Geospatial developer based in Barcelona. I build maps and data tools — sometimes for clients, sometimes because the data is interesting. This one started as a personal project when I moved to the city and wanted to understand my neighbourhood better than the official tools allowed.</p>
+    </div>
+    <a class="crime-author-link" href="https://www.linkedin.com/in/sasfeat/" target="_blank" rel="noopener">
+      Connect with me on <span class="crime-linkedin-wordmark">Linked<span aria-hidden="true">in</span></span><span aria-hidden="true">↗</span>
+    </a>
+  </section>
+</div>

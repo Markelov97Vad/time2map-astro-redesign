@@ -1,0 +1,84 @@
+---
+import '../../styles/global.css';
+import '../../styles/palette.css';
+import '../../styles/lab.css';
+import BarcelonaCrimeArticle from '../../components/BarcelonaCrimeArticle.astro';
+
+const title = 'Barcelona Crime Map: Safety Index';
+const description = "Crime analysis across Catalunya's 59 police zones: a composite safety index benchmarked against Spain's national average, with trends from 2019 to 2025.";
+const githubUrl = 'https://github.com/time2map/catalunya-crime-map';
+const dataSources = [
+  { label: "Mossos d'Esquadra crime data", detail: 'ICGC viewer', url: 'https://visors.icgc.cat/mapa-delinquencial/' },
+  { label: 'Ministry of Interior', detail: 'Statistical Yearbook of Spain', url: 'https://www.interior.gob.es/opencms/es/servicios-al-ciudadano/estadistica/estadisticas-e-informes/seguridad-ciudadana/anuario-estadistico-del-ministerio-del-interior/' },
+  { label: 'Source code', detail: 'GitHub', url: githubUrl },
+];
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  image: '/images/lab/barcelona-crime-map/cornella-safety-ranking.png',
+  datePublished: '2026-05-28',
+  author: { '@type': 'Person', name: 'Alexander Semenov' },
+  publisher: { '@type': 'Organization', name: 'time2map' },
+};
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width"/>
+  <meta name="description" content={description}/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:image" content="/images/lab/barcelona-crime-map/cornella-safety-ranking.png"/>
+  <meta property="article:published_time" content="2026-05-28"/>
+  <title>Barcelona Crime by Neighborhood: Safety Analysis 2019–2025</title>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
+</head>
+<body class="lab-page crime-page">
+  <a class="skip-link" href="#article-content">Skip to article</a>
+  <header class="article-nav">
+    <a class="logo" href="/" aria-label="time2map — home"><img src="/images/logo.svg" alt="time2map"/></a>
+    <span class="article-nav-label">Time2map LAB</span>
+    <div class="article-nav-actions">
+      <a href={githubUrl} target="_blank" rel="noopener">GitHub <span>↗</span></a>
+      <a class="article-nav-back" href="/">Back home <span>↗</span></a>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <section class="lab-hero" aria-labelledby="article-title">
+      <div class="lab-hero-topline"><div class="eyebrow"><span></span> Data research · May 2026</div><span>8 min read</span></div>
+      <h1 id="article-title">Barcelona Crime Map:<br/><em>Safety Index.</em></h1>
+      <div class="lab-hero-footer">
+        <p>{description}</p>
+        <div class="lab-author"><img src="/images/alex-semenov.jpg" alt="Alexander Semenov" width="52" height="52"/><span><small>Written by</small><strong>Alexander Semenov</strong></span></div>
+      </div>
+    </section>
+
+    <article class="lab-article" id="article-content">
+      <div class="lab-content lab-content-wide"><BarcelonaCrimeArticle /></div>
+
+      <aside class="lab-tech lab-sources" aria-labelledby="sources-heading">
+        <div><div class="eyebrow"><span></span> References</div><h2 id="sources-heading">Data sources<br/><em>and code.</em></h2></div>
+        <ul>{dataSources.map((source) => <li><a href={source.url} target="_blank" rel="noopener"><strong>{source.label}</strong><span>{source.detail} ↗</span></a></li>)}</ul>
+      </aside>
+
+      <div class="lab-outro">
+        <div><small>Explore the research</small><h2>Read the city.<br/><em>Zone by zone.</em></h2></div>
+        <div class="lab-outro-actions">
+          <a href="https://catalunya-crimes.time2map.com/" target="_blank" rel="noopener">Open live map <span>↗</span></a>
+          <a href={githubUrl} target="_blank" rel="noopener">View source <span>↗</span></a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand"><a class="logo" href="/" aria-label="time2map — home"><img src="/images/logo.svg" alt="time2map"/></a><p>Maps and GIS solutions,<br/>built by specialists.</p></div>
+    <div class="footer-details"><p>Barcelona, Spain</p><p>VAT: ES Z2405174T</p></div>
+    <nav class="footer-links" aria-label="Footer navigation"><a href="/contact-us">Contact us</a><a href="https://www.iubenda.com/privacy-policy/48336731" target="_blank" rel="noopener">Privacy Policy <span>↗</span></a><a href="/">Home</a></nav>
+    <p class="footer-copyright">© 2026 time2map. All rights reserved</p>
+  </footer>
+</body>
+</html>
