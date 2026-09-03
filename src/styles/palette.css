@@ -340,7 +340,7 @@ html.has-proof-motion .proof.is-settled .proof-card::after { transition-delay:0m
 
 @media (max-width: 800px) {
   :root { --nav-height: 118px; }
-  html { scroll-padding-top: calc(var(--nav-height) + 12px); }
+  html { scroll-padding-top: var(--nav-height); }
   .nav { align-items:flex-start; padding:14px 5vw 0; background:#fff; }
   .nav .logo { min-height:44px; margin-top:0; }
   .nav .logo img { width:112px; }
@@ -535,7 +535,7 @@ html.has-bento-motion .expertise.is-visible .design-art i { animation:bento-node
 .technology-intro>p { max-width:390px; margin:0; color:#aeb1a9; font-size:17px; line-height:1.6; }
 .technology-map { position:relative; z-index:1; border-top:1px solid rgb(255 255 255 / 18%); }
 .technology-row { display:grid; grid-template-columns:minmax(96px,120px) minmax(0,1fr); gap:24px; min-height:112px; padding:26px 0; border-bottom:1px solid rgb(255 255 255 / 14%); }
-.technology-label { display:grid; grid-template-columns:auto 1fr; align-content:center; align-items:center; gap:14px; min-height:42px; }
+.technology-label { display:grid; grid-template-columns:auto 1fr; align-content:center; align-items:baseline; gap:14px; min-height:42px; }
 .technology-label>span { color:var(--color-accent); font:500 clamp(16px,1.3vw,20px)/1 var(--font-heading); letter-spacing:-.03em; }
 .technology-label h3 { margin:0; color:#fff; font:500 18px/1.1 var(--font-heading); letter-spacing:-.02em; }
 .technology-row ul { display:grid; grid-template-columns:repeat(auto-fill,minmax(136px,1fr)); align-content:start; gap:0 20px; margin:0; padding:0; list-style:none; }
