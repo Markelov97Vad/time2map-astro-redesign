@@ -209,8 +209,8 @@ const demoVideoPoster = '/images/hero-poster.webp';
           </blockquote>
 
           <div class="founder-trust" aria-label="Upwork credentials">
-            <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true" viewBox="0 0 28 28" role="img" width="18" height="18"><path fill="#F66DBC" d="M12 1.155a4 4 0 014 0l8.124 4.69a4 4 0 012 3.464v9.382a4 4 0 01-2 3.464L16 26.845a4 4 0 01-4 0l-8.124-4.69a4 4 0 01-2-3.464V9.309a4 4 0 012-3.464L12 1.155z"/><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M17.94 18.396c.2.73-.597 1.262-1.195.863l-2.723-1.793-2.724 1.793c-.598.399-1.395-.199-1.196-.863l.731-3.122-2.524-2.06c-.598-.465-.266-1.395.465-1.46l3.255-.2 1.196-3.056c.265-.664 1.262-.664 1.527 0l1.196 3.056m1.662.199v4.65M20 14.078h-4.65"/></svg> Top Rated Plus on Upwork</span>
-            <span><img src="/images/icons/job-success-large.svg" alt="" width="18" height="18" aria-hidden="true"/> 100% Job Success</span>
+            <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true" viewBox="0 0 28 28" role="img" width="22" height="22"><path fill="#F66DBC" d="M12 1.155a4 4 0 014 0l8.124 4.69a4 4 0 012 3.464v9.382a4 4 0 01-2 3.464L16 26.845a4 4 0 01-4 0l-8.124-4.69a4 4 0 01-2-3.464V9.309a4 4 0 012-3.464L12 1.155z"/><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M17.94 18.396c.2.73-.597 1.262-1.195.863l-2.723-1.793-2.724 1.793c-.598.399-1.395-.199-1.196-.863l.731-3.122-2.524-2.06c-.598-.465-.266-1.395.465-1.46l3.255-.2 1.196-3.056c.265-.664 1.262-.664 1.527 0l1.196 3.056m1.662.199v4.65M20 14.078h-4.65"/></svg> Top Rated Plus on Upwork</span>
+            <span><img src="/images/icons/job-success-large.svg" alt="" width="22" height="22" aria-hidden="true"/> 100% Job Success</span>
           </div>
 
           <div class="founder-links">
@@ -381,7 +381,13 @@ const demoVideoPoster = '/images/hero-poster.webp';
     wrap?.addEventListener('pointerleave',()=>device.style.transform='rotateY(-8deg) rotateX(5deg)');
     const audioSlides = document.querySelector<HTMLElement>('[data-audio-slides]');
     document.querySelectorAll<HTMLButtonElement>('[data-audio-slide]').forEach((button) => button.addEventListener('click', () => {
-      if (audioSlides) audioSlides.style.transform = `translateX(-${Number(button.dataset.audioSlide) * 100}%)`;
+      const index = Number(button.dataset.audioSlide);
+      if (audioSlides) {
+        audioSlides.style.transform = `translateX(-${index * 100}%)`;
+        if (audioSlides.closest('.device-wrap')?.classList.contains('is-expanded')) {
+          audioSlides.scrollTo({ left:index * audioSlides.clientWidth, behavior:reduceMotion.matches ? 'auto' : 'smooth' });
+        }
+      }
       document.querySelectorAll('[data-audio-slide]').forEach((item) => item.classList.remove('is-active'));
       button.classList.add('is-active');
     }));
@@ -392,7 +398,13 @@ const demoVideoPoster = '/images/hero-poster.webp';
     recycleWrap?.addEventListener('pointerleave',()=>{ if(recycleDevice) recycleDevice.style.transform='rotateY(-8deg) rotateX(5deg)'; });
     const recycleSlides = document.querySelector<HTMLElement>('[data-recycle-slides]');
     document.querySelectorAll<HTMLButtonElement>('[data-recycle-slide]').forEach((button) => button.addEventListener('click', () => {
-      if (recycleSlides) recycleSlides.style.transform = `translateX(-${Number(button.dataset.recycleSlide) * 100}%)`;
+      const index = Number(button.dataset.recycleSlide);
+      if (recycleSlides) {
+        recycleSlides.style.transform = `translateX(-${index * 100}%)`;
+        if (recycleSlides.closest('.device-wrap')?.classList.contains('is-expanded')) {
+          recycleSlides.scrollTo({ left:index * recycleSlides.clientWidth, behavior:reduceMotion.matches ? 'auto' : 'smooth' });
+        }
+      }
       document.querySelectorAll('[data-recycle-slide]').forEach((item) => item.classList.remove('is-active'));
       button.classList.add('is-active');
     }));
@@ -402,7 +414,13 @@ const demoVideoPoster = '/images/hero-poster.webp';
     airportWrap?.addEventListener('pointerleave',()=>{ if(airportDevice) airportDevice.style.transform='rotateY(-8deg) rotateX(5deg)'; });
     const airportSlides = document.querySelector<HTMLElement>('[data-airport-slides]');
     document.querySelectorAll<HTMLButtonElement>('[data-airport-slide]').forEach((button) => button.addEventListener('click', () => {
-      if (airportSlides) airportSlides.style.transform = `translateX(-${Number(button.dataset.airportSlide) * 100}%)`;
+      const index = Number(button.dataset.airportSlide);
+      if (airportSlides) {
+        airportSlides.style.transform = `translateX(-${index * 100}%)`;
+        if (airportSlides.closest('.device-wrap')?.classList.contains('is-expanded')) {
+          airportSlides.scrollTo({ left:index * airportSlides.clientWidth, behavior:reduceMotion.matches ? 'auto' : 'smooth' });
+        }
+      }
       document.querySelectorAll('[data-airport-slide]').forEach((item) => item.classList.remove('is-active'));
       button.classList.add('is-active');
     }));
@@ -415,17 +433,20 @@ const demoVideoPoster = '/images/hero-poster.webp';
       let deltaX = 0;
       let deltaY = 0;
       track.addEventListener('touchstart', (event) => {
+        if (track.closest('.device-wrap')?.classList.contains('is-expanded')) return;
         startX = event.touches[0].clientX;
         startY = event.touches[0].clientY;
         deltaX = 0;
         deltaY = 0;
       }, { passive:true });
       track.addEventListener('touchmove', (event) => {
+        if (track.closest('.device-wrap')?.classList.contains('is-expanded')) return;
         deltaX = event.touches[0].clientX - startX;
         deltaY = event.touches[0].clientY - startY;
         if (Math.abs(deltaX) > Math.abs(deltaY)) event.preventDefault();
       }, { passive:false });
       track.addEventListener('touchend', (event) => {
+        if (track.closest('.device-wrap')?.classList.contains('is-expanded')) return;
         if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
         event.preventDefault();
         const activeIndex = Math.max(0, buttons.findIndex((button) => button.classList.contains('is-active')));
@@ -437,14 +458,40 @@ const demoVideoPoster = '/images/hero-poster.webp';
     enableSwipe(recycleSlides, '[data-recycle-slide]');
     enableSwipe(airportSlides, '[data-airport-slide]');
 
+    const enableExpandedNativeScroll = (track: HTMLElement | null, buttonSelector: string) => {
+      if (!track) return;
+      const buttons = [...document.querySelectorAll<HTMLButtonElement>(buttonSelector)];
+      let scrollFrame = 0;
+      track.addEventListener('scroll', () => {
+        if (!track.closest('.device-wrap')?.classList.contains('is-expanded') || scrollFrame) return;
+        scrollFrame = requestAnimationFrame(() => {
+          scrollFrame = 0;
+          if (!track.clientWidth) return;
+          const index = Math.min(buttons.length - 1, Math.max(0, Math.round(track.scrollLeft / track.clientWidth)));
+          track.style.transform = `translateX(-${index * 100}%)`;
+          buttons.forEach((button, buttonIndex) => button.classList.toggle('is-active', buttonIndex === index));
+        });
+      }, { passive:true });
+    };
+    enableExpandedNativeScroll(audioSlides, '[data-audio-slide]');
+    enableExpandedNativeScroll(recycleSlides, '[data-recycle-slide]');
+    enableExpandedNativeScroll(airportSlides, '[data-airport-slide]');
+
     const deviceWraps = document.querySelectorAll<HTMLElement>('.cesium .device-wrap');
     let expandedWrap: HTMLElement | null = null;
     const setExpanded = (wrap: HTMLElement, expanded: boolean) => {
       const update = () => {
         wrap.classList.toggle('is-expanded', expanded);
         wrap.querySelector<HTMLElement>('.device')?.setAttribute('aria-expanded', String(expanded));
+        document.documentElement.classList.toggle('preview-open', expanded);
         document.body.classList.toggle('preview-open', expanded);
         expandedWrap = expanded ? wrap : null;
+        if (expanded) {
+          const track = wrap.querySelector<HTMLElement>('[data-audio-slides],[data-recycle-slides],[data-airport-slides]');
+          const buttons = [...wrap.querySelectorAll<HTMLButtonElement>('.screen-switcher button')];
+          const activeIndex = Math.max(0, buttons.findIndex((button) => button.classList.contains('is-active')));
+          if (track) requestAnimationFrame(() => { track.scrollLeft = activeIndex * track.clientWidth; });
+        }
       };
       if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(update);
       else update();
@@ -648,7 +695,10 @@ const demoVideoPoster = '/images/hero-poster.webp';
       tile.addEventListener('click', (event) => {
         if ((event.target as HTMLElement).closest('button')) return;
         if (projectDidDrag) return;
-        scrollToProject(tileIndex, 'auto');
+        if (tileIndex !== currentProjectIndex) {
+          scrollToProject(tileIndex);
+          return;
+        }
         setProjectFullscreen(tile, true);
       });
       tile.addEventListener('keydown', (event) => {
@@ -659,7 +709,14 @@ const demoVideoPoster = '/images/hero-poster.webp';
           projectTiles[Math.min(projectTiles.length - 1, Math.max(0, tileIndex + direction))]?.focus();
           return;
         }
-        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); scrollToProject(tileIndex, 'auto'); setProjectFullscreen(tile, true); }
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          if (tileIndex !== currentProjectIndex) {
+            scrollToProject(tileIndex);
+            return;
+          }
+          setProjectFullscreen(tile, true);
+        }
       });
       const gallery = tile.querySelector<HTMLElement>('.project-gallery');
       tile.querySelectorAll<HTMLButtonElement>('[data-gallery-dir]').forEach((arrow) => arrow.addEventListener('click', (event) => {
