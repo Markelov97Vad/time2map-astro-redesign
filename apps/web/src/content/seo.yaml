@@ -1,0 +1,42 @@
+# Per-page SEO for the static pages (home, use-cases, contact, 404).
+# Editable in Keystatic under "SEO (static pages)". Lab articles carry their
+# own SEO fields in each markdown file. Empty ogTitle/ogDescription fall back
+# to the SEO title/meta description; empty ogImage falls back to the default
+# social image (/images/og-image.png).
+home:
+  title: time2map – Geospatial Solutions. Full-Stack Team
+  description: >-
+    We design geospatial platforms, interactive maps and web apps for startups
+    and enterprises worldwide — from GIS services to full-stack development.
+  ogTitle: ''
+  ogDescription: ''
+  ogImage: ''
+  noindex: false
+
+useCases:
+  title: Use Cases – GIS & Web Mapping Projects | time2map
+  description: >-
+    Discover how time2map helps businesses with GIS, web mapping, and geospatial
+    automation. Real-world examples of our solutions.
+  ogTitle: ''
+  ogDescription: ''
+  ogImage: ''
+  noindex: false
+
+contact:
+  title: Contact time2map – GIS & Web Mapping Experts
+  description: >-
+    Ready to map your next idea? Contact time2map to discuss your GIS and
+    mapping needs.
+  ogTitle: ''
+  ogDescription: ''
+  ogImage: ''
+  noindex: false
+
+notFound:
+  title: Page Not Found (404) – time2map
+  description: The page you're looking for doesn't exist or has been moved.
+  ogTitle: ''
+  ogDescription: ''
+  ogImage: ''
+  noindex: true

@@ -1,0 +1,32 @@
+---
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/500-italic.css';
+import '../styles/global.css';
+import type { ComponentProps } from 'astro/types';
+import SeoHead from '../components/SeoHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+/** Same props as `SeoHead` — the layout only adds the site chrome. */
+type Props = ComponentProps<typeof SeoHead>;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <SeoHead {...Astro.props}>
+      <slot name="head" />
+    </SeoHead>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

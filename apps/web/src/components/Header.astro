@@ -1,0 +1,344 @@
+---
+import { getCollection } from 'astro:content';
+import site from '../content/site.yaml';
+
+const labEntries = (await getCollection('lab')).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+const path = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<header class="header">
+  <div class="header-container header-inner">
+    <a href="/" class="brand" aria-label="time2map — home">
+      <img src="/images/logo.svg" alt="time2map" width="140" height="32" />
+    </a>
+
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav" aria-label="Main">
+      <ul>
+        <li>
+          <details class="lab-dropdown">
+            <summary class="nav-link">LAB</summary>
+            <ul class="lab-menu">
+              {labEntries.map((entry) => (
+                <li>
+                  <a href={`/lab/${entry.id}`} class:list={['lab-link', { current: path === `/lab/${entry.id}` }]}>
+                    {entry.data.navLabel}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+        <li><a href="/use-cases" class:list={['nav-link', { current: path === '/use-cases' }]}>Use Cases</a></li>
+        <li><a href="/contact-us" class:list={['nav-link', { current: path === '/contact-us' }]}>Contact Us</a></li>
+        <li class="nav-divider" aria-hidden="true"></li>
+        <li>
+          <a href={site.social.linkedinCompany} target="_blank" rel="noopener" class="nav-icon" aria-label="LinkedIn">
+            <img src="/images/icons/linkedin.svg" alt="" width="32" height="32" />
+          </a>
+        </li>
+        <li>
+          <a href={site.social.upworkAgency} target="_blank" rel="noopener" class="nav-icon" aria-label="Upwork">
+            <img src="/images/icons/upwork.svg" alt="" width="32" height="32" />
+          </a>
+        </li>
+        <li>
+          <a href={site.bookCallUrl} target="_blank" rel="noopener" class="btn btn-primary book-call">Book a call</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    height: var(--header-h);
+    background: #fff;
+    border-bottom: 1px solid #e5eaf3;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Original .container-9: max-width 1440px, 24px side padding */
+  .header-container {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  @media (max-width: 991px) {
+    .header-container {
+      max-width: 728px;
+      padding-inline: 20px;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .header-container {
+      max-width: none;
+    }
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Original .navbar-brand: max-width 120px */
+  .brand img {
+    width: 120px;
+    height: auto;
+  }
+
+  /* Spacing built from margins/paddings as in the original (no flex gap):
+     nav links 5px margin + 10px padding, divider 15px, icons 5px+5px */
+  .nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-link {
+    font-size: 16px;
+    color: #1a1b1f;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    margin: 0 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    color: rgb(26 27 31 / 0.75);
+  }
+
+  .nav-link.current {
+    color: var(--color-accent);
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 22px;
+    background: #e4ebf3;
+    margin: 0 15px;
+  }
+
+  .nav-icon {
+    margin: 0 5px;
+    padding: 0 5px;
+    display: flex;
+  }
+
+  .book-call {
+    width: 148px;
+    margin-left: 5px;
+  }
+
+  .nav-icon img {
+    border-radius: 50%;
+  }
+
+  .lab-dropdown {
+    position: relative;
+  }
+
+  /* Original .w-dropdown-toggle reserves 40px on the right for the chevron */
+  .lab-dropdown summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 25px;
+  }
+
+  .lab-dropdown summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lab-dropdown summary {
+    height: 24px;
+  }
+
+  .lab-dropdown summary::after {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+    margin-left: 2px;
+  }
+
+  .lab-menu {
+    position: absolute;
+    top: 120%;
+    left: 0;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    box-shadow:
+      0 1px 3px rgb(0 0 0 / 0.2),
+      0 1px 2px -1px rgb(0 0 0 / 0.2);
+    padding: 16px!important;
+    width: 186px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+  }
+
+  /* Original dropdown links (.link-4.text-s-reg): plain case, #333 */
+  .lab-link {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .lab-link:hover {
+    color: rgb(26 27 31 / 0.75);
+  }
+
+  .lab-link.current {
+    color: var(--color-accent);
+  }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-heading);
+  }
+
+  @media (max-width: 991px) {
+    .menu-toggle {
+      display: flex;
+    }
+
+    /* Original Webflow navbar (data-animation="default", 400ms): the menu
+       slides down full-width below the header and its links are centered. */
+    .nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 400ms ease;
+    }
+
+    .nav.open {
+      grid-template-rows: 1fr;
+    }
+
+    /* Direct child only — otherwise these panel styles (esp. box-shadow) also
+       hit the nested .lab-menu <ul> and give the LAB submenu a stray shadow. */
+    .nav > ul {
+      min-height: 0;
+      overflow: hidden;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0 30px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+      opacity: 0;
+      transition: opacity 250ms ease;
+    }
+
+    .nav.open > ul {
+      opacity: 1;
+    }
+
+    /* Original mobile per-item vertical spacing. nav-link must be inline-block
+       here — as an inline <a>, its vertical padding wouldn't add height and the
+       items stay cramped (this is exactly what the original does at ≤767px). */
+    .nav-link {
+      display: inline-block;
+      padding: 10px 5px;
+    }
+
+    .nav-icon {
+      padding: 10px 5px;
+    }
+
+    .book-call {
+      margin: 10px 0 0;
+    }
+
+    /* The divider is a horizontal grey rule on mobile (original .nav-divider).
+       flex:none keeps the empty 1px li from being collapsed by the flex column. */
+    .nav-divider {
+      width: 200px;
+      max-width: 100%;
+      height: 1px;
+      min-height: 1px;
+      flex: none;
+      margin: 10px 0;
+    }
+
+    /* On mobile the original makes the LAB dropdown flow inline (Webflow adds
+       position:static to open dropdowns inside the collapsed nav), so it pushes
+       the list down and stays centered instead of floating over it. */
+    .lab-dropdown {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Drop the desktop chevron-reserve padding so "LAB ⌄" centres as one unit
+       (otherwise the 25px right padding shifts the label left of centre). */
+    .lab-dropdown summary {
+      padding-right: 0;
+    }
+
+    .lab-menu {
+      position: static;
+      width: auto;
+      box-shadow: none;
+      padding: 12px 0 0 !important;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('.nav');
+  toggle?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(Boolean(open)));
+  });
+
+  // Close the desktop LAB dropdown when clicking elsewhere
+  document.addEventListener('click', (e) => {
+    const dropdown = document.querySelector('.lab-dropdown[open]');
+    if (dropdown && e.target instanceof Node && !dropdown.contains(e.target)) {
+      dropdown.removeAttribute('open');
+    }
+  });
+</script>

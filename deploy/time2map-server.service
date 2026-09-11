@@ -1,0 +1,27 @@
+# systemd unit for the time2map backend (apps/server).
+# Install: copy to /etc/systemd/system/time2map-server.service, then
+#   sudo systemctl daemon-reload && sudo systemctl enable --now time2map-server
+#
+# IMPORTANT: WorkingDirectory must be the repo root. Keystatic's local reader
+# resolves content paths relative to the process cwd (see docs/ARCHITECTURE.md),
+# and the admin config uses apps/web/-prefixed paths.
+
+[Unit]
+Description=time2map backend (contact API + Keystatic admin)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/time2map/repo
+ExecStart=/usr/bin/node apps/server/dist/server/entry.mjs
+EnvironmentFile=/etc/time2map/server.env
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=4322
+Restart=always
+RestartSec=2
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,82 @@
+---
+import { getCollection, render } from 'astro:content';
+
+const faqs = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(
+  faqs.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<div class="faq-list">
+  {rendered.map(({ entry, Content }) => (
+    <details class="faq-item">
+      <summary>
+        <span>{entry.data.question}</span>
+        <img src="/images/icons/faq-arrow.svg" alt="" width="24" height="24" class="faq-arrow" />
+      </summary>
+      <div class="faq-answer rich-text">
+        <Content />
+      </div>
+    </details>
+  ))}
+</div>
+
+<style>
+  /* Gray card around the whole list, as in the original (.flex-block) */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    max-width: 1000px;
+    margin-inline: auto;
+    background: var(--color-bg-footer);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: 0 2px 3px rgb(0 0 0 / 0.2);
+  }
+
+  .faq-item {
+    background: #fff;
+    border: 1px solid #e5e9f3;
+    border-radius: 4px;
+    padding: 0 16px 16px 16px;
+  }
+
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+    font-size: 18px;
+    color: #000;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-arrow {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding-top: 16px;
+    font-size: 18px;
+    line-height: 1.7;
+    
+  }
+
+  .faq-answer :global(p) {
+    color: #333;
+    margin: 0;
+  }
+</style>

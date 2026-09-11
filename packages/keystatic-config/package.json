@@ -1,0 +1,14 @@
+{
+  "name": "@time2map/keystatic-config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Shared Keystatic schema for time2map, parameterised by a path prefix so both apps/web (dev admin) and apps/server (hosted admin) drive the same content.",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "types": "./index.ts",
+  "peerDependencies": {
+    "@keystatic/core": "^0.5.50"
+  }
+}

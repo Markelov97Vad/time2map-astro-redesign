@@ -1,0 +1,532 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import site from '../../content/site.yaml';
+import { articleSchema, breadcrumbSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('lab');
+  const redesignedSlugs = new Set(['time-2-route', 'barcelona-crime-map']);
+
+  return entries
+    .filter((entry) => !redesignedSlugs.has(entry.id))
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const authorName = data.authorName ?? site.author.name;
+const authorPhoto = data.authorPhoto ?? site.author.photo;
+
+const exploreMore = (await getCollection('useCases', ({ data }) => data.featured))
+  .sort((a, b) => a.data.order - b.data.order)
+  .filter((uc) => uc.data.tryItUrl)
+  .slice(0, 2);
+const imageDimensions: Record<string, { width: number; height: number }> = {
+  '/images/use-cases/audio-guides-1.webp': { width: 1441, height: 813 },
+  '/images/use-cases/recycling-1.webp': { width: 2880, height: 1600 },
+  '/images/use-cases/coal-mining-1.webp': { width: 1441, height: 811 },
+  '/images/use-cases/land-certificates-1.webp': { width: 1600, height: 1035 },
+  '/images/use-cases/ski-resort-1.webp': { width: 1600, height: 866 },
+  '/images/use-cases/airport-maps-1.webp': { width: 2002, height: 1501 },
+  '/images/use-cases/georeferencing-1.webp': { width: 1600, height: 781 },
+};
+
+const articleUrl = new URL(`/lab/${entry.id}`, site.siteUrl).href;
+
+const jsonLd = [
+  articleSchema(site, data, articleUrl),
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: data.navLabel, item: articleUrl },
+  ]),
+];
+---
+
+<Base
+  title={data.seoTitle ?? data.title}
+  description={data.description}
+  ogTitle={data.ogTitle || undefined}
+  ogDescription={data.ogDescription || undefined}
+  ogImage={data.ogImage}
+  jsonLd={jsonLd}
+  ogType="article"
+  publishedTime={data.publishDate.toISOString()}
+  author={authorName}
+>
+  <article class="lab-article">
+    <div class="container container-lg article-container">
+      <h1 class="article-title">{data.title}</h1>
+
+      <div class="article-intro">
+        <div class="article-meta">
+          <img src={authorPhoto} alt={`Photo of ${authorName}`} class="meta-photo" width="80" height="80" />
+          <span class="meta-author">{authorName}</span>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <time datetime={data.publishDate.toISOString().slice(0, 10)}>{data.displayDate}</time>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>{data.readTime}</span>
+        </div>
+
+        {data.heroQuote && (
+          <div class="rich-text">
+            <blockquote>{data.heroQuote}</blockquote>
+          </div>
+        )}
+      </div>
+
+      {data.mapEmbedUrl && (
+        <div class="map-block">
+          <div class="map-embed">
+            <iframe src={data.mapEmbedUrl} title={`${data.navLabel} — interactive map`} loading="lazy"></iframe>
+            <a href={data.mapEmbedUrl} target="_blank" rel="noopener" class="map-fullscreen">
+              <img src="/images/icons/expand.svg" alt="" width="20" height="20" />
+              Open full screen
+            </a>
+          </div>
+          {data.mapHints.length > 0 && (
+            <div class="map-hints">
+              {data.mapHints.map((hint) => (
+                <div class="map-hint">
+                  <img src={hint.icon} alt="" width="24" height="24" />
+                  <span>{hint.text}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div class="rich-text article-body">
+        <Content />
+      </div>
+
+      {data.githubUrl && (
+        <a href={data.githubUrl} target="_blank" rel="noopener" class="github-link">
+          <img src="/images/icons/github.svg" alt="" width="24" height="24" />
+          <strong>View source on GitHub</strong>
+        </a>
+      )}
+
+      {data.showAuthorCard && (
+        <div class="author-card">
+          <div class="author-info">
+            <img src={authorPhoto} alt={authorName} class="author-photo" width="192" height="192" loading="lazy" />
+            <div class="author-details">
+              <div class="author-name">{authorName}</div>
+              <p class="author-bio">{data.authorBio ?? site.author.bio}</p>
+            </div>
+          </div>
+          <a href={site.social.linkedinPersonal} target="_blank" rel="noopener" class="social-large">
+            Connect with me on
+            <img src="/images/icons/linkedin-wordmark.svg" alt="LinkedIn" class="wordmark" width="71" height="20" />
+            <img src="/images/icons/external-link.svg" alt="" width="16" height="16" />
+          </a>
+        </div>
+      )}
+
+      {data.techStack.length > 0 && (
+        <div class="data-sources rich-text">
+          <h2>Tech stack</h2>
+          {data.techStack.map((item) => (
+            <p>
+              <a href={item.url} target="_blank" rel="noopener">&gt; {item.label}</a>
+            </p>
+          ))}
+        </div>
+      )}
+
+      {data.dataSources.length > 0 && (
+        <div class="data-sources rich-text">
+          <h2>Data sources</h2>
+          {data.dataSources.map((source) => (
+            <p>
+              <a href={source.url} target="_blank" rel="noopener">&gt; {source.label}</a>
+            </p>
+          ))}
+        </div>
+      )}
+
+      {exploreMore.length > 0 && (
+        <div class="explore-more">
+          <h2 class="explore-heading">Explore More</h2>
+          <div class="explore-list">
+            {exploreMore.map((uc) => (
+              <a href={uc.data.tryItUrl} target="_blank" rel="noopener" class="explore-card">
+                <img src={uc.data.images[0]} alt={uc.data.title} width={imageDimensions[uc.data.images[0]]?.width} height={imageDimensions[uc.data.images[0]]?.height} loading="lazy" />
+                <span>{uc.data.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="back-home">
+        <a href="/" class="btn btn-secondary">Return to Home Page</a>
+      </div>
+    </div>
+  </article>
+</Base>
+
+<style>
+  /* Original .section-11 + .container-14: 60px block padding,
+     1000px content, 40px gap between blocks */
+  .lab-article {
+    padding-block: 60px;
+  }
+
+  .article-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Original .h1.left: 50px, left-aligned */
+  .article-title {
+    text-align: left;
+    font-size: 50px;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 991px) {
+    .article-title {
+      font-size: 40px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .article-title {
+      font-size: 32px;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .article-title {
+      font-size: 28px;
+    }
+  }
+
+  .article-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #7a7a7a;
+    font-size: 16px;
+    font-weight: 300;
+  }
+
+  .meta-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: #7a7a7a;
+  }
+
+  .map-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .map-embed {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+  }
+
+  .map-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .map-embed {
+      aspect-ratio: 9 / 16;
+    }
+  }
+
+  /* Original .map-button: white pill overlaid in the top-right corner */
+  .map-fullscreen {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #6e6e6e;
+    text-decoration: none;
+  }
+
+  .map-fullscreen:hover {
+    background: #f8f7f8;
+  }
+
+  /* Original .flex-block-33: bordered hint card */
+  .map-hints {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    padding: 16px;
+    background: rgb(167 167 167 / 0.08);
+    border: 1px solid #a7a7a7;
+    border-radius: var(--radius-md);
+  }
+
+  .map-hint {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: #6e6e6e;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  @media (max-width: 767px) {
+    .map-hint {
+      align-items: flex-start;
+    }
+  }
+
+  .article-body {
+    width: 100%;
+  }
+
+  /* Original .link-block-4 */
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: -16px;
+    padding: 8px 12px;
+    border: 1px solid #6e6e6e;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--color-heading);
+    font-size: 14px;
+  }
+
+  .github-link:hover {
+    background: #f8f7f8;
+  }
+
+  @media (max-width: 767px) {
+    .github-link {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Original .flex-block-35: white card with shadow, column layout */
+  .author-card {
+    width: 100%;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    padding: 24px;
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 1px 3px rgb(0 0 0 / 0.2),
+      0 1px 2px -1px rgb(0 0 0 / 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  @media (max-width: 767px) {
+    .author-card {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  .author-info {
+    display: flex;
+    gap: 16px;
+  }
+
+  .author-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 999px;
+    object-fit: cover;
+    object-position: center top;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 767px) {
+    .author-photo {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  .author-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .author-name {
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+  .author-bio {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--color-text);
+  }
+
+  @media (max-width: 767px) {
+    .author-bio {
+      font-size: 16px;
+    }
+  }
+
+  /* Original .social-button-large: LinkedIn-blue solid button, white text */
+  .social-large {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    color: #fff;
+    text-decoration: none;
+    background: #2776b5;
+  }
+
+  .social-large .wordmark {
+    height: 20px;
+    width: auto;
+    margin-left: 4px;
+  }
+
+  .data-sources {
+    width: 100%;
+  }
+
+  .data-sources p {
+    margin-bottom: 8px;
+  }
+
+  /* Original .flex-block-38 + .collection-item-4 cards */
+  .explore-more {
+    width: 100%;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  @media (max-width: 767px) {
+    .explore-more {
+      margin-top: 60px;
+    }
+
+    .social-large {
+      width: 100%;
+    }
+  }
+
+  .explore-heading {
+    font-size: 22px;
+  }
+
+  .explore-list {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .explore-card {
+    flex: 1 1 0;
+    height: 336px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow:
+      0 2px 3px rgb(0 0 0 / 0.2),
+      0 1px 2px -1px rgb(0 0 0 / 0.2);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+
+  .explore-card:hover {
+    outline: 1px solid #b9b9b9;
+  }
+
+  .explore-card img {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    object-fit: cover;
+  }
+
+  .explore-card span {
+    padding: 20px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 991px) {
+    .explore-card {
+      height: 290px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .explore-list {
+      flex-direction: column;
+    }
+
+    .explore-card {
+      flex: none;
+      height: auto;
+    }
+
+    .explore-card img {
+      flex: none;
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  /* Original .container-15: full-width secondary button */
+  .back-home {
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .back-home .btn {
+    width: 100%;
+  }
+</style>

@@ -1,0 +1,38 @@
+# Global site settings. Edit freely — every page reads from here.
+title: time2map
+siteUrl: https://time2map.com
+tagline: Maps and GIS solutions, built by specialists.
+description: >-
+  We design geospatial platforms, interactive maps, and web applications for
+  startups and enterprises worldwide. From GIS services to Full-Stack Web
+  Development.
+
+email: contact@time2map.com
+bookCallUrl: https://cal.com/alexander-semenov-uqwtme/40-min-call-with-alex-from-time2map
+location: Barcelona, Spain
+vat: ES Z2405174T
+privacyPolicyUrl: https://www.iubenda.com/privacy-policy/48336731
+
+social:
+  linkedinCompany: https://www.linkedin.com/company/time2map/
+  upworkAgency: https://www.upwork.com/agencies/time2map
+  linkedinPersonal: https://www.linkedin.com/in/sasfeat/
+  upworkFreelancer: https://www.upwork.com/freelancers/~0197aa05de33ebc828/
+  telegram: https://t.me/sasfeat
+  whatsapp: https://wa.me/message/MQGQJVOWUALSH1
+
+author:
+  name: Alexander Semenov
+  role: Founder | 10+ years in GIS & Web development
+  photo: /images/alex-semenov.jpg
+  bio: >-
+    Geospatial developer based in Barcelona. I build maps and data tools —
+    sometimes for clients, sometimes because the data is interesting.
+
+# Contact form endpoint. Served by apps/server and reverse-proxied at the same
+# origin, so a relative path works. Empty = show email + social links instead.
+formEndpoint: /api/contact
+
+# Third-party services carried over from the Webflow site
+googleSiteVerification: Z83eR38sU1UdkWlrXKmWV66qkX9QKU-ln0Byy3hDtFo
+iubendaWidgetId: f7ecb581-9743-48f8-b424-bbdfeec75b48

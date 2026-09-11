@@ -1,0 +1,81 @@
+---
+/**
+ * Shared <head> contents for every page — the single place that emits the SEO
+ * head: title/description, robots, canonical, icons, sitemap link, Open Graph,
+ * Twitter cards, JSON-LD and the third-party tags carried over from Webflow
+ * (Google site verification, iubenda cookie widget).
+ *
+ * The classic `Base` layout wraps it; the redesigned pages render their own
+ * <html>/<body> and drop it straight into <head>. Extra head tags (preconnects
+ * etc.) go in the default slot. Never hand-write these tags in a page.
+ */
+import site from '../content/site.yaml';
+import { canonicalPath } from '../lib/canonical';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Social (og/twitter) title — defaults to `title`. */
+  ogTitle?: string;
+  /** Social (og/twitter) description — defaults to `description`. */
+  ogDescription?: string;
+  ogImage?: string;
+  jsonLd?: object | object[];
+  ogType?: 'website' | 'article';
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  ogImage = '/images/og-image.png',
+  jsonLd,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+  author,
+  noindex = false,
+} = Astro.props;
+const ogTitle = Astro.props.ogTitle || title;
+const ogDescription = Astro.props.ogDescription || description;
+// Public URL of this page: extensionless, no trailing slash (see lib/canonical).
+const canonical = new URL(canonicalPath(Astro.url.pathname), site.siteUrl);
+const ogImageAbs = new URL(ogImage, site.siteUrl);
+const ogImageAlt = `${ogTitle} — preview image`;
+// Staging deployments (PUBLIC_STAGING=true) must never be indexed.
+const shouldNoindex = noindex || import.meta.env.PUBLIC_STAGING === 'true';
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{author && <meta name="author" content={author} />}
+{shouldNoindex && <meta name="robots" content="noindex, follow" />}
+<link rel="canonical" href={canonical} />
+<link rel="icon" type="image/png" href="/favicon-32.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="sitemap" href="/sitemap.xml" />
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={ogTitle} />
+<meta property="og:description" content={ogDescription} />
+<meta property="og:image" content={ogImageAbs} />
+<meta property="og:image:alt" content={ogImageAlt} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={site.title} />
+<meta property="og:locale" content="en_US" />
+{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{ogType === 'article' && author && <meta property="article:author" content={author} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={ogTitle} />
+<meta name="twitter:description" content={ogDescription} />
+<meta name="twitter:image" content={ogImageAbs} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
+{site.googleSiteVerification && <meta name="google-site-verification" content={site.googleSiteVerification} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+<slot />
+{site.iubendaWidgetId && <script is:inline async src={`https://embeds.iubenda.com/widgets/${site.iubendaWidgetId}.js`}></script>}

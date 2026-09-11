@@ -1,0 +1,26 @@
+# Production compose. Host nginx/certbot terminates TLS and proxies to :8080.
+# `.env` is rendered by CI from deploy/docker/server.env.template (envsubst).
+
+name: time2map
+
+services:
+  web:
+    image: ghcr.io/time2map/t2m-astro-web:${IMAGE_TAG:-latest}
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+
+  app:
+    image: ghcr.io/time2map/t2m-astro-app:${IMAGE_TAG:-latest}
+    env_file:
+      - .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: "4322"
+      # No PUBLISH_DIR — content is baked into the web image via CI.
+    expose:
+      - "4322"
+    restart: unless-stopped

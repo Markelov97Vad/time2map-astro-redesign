@@ -1,1 +1,28 @@
-{"name":"time2map-redesign-prototype","private":true,"type":"module","scripts":{"dev":"astro dev","build":"astro build","preview":"astro preview"},"dependencies":{"astro":"^6.4.6","gsap":"^3.15.0"}}
+{
+  "name": "time2map-monorepo",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @time2map/web",
+    "dev:server": "npm run dev -w @time2map/server",
+    "build": "npm run build -w @time2map/web",
+    "build:server": "npm run build -w @time2map/server",
+    "build:all": "npm run build && npm run build:server",
+    "start:server": "node apps/server/dist/server/entry.mjs",
+    "preview": "npm run preview -w @time2map/web",
+    "astro": "npm run astro -w @time2map/web",
+    "audit": "seo-audit apps/web/dist",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

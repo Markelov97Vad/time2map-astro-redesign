@@ -1,0 +1,16 @@
+{
+  "name": "@time2map/seo-audit",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Post-build content/SEO invariant checker for the time2map static site.",
+  "bin": {
+    "seo-audit": "bin/seo-audit.mjs"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "dependencies": {
+    "node-html-parser": "^6.1.13"
+  }
+}

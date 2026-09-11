@@ -1,0 +1,149 @@
+---
+import '../styles/global.css';
+import '../styles/palette.css';
+import '../styles/contact.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SeoHead from '../components/SeoHead.astro';
+import site from '../content/site.yaml';
+import seo from '../content/seo.yaml';
+import { contactPageSchema, breadcrumbSchema } from '../lib/schema';
+
+const socials = [
+  { href: site.social.upworkFreelancer, icon: '/images/icons/upwork.svg', label: 'Alexander Semenov on Upwork' },
+  { href: site.social.linkedinPersonal, icon: '/images/icons/linkedin.svg', label: 'Alexander Semenov on LinkedIn' },
+  { href: site.social.telegram, icon: '/images/icons/telegram.svg', label: 'Contact Alexander Semenov on Telegram' },
+  { href: site.social.whatsapp, icon: '/images/icons/whatsapp.svg', label: 'Contact time2map on WhatsApp' },
+];
+
+const pageUrl = new URL('/contact-us', site.siteUrl).href;
+const jsonLd = [
+  contactPageSchema(site),
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: 'Contact Us', item: pageUrl },
+  ]),
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead
+    title={seo.contact.title}
+    description={seo.contact.description}
+    ogTitle={seo.contact.ogTitle || undefined}
+    ogDescription={seo.contact.ogDescription || undefined}
+    ogImage={seo.contact.ogImage || undefined}
+    noindex={seo.contact.noindex}
+    jsonLd={jsonLd}
+  />
+</head>
+<body class="contact-page">
+  <SiteNav />
+
+  <main class="contact-main">
+    <section class="contact-hero" aria-labelledby="contact-title">
+      <div class="contact-heading">
+        <h1 id="contact-title">Ready to start?<br/> <em>Tell us about it</em></h1>
+        <p>Share the essentials. We’ll get back to you as soon as possible with a clear next step.</p>
+      </div>
+
+      {site.formEndpoint ? (
+        <form class="contact-form" id="project-form" method="POST" action={site.formEndpoint}>
+          <div class="form-field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" maxlength="256" autocomplete="name" placeholder="e.g. John" required/>
+          </div>
+          <div class="form-field">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" maxlength="256" autocomplete="email" placeholder="e.g. john@example.com" required/>
+          </div>
+          <div class="form-field">
+            <label for="budget">Estimated budget</label>
+            <input id="budget" name="budget" type="text" maxlength="256" inputmode="decimal" placeholder="e.g. €10,000" required/>
+          </div>
+          <div class="form-field form-field-message">
+            <label for="message">Project description</label>
+            <textarea id="message" name="message" maxlength="5000" placeholder="What would you like to build? Include any important details, goals, or timing." required></textarea>
+          </div>
+          {/* Honeypot — hidden from people, tempting to bots. Filled = dropped by the API. */}
+          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+          <label class="form-consent">
+            <input name="privacy" type="checkbox" required/>
+            <span>I agree to the processing of my personal data so time2map can respond to my inquiry. <a href={site.privacyPolicyUrl} target="_blank" rel="noopener">Privacy Policy</a>.</span>
+          </label>
+          <button class="form-submit" type="submit"><span>Submit the message</span><i>↗︎</i></button>
+          <p class="form-status" role="status" aria-live="polite" hidden></p>
+
+          <div class="contact-alternatives">
+            <span>Or contact us on social media</span>
+            <div class="contact-channels">
+              {socials.map((s) => (
+                <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}><img src={s.icon} alt="" width="32" height="32"/></a>
+              ))}
+            </div>
+          </div>
+        </form>
+      ) : (
+        <div class="contact-form no-form">
+          <a href={`mailto:${site.email}`} class="form-submit email-btn"><span>{site.email}</span><i>↗︎</i></a>
+          <div class="contact-alternatives">
+            <span>Or contact us on social media</span>
+            <div class="contact-channels">
+              {socials.map((s) => (
+                <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}><img src={s.icon} alt="" width="32" height="32"/></a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  {site.formEndpoint && (
+    <script is:inline>
+      (function () {
+        var form = document.querySelector('#project-form');
+        if (!form) return;
+        var status = form.querySelector('.form-status');
+        var btn = form.querySelector('button[type=submit]');
+        var btnLabel = (btn && btn.querySelector('span')) || btn;
+        function show(msg, ok) {
+          if (!status) return;
+          status.textContent = msg;
+          status.hidden = false;
+          status.classList.toggle('is-ok', ok);
+          status.classList.toggle('is-error', !ok);
+        }
+        // Reflect a no-JS redirect fallback (?sent=1 / ?error=…), if present.
+        var params = new URLSearchParams(location.search);
+        if (params.get('sent')) show('Thanks! Your message has been sent.', true);
+        else if (params.get('error')) show('Something went wrong. Please try again or email us.', false);
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var original = btnLabel ? btnLabel.textContent : '';
+          if (btn) btn.disabled = true;
+          if (btnLabel) btnLabel.textContent = 'Sending…';
+          var payload = JSON.stringify(Object.fromEntries(new FormData(form)));
+          fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Requested-With': 'fetch' },
+            body: payload,
+          })
+            .then(function (res) {
+              if (res.ok) { show('Thanks! Your message has been sent.', true); form.reset(); }
+              else if (res.status === 422) show('Please check the form and try again.', false);
+              else if (res.status === 429) show('Too many attempts. Please try again in a few minutes.', false);
+              else show('Something went wrong. Please try again or email us.', false);
+            })
+            .catch(function () { show('Network error. Please try again or email us.', false); })
+            .finally(function () { if (btn) btn.disabled = false; if (btnLabel) btnLabel.textContent = original; });
+        });
+      })();
+    </script>
+  )}
+</body>
+</html>

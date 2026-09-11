@@ -1,0 +1,59 @@
+---
+export const prerender = false;
+// Access is gated by Basic Auth in middleware.ts.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Publish — time2map admin</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; color: #1a1a1a; }
+      h1 { font-size: 22px; }
+      p { color: #555; line-height: 1.5; }
+      button { font: inherit; padding: 10px 18px; border: 0; border-radius: 6px; background: #c94e43; color: #fff; cursor: pointer; }
+      button[disabled] { opacity: 0.6; cursor: default; }
+      pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow: auto; white-space: pre-wrap; font-size: 13px; }
+      .ok { color: #1a7f37; } .err { color: #c94e43; }
+      a { color: #c94e43; }
+    </style>
+  </head>
+  <body>
+    <h1>Publish changes</h1>
+    <p>
+      Rebuilds the public site from the current content (commit + build + SEO audit).
+      Edit content in the <a href="/keystatic">admin</a> first, then publish here.
+    </p>
+    <button id="go">Publish now</button>
+    <p id="status"></p>
+    <pre id="log" hidden></pre>
+
+    <script is:inline>
+      var btn = document.getElementById('go');
+      var status = document.getElementById('status');
+      var log = document.getElementById('log');
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        status.textContent = 'Publishing… (this can take a minute)';
+        status.className = '';
+        log.hidden = true;
+        fetch('/api/publish', { method: 'POST' })
+          .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })
+          .then(function (res) {
+            var ok = res.data && res.data.ok;
+            status.textContent = ok ? 'Published successfully.' : 'Publish failed — see log.';
+            status.className = ok ? 'ok' : 'err';
+            log.hidden = false;
+            log.textContent = (res.data.steps || [])
+              .map(function (s) { return '# ' + s.step + (s.ok ? ' ✓' : ' ✗') + '\n' + s.output; })
+              .join('\n\n');
+          })
+          .catch(function (e) { status.textContent = 'Request error: ' + e; status.className = 'err'; })
+          .finally(function () { btn.disabled = false; });
+      });
+    </script>
+  </body>
+</html>

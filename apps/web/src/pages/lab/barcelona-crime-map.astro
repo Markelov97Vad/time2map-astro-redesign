@@ -1,0 +1,85 @@
+---
+import { getEntry } from 'astro:content';
+import '../../styles/global.css';
+import '../../styles/palette.css';
+import '../../styles/lab.css';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import SeoHead from '../../components/SeoHead.astro';
+import BarcelonaCrimeArticle from '../../components/BarcelonaCrimeArticle.astro';
+import site from '../../content/site.yaml';
+import { articleSchema, breadcrumbSchema } from '../../lib/schema';
+
+// SEO fields (title, description, og:*, dates, author) come from the lab
+// collection entry, exactly like /lab/[slug] — only the presentation differs.
+const entry = await getEntry('lab', 'barcelona-crime-map');
+if (!entry) throw new Error('Missing lab content entry: barcelona-crime-map');
+const { data } = entry;
+const authorName = data.authorName ?? site.author.name;
+const articleUrl = new URL(`/lab/${entry.id}`, site.siteUrl).href;
+const jsonLd = [
+  articleSchema(site, data, articleUrl),
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: data.navLabel, item: articleUrl },
+  ]),
+];
+
+const intro = data.description;
+const githubUrl = 'https://github.com/time2map/catalunya-crime-map';
+const dataSources = [
+  { label: "Mossos d'Esquadra crime data", detail: 'ICGC viewer', url: 'https://visors.icgc.cat/mapa-delinquencial/' },
+  { label: 'Ministry of Interior', detail: 'Statistical Yearbook of Spain', url: 'https://www.interior.gob.es/opencms/es/servicios-al-ciudadano/estadistica/estadisticas-e-informes/seguridad-ciudadana/anuario-estadistico-del-ministerio-del-interior/' },
+  { label: 'Source code', detail: 'GitHub', url: githubUrl },
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead
+    title={data.seoTitle ?? data.title}
+    description={data.description}
+    ogTitle={data.ogTitle || undefined}
+    ogDescription={data.ogDescription || undefined}
+    ogImage={data.ogImage}
+    jsonLd={jsonLd}
+    ogType="article"
+    publishedTime={data.publishDate.toISOString()}
+    author={authorName}
+  />
+</head>
+<body class="lab-page crime-page">
+  <a class="skip-link" href="#article-content">Skip to article</a>
+  <SiteNav />
+
+  <main class="lab-main">
+    <section class="lab-hero" aria-labelledby="article-title">
+      <div class="lab-hero-topline"><div class="eyebrow"><span></span> Data research · May 2026</div><span>8 min read</span></div>
+      <h1 id="article-title">Barcelona Crime Map:<br/><em>Safety Index</em></h1>
+      <div class="lab-hero-footer">
+        <p>{intro}</p>
+        <div class="lab-author"><img src="/images/alex-semenov.jpg" alt="Alexander Semenov" width="52" height="52"/><span><small>Written by</small><strong>Alexander Semenov</strong></span></div>
+      </div>
+    </section>
+
+    <article class="lab-article" id="article-content">
+      <div class="lab-content lab-content-wide"><BarcelonaCrimeArticle /></div>
+
+      <aside class="lab-tech lab-sources" aria-labelledby="sources-heading">
+        <div><div class="eyebrow"><span></span> References</div><h2 id="sources-heading">Data sources<br/><em>and code</em></h2></div>
+        <ul>{dataSources.map((source) => <li><a href={source.url} target="_blank" rel="noopener"><strong>{source.label}</strong><span>{source.detail} ↗︎</span></a></li>)}</ul>
+      </aside>
+
+      <div class="lab-outro">
+        <div><small>Explore the research</small><h2>Read the city<br/><em>Zone by zone</em></h2></div>
+        <div class="lab-outro-actions">
+          <a href="https://catalunya-crimes.time2map.com/" target="_blank" rel="noopener">Open live map <span>↗︎</span></a>
+          <a href={githubUrl} target="_blank" rel="noopener">View source <span>↗︎</span></a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <SiteFooter />
+</body>
+</html>

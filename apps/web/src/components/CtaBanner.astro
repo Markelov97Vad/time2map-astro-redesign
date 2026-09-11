@@ -1,0 +1,97 @@
+---
+import site from '../content/site.yaml';
+import home from '../content/pages/home.yaml';
+---
+
+<section class="cta-section" id="contacts">
+  <div class="cta-wrap">
+    <div class="banner">
+      <div class="udesly-big-icon-wrapper">
+        <img src="/images/icons/phone.svg" alt="" width="40" height="40" />
+      </div>
+      <h2>{home.cta.heading}</h2>
+      <p class="text-lead">{home.cta.text}</p>
+      <a href={site.bookCallUrl} target="_blank" rel="noopener" class="btn cta-btn">Book a call</a>
+      <div class="email-row">
+        <span class="text-small">Or write to us at</span>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-section {
+    padding: 100px 24px;
+  }
+
+  @media (max-width: 479px) {
+    .cta-section {
+      padding: 60px 20px;
+    }
+  }
+
+  .cta-wrap {
+    width: 100%;
+  }
+
+  .banner {
+    background: var(--color-accent);
+    border-radius: var(--radius-banner);
+    min-height: 400px;
+    padding: 100px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .banner h2,
+  .banner p {
+    color: #fff;
+    margin: 0;
+  }
+
+  .udesly-big-icon-wrapper {
+    background-color: #68686863;
+    border-radius: 100px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    display: flex;
+  }
+
+  /* Original .button-secondary.cta: white, black text, no border, 192px */
+  .cta-btn {
+    margin-top: 16px;
+    background: #fff;
+    color: #000;
+    border: none;
+    width: 100%;
+    max-width: 192px;
+  }
+
+  .email-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    color: #fff;
+  }
+
+  .email-row a {
+    color: #fff;
+    font-weight: 400;
+  }
+
+  @media (max-width: 767px) {
+    .banner {
+      border-radius: 20px;
+      padding: 40px 20px;
+      min-height: auto;
+    }
+  }
+</style>

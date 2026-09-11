@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/global.css';
+import '../styles/palette.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SeoHead from '../components/SeoHead.astro';
+import UseCaseCard from '../components/UseCaseCard.astro';
+import site from '../content/site.yaml';
+import seo from '../content/seo.yaml';
+import { useCasesSchema, breadcrumbSchema } from '../lib/schema';
+
+const useCases = (await getCollection('useCases')).sort((a, b) => a.data.order - b.data.order);
+const pageUrl = new URL('/use-cases', site.siteUrl).href;
+const jsonLd = [
+  useCasesSchema(site, useCases, seo.useCases.description),
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: 'Use Cases', item: pageUrl },
+  ]),
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead
+    title={seo.useCases.title}
+    description={seo.useCases.description}
+    ogTitle={seo.useCases.ogTitle || undefined}
+    ogDescription={seo.useCases.ogDescription || undefined}
+    ogImage={seo.useCases.ogImage || undefined}
+    noindex={seo.useCases.noindex}
+    jsonLd={jsonLd}
+  />
+</head>
+<body class="use-cases-page">
+  <SiteNav />
+
+  <main class="use-cases-main">
+    <section class="cases-hero" aria-labelledby="cases-title">
+      <h1 id="cases-title">Use <em>Cases</em></h1>
+    </section>
+
+    <section class="cases-list" id="case-studies" aria-label="Use cases">
+      <div class="work-list">
+        {useCases.map((entry, index) => <UseCaseCard entry={entry} index={index + 1} priority={index === 0} />)}
+      </div>
+    </section>
+
+    <section class="cases-cta" aria-labelledby="cases-cta-title">
+      <div><span>Have a project in mind?</span><h2 id="cases-cta-title">Let’s build the map<br/>your product needs</h2></div>
+      <a href="/contact-us">Contact us <span aria-hidden="true">↗︎</span></a>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+</body>
+</html>
+
+<style>
+  .use-cases-main { display:block; padding-top:var(--nav-height); }
+  .cases-hero { display:flex; align-items:flex-end; min-height:clamp(340px,40vw,520px); padding:clamp(96px,10vw,150px) max(var(--page-gutter),calc((100% - var(--content-max)) / 2)) clamp(46px,5vw,72px); border-bottom:1px solid color-mix(in srgb,var(--color-heading) 28%,var(--color-accent)); background:var(--color-accent); }
+  .cases-hero h1 { margin:0; color:#fff; font:500 clamp(92px,15vw,220px)/.78 var(--font-heading); letter-spacing:-.075em; text-wrap:nowrap; }
+  .cases-hero h1 em { color:inherit; font-style:normal; }
+  .cases-list { padding:0 max(var(--page-gutter),calc((100% - var(--content-max)) / 2)) 100px; background:#fff; }
+  .work-list { border-bottom:1px solid var(--line); }
+  .cases-cta { display:grid; grid-template-columns:1fr auto; align-items:end; gap:50px; padding:86px max(var(--page-gutter),calc((100% - var(--content-max)) / 2)); background:var(--color-accent); color:#fff; }
+  .cases-cta>div>span { color:#4a1612; font-size:11px; text-transform:uppercase; letter-spacing:.13em; }
+  .cases-cta h2 { margin:20px 0 0; font:500 clamp(48px,6vw,88px)/.9 var(--font-heading); letter-spacing:-.06em; }
+  .cases-cta>a { display:flex; justify-content:space-between; align-items:center; gap:40px; min-width:220px; min-height:56px; padding:14px 18px; border-radius:999px; background:#fff; color:var(--color-heading); font-size:14px; font-weight:500; transition:background .2s ease,color .2s ease,transform .2s var(--ease-out); }
+  .cases-cta>a span { color:var(--color-accent); }
+  .cases-cta>a:hover,.cases-cta>a:focus-visible { background:var(--color-heading); color:#fff; transform:translateY(-3px); outline:none; }
+  .nav a[aria-current='page'],.footer-links a[aria-current='page'] { color:var(--color-accent); }
+
+  @media(max-width:900px){
+    .cases-hero { min-height:320px; padding-top:110px; }
+    .cases-list { padding-bottom:80px; }
+    .cases-cta { grid-template-columns:1fr; align-items:start; }
+    .cases-cta>a { justify-self:start; }
+  }
+  @media(max-width:620px){
+    .cases-hero { min-height:270px; padding:96px 5vw 40px; }
+    .cases-hero h1 { font-size:clamp(56px,17vw,82px); line-height:.82; }
+    .cases-list { padding:0 5vw 72px; }
+    .cases-cta { padding:68px 5vw; }
+    .cases-cta h2 { font-size:clamp(46px,13vw,64px); }
+    .cases-cta>a { width:100%; }
+  }
+  @media(prefers-reduced-motion:reduce){.cases-cta>a{transition:none}.cases-cta>a:hover,.cases-cta>a:focus-visible{transform:none}}
+</style>

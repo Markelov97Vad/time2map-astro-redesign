@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+import '../styles/palette.css';
+import SeoHead from '../components/SeoHead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import seo from '../content/seo.yaml';
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead
+    title={seo.notFound.title}
+    description={seo.notFound.description}
+    ogTitle={seo.notFound.ogTitle || undefined}
+    ogDescription={seo.notFound.ogDescription || undefined}
+    ogImage={seo.notFound.ogImage || undefined}
+    noindex={seo.notFound.noindex}
+  >
+    <link rel="stylesheet" href="/styles/404.css" />
+  </SeoHead>
+</head>
+<body class="error-page">
+  <SiteNav />
+
+  <main class="error-main">
+    <section class="error-hero" aria-labelledby="error-title">
+      <div class="error-copy">
+        <h1 id="error-title">404</h1>
+        <p class="error-heading">Page not found</p>
+        <p class="error-description">The page may have moved, or the address might be incorrect.</p>
+        <nav class="error-actions" aria-label="404 page navigation">
+          <a class="error-home" href="/">Back to home <span aria-hidden="true">→</span></a>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</body>
+</html>

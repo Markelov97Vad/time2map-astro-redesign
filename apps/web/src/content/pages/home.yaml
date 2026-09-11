@@ -1,0 +1,170 @@
+# Home page content. Section order is fixed in src/pages/index.astro;
+# everything you can read here you can edit.
+hero:
+  title: Maps and GIS solutions built by specialists
+  subtitle: >-
+    We design and build interactive maps, GIS platforms and data-driven web
+    apps for startups, NGOs, and businesses worldwide
+  videoEmbedUrl: https://player.vimeo.com/video/1178497009?autoplay=1&muted=1&loop=1&background=1&playsinline=1&dnt=1
+  videoPoster: /images/hero-poster.webp
+
+stats:
+  - icon: /images/icons/projects-check.svg
+    text: 10+ projects delivered
+    href: '#see-our-work'
+  - icon: /images/icons/job-success-large.svg
+    text: 100% Upwork Job Success Score
+    href: https://www.upwork.com/agencies/time2map
+  - icon: /images/icons/geospatial.svg
+    text: 6 years of geospatial expertise
+    href: '#services'
+
+services:
+  heading: What we do?
+  groups:
+    - title: Maps & GIS Solutions
+      items:
+        - Custom interactive maps with Mapbox/Maplibre, Leaflet
+        - Geospatial analysis & visualization (QGIS, ArcGIS, GDAL, FME)
+        - Mobile Offline maps
+        - 3D maps with Cesium / terrain models
+        - Tile servers, spatial databases (GDB, PostGIS, Geoserver, QGIS Server, Titiler)
+        - CAD ↔︎ GIS (FME, GDAL)
+        - Web cartography with Mapbox Studio
+        - Geodata preprocessing, digitizing
+    - title: Full-Stack Web Development
+      items:
+        - UX / UI Design with Figma, prototyping and responsive design
+        - Business + System Analysis
+        - Frontend development with popular frameworks (React / Vue / Angular)
+        - Backend development with Python / Java
+        - 'Quality Assurance: auto / manual tests'
+        - Software Architecture
+        - CI/CD & cloud deployment
+        - High-load
+
+clients:
+  - name: Geoapify
+    logo: /images/clients/geoapify.svg
+    url: https://www.geoapify.com/
+  - name: Greenpeace
+    logo: /images/clients/greenpeace.png
+    url: https://www.greenpeace.org/
+  - name: izi.TRAVEL
+    logo: /images/clients/izi-travel.svg
+    url: https://izi.travel/en
+  - name: Post Platforms
+    logo: /images/clients/postplatforms.svg
+    url: https://postplatforms.org/
+
+faqHeading: Can you handle my use case?
+
+about:
+  heading: Meet Alex
+  quote: >-
+    I lead every project personally and bring in trusted specialists when the
+    scope demands it
+  badges:
+    - icon: /images/icons/top-rated-plus.svg
+      text: Top Rated Plus on Upwork
+    - icon: /images/icons/job-success.svg
+      text: 100% Job Success on Upwork
+
+process:
+  heading: How We Work?
+  intro: We designed our process to make it easy to get started and build trust early on.
+  steps:
+    - title: 40-min FREE consultation
+      text: >-
+        We'll listen to your needs, suggest the best approach and technologies,
+        and answer all your questions.
+
+        By the end of the call, you'll know exactly how we can help.
+      showBookButton: true
+    - title: 7-days trial
+      text: >-
+        Start working with us for 7 days without commitment. Test our
+        communication, skills, and workflows.
+
+        If you're satisfied, we'll include these 7 days in the project contract.
+      showBookButton: false
+    - title: Kickoff & roadmap
+      text: >-
+        We prepare a clear roadmap with milestones, delivery timelines, and
+        responsibilities. Together we decide the best collaboration model:
+
+        ✔︎ **Fixed-price** for well-defined scopes
+
+        ✔︎ **Time & Material** for flexible, evolving projects
+
+        ✔︎ **Hybrid** a mix of both, tailored to your needs
+      showBookButton: false
+    - title: Delivery & support
+      text: >-
+        We deliver high-quality solutions on time and provide ongoing support
+        if needed.
+
+        From deployment to maintenance, you're covered.
+      showBookButton: false
+
+workHeading: See Our Work
+
+technologies:
+  heading: Technologies
+  groups:
+    - title: Design
+      items:
+        - { name: Figma, icon: /images/tech/figma.svg }
+        - { name: Adobe, icon: /images/tech/adobe.svg }
+    - title: Frontend
+      items:
+        - { name: React, icon: /images/tech/react.svg }
+        - { name: TypeScript, icon: /images/tech/typescript.svg }
+        - { name: Angular, icon: /images/tech/angular.svg }
+    - title: Backend
+      items:
+        - { name: Java, icon: /images/tech/java.png }
+        - { name: Python, icon: /images/tech/python.svg }
+        - { name: PostgreSQL, icon: /images/tech/postgresql.svg }
+        - { name: MySQL, icon: /images/tech/mysql.svg }
+        - { name: MongoDB, icon: /images/tech/mongodb.svg }
+        - { name: RabbitMQ, icon: /images/tech/rabbitmq.svg }
+        - { name: APISIX, icon: /images/tech/apisix.svg }
+        - { name: AWS, icon: /images/tech/aws.svg }
+        - { name: TimescaleDB, icon: /images/tech/timescaledb.svg }
+        - { name: Keycloak, icon: /images/tech/keycloak.svg }
+        - { name: Redis, icon: /images/tech/redis.png }
+        - { name: Elasticsearch, icon: /images/tech/elasticsearch.svg }
+    - title: QA
+      items:
+        - { name: Cypress, icon: /images/tech/cypress.svg }
+        - { name: Postman, icon: /images/tech/postman.svg }
+        - { name: Charles Proxy, icon: /images/tech/charles-proxy.svg }
+        - { name: BrowserStack, icon: /images/tech/browserstack.svg }
+        - { name: JMeter, icon: /images/tech/jmeter.svg }
+        - { name: Kibana, icon: /images/tech/kibana.svg }
+        - { name: Qase, icon: /images/tech/qase.svg }
+    - title: DevOps
+      items:
+        - { name: Kubernetes, icon: /images/tech/kubernetes.svg }
+        - { name: AWS, icon: /images/tech/aws.svg }
+        - { name: Docker, icon: /images/tech/docker.svg }
+        - { name: Ansible, icon: /images/tech/ansible.svg }
+        - { name: GitLab, icon: /images/tech/gitlab.svg }
+    - title: Geoservices
+      items:
+        - { name: Mapbox, icon: /images/tech/mapbox.svg }
+        - { name: Leaflet, icon: /images/tech/leaflet.svg }
+        - { name: h3, icon: /images/tech/h3.svg }
+        - { name: PostGIS, icon: /images/tech/postgis.png }
+        - { name: Martin, icon: /images/tech/martin.svg }
+        - { name: OSM, icon: /images/tech/osm.svg }
+    - title: GIS
+      items:
+        - { name: QGIS, icon: /images/tech/qgis.svg }
+        - { name: GRASS, icon: /images/tech/grass.svg }
+        - { name: FME, icon: /images/tech/fme.svg }
+
+cta:
+  heading: Book your FREE 40-min consultation
+  text: Got an idea or a question? Let's discuss how we can help

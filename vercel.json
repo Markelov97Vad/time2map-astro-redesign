@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build -w @time2map/web",
+  "installCommand": "npm ci",
+  "outputDirectory": "apps/web/dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/use-cases",
+      "destination": "/#work",
+      "permanent": true
+    }
+  ]
+}
