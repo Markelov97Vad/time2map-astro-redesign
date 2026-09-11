@@ -4,12 +4,5 @@
   "installCommand": "npm ci",
   "outputDirectory": "apps/web/dist",
   "cleanUrls": true,
-  "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/use-cases",
-      "destination": "/#work",
-      "permanent": true
-    }
-  ]
+  "trailingSlash": false
 }
