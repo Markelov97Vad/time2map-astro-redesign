@@ -49,7 +49,7 @@ body.lab-page.t2r-lock-scroll { overflow:hidden; }
 .lab-outro small { color:#4a1612; font-size:11px; text-transform:uppercase; letter-spacing:.13em; }
 .lab-outro h2 { margin:18px 0 0; font:500 clamp(42px,4.8vw,76px)/.91 var(--font-heading); letter-spacing:-.06em; }
 .lab-outro h2 em { color:#4a1612; font-style:normal; }
-.lab-outro-actions { display:grid; gap:10px; min-width:225px; }
+.lab-outro-actions { --button-focus-color:#fff; display:grid; gap:10px; min-width:225px; }
 .lab-outro-actions a { display:flex; justify-content:space-between; align-items:center; gap:24px; min-height:54px; padding:13px 17px; border-radius:999px; background:#fff; color:var(--color-heading); font-weight:500; transition:transform .25s ease,background .2s ease,color .2s ease; }
 .lab-outro-actions a:last-child { border:1px solid rgb(255 255 255 / 42%); background:transparent; color:#fff; }
 .lab-outro-actions a:hover,.lab-outro-actions a:focus-visible { transform:translateY(-3px); outline:none; }

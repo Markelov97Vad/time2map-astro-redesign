@@ -10,6 +10,7 @@ const useCases = defineCollection({
     tags: z.array(z.string()).default([]),
     images: z.array(z.string()).min(1),
     tryItUrl: z.string().optional(),
+    caseStudyUrl: z.string().optional(),
   }),
 });
 

@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '../styles/palette.css';
+import '../styles/404.css';
 import SeoHead from '../components/SeoHead.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteNav from '../components/SiteNav.astro';
@@ -16,9 +17,7 @@ import seo from '../content/seo.yaml';
     ogDescription={seo.notFound.ogDescription || undefined}
     ogImage={seo.notFound.ogImage || undefined}
     noindex={seo.notFound.noindex}
-  >
-    <link rel="stylesheet" href="/styles/404.css" />
-  </SeoHead>
+  />
 </head>
 <body class="error-page">
   <SiteNav />
@@ -30,7 +29,7 @@ import seo from '../content/seo.yaml';
         <p class="error-heading">Page not found</p>
         <p class="error-description">The page may have moved, or the address might be incorrect.</p>
         <nav class="error-actions" aria-label="404 page navigation">
-          <a class="error-home" href="/">Back to home <span aria-hidden="true">→</span></a>
+          <a class="error-home button-motion" href="/">Back to home <span aria-hidden="true">→</span></a>
         </nav>
       </div>
     </section>

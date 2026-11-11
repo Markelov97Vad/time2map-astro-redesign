@@ -83,6 +83,10 @@ export function buildKeystaticConfig({ prefix = '' }: { prefix?: string } = {}) 
             label: '“Try it” link',
             description: 'Leave empty to hide the button',
           }),
+          caseStudyUrl: fields.url({
+            label: 'Case study page',
+            description: 'Internal page, for example /use-cases/ai-library',
+          }),
           content: fields.markdoc({ label: 'Description', extension: 'md' }),
         },
       }),

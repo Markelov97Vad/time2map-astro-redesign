@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+.git
+.github
+.cursor
+**/.astro
+docs
+deploy/*.sh
+deploy/*.service
+deploy/nginx.conf
+deploy/server.env.example
+**/coverage
+**/.env
+**/.env.*
+!**/.env.example

@@ -11,7 +11,7 @@ import home from '../content/pages/home.yaml';
       </div>
       <h2>{home.cta.heading}</h2>
       <p class="text-lead">{home.cta.text}</p>
-      <a href={site.bookCallUrl} target="_blank" rel="noopener" class="btn cta-btn">Book a call</a>
+      <a href={site.bookCallUrl} target="_blank" rel="noopener" class="btn cta-btn button-motion">Book a call</a>
       <div class="email-row">
         <span class="text-small">Or write to us at</span>
         <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -67,6 +67,7 @@ import home from '../content/pages/home.yaml';
 
   /* Original .button-secondary.cta: white, black text, no border, 192px */
   .cta-btn {
+    --button-focus-color: #fff;
     margin-top: 16px;
     background: #fff;
     color: #000;

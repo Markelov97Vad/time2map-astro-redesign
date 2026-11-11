@@ -1,0 +1,518 @@
+---
+import '../../styles/global.css';
+import '../../styles/palette.css';
+import BackToUseCases from '../../components/BackToUseCases.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import SeoHead from '../../components/SeoHead.astro';
+import site from '../../content/site.yaml';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const title = 'AI Library — Autonomous Weeding Training Data | time2map';
+const description = 'From field observations to AI-ready training data, with geography, agricultural context and grower ownership intact.';
+const pageUrl = new URL('/use-cases/ai-library', site.siteUrl).href;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: 'AI Library: Weed Detection Image Library',
+    description,
+    url: pageUrl,
+    image: new URL('/images/use-cases/weed-detection-1.webp', site.siteUrl).href,
+    creator: { '@type': 'Organization', name: site.title, url: site.siteUrl },
+    keywords: 'geospatial training data, autonomous weeding, PostGIS, vector tiles, React, MapLibre',
+  },
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: 'Use Cases', item: new URL('/use-cases', site.siteUrl).href },
+    { name: 'AI Library', item: pageUrl },
+  ]),
+];
+
+const stack = [
+  { capability: 'Spatial browsing', technology: 'React · MapLibre', detail: 'A responsive map-first interface for exploring fields and observations.' },
+  { capability: 'Application layer', technology: 'Node.js · Hono · tRPC', detail: 'A typed path from the interface to domain data and actions.' },
+  { capability: 'Geometry + metadata', technology: 'PostgreSQL · PostGIS · Drizzle', detail: 'Field boundaries, observations and image context in one model.' },
+  { capability: 'Identity + ownership', technology: 'W3ID · W3DSeVault', detail: 'Portable identity and a user-controlled data layer.' },
+  { capability: 'Release confidence', technology: 'Playwright', detail: 'Critical product flows checked before every deploy.' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead title={title} description={description} ogImage="/images/use-cases/weed-detection-1.webp" jsonLd={jsonLd} />
+</head>
+<body class="ai-case-page">
+  <SiteNav />
+
+  <main>
+    <header class="case-hero">
+      <div class="case-shell hero-nav-row">
+        <BackToUseCases />
+      </div>
+
+      <section class="hero-banner case-shell" aria-labelledby="hero-title">
+        <div class="banner-masthead">
+          <p class="banner-kicker">Training data for autonomous weeding</p>
+          <p><i aria-hidden="true"></i><span>Agritech project · </span>Netherlands</p>
+        </div>
+
+        <div class="banner-copy">
+          <h1 id="hero-title"><span>Weed</span> <span>Detection</span><br/><em><span>Image</span> <span>Library</span></em></h1>
+          <p class="banner-summary">A full-stack geospatial platform for browsing crop fields, filtering observations and managing field imagery — built on a user-owned data layer that keeps growers in control.</p>
+        </div>
+
+        <div class="banner-model" aria-hidden="true">
+          <picture>
+            <source
+              srcset="/images/use-cases/ai-library-laptop-720.webp 720w, /images/use-cases/ai-library-laptop-1280.webp 1280w, /images/use-cases/ai-library-laptop-1536.webp 1536w"
+              sizes="(max-width: 900px) 112vw, 68vw"
+            />
+            <img src="/images/use-cases/ai-library-laptop-1280.webp" alt="" width="1536" height="1024" fetchpriority="high" decoding="async" />
+          </picture>
+        </div>
+
+        <aside class="banner-proof" aria-labelledby="hero-outcome-title">
+          <div class="banner-proof-intro"><span id="hero-outcome-title">Product outcome</span><strong>Field imagery becomes<br/>usable AI data.</strong></div>
+          <div class="banner-proof-list">
+            <div><span>01 · Searchable library</span><strong>85,000+</strong><small>field images indexed by real growing conditions</small></div>
+            <div><span>02 · Traceable context</span><strong>Field → image</strong><small>provenance stays attached at every step</small></div>
+            <div><span>03 · Data ownership</span><strong>Grower-controlled</strong><small>identity, access and terms travel with the data</small></div>
+          </div>
+        </aside>
+      </section>
+    </header>
+
+    <section class="context-section" id="context" aria-labelledby="context-title">
+      <div class="case-shell training-intro">
+        <p class="section-label">01 · Queryable training data</p>
+        <div>
+          <h2 id="context-title">85,000+ images.<br/><em>Only the right ones matter.</em></h2>
+          <p>AI Library turns raw field imagery into searchable training data. Every image stays connected to its field, crop, growth stage, weed, device and capture date — making it possible to isolate exactly the conditions a model needs.</p>
+        </div>
+      </div>
+
+      <div class="case-shell training-explorer" aria-label="Example of narrowing a training-data search">
+        <div class="training-query">
+          <span class="training-query-label">Build a training subset</span>
+          <div class="training-filters" aria-label="Selected filters">
+            <ol class="filter-steps">
+              <li><small>Crop</small><strong>Spinach</strong></li>
+              <li><small>Growth stage</small><strong>11 weeks</strong></li>
+              <li><small>Weed</small><strong>Brandnetel</strong></li>
+              <li><small>Device</small><strong>RobotOne</strong></li>
+            </ol>
+          </div>
+          <p class="training-match"><strong>242</strong><span>matching images<small>for this training condition</small></span></p>
+        </div>
+        <figure class="training-screen">
+          <picture>
+            <source srcset="/images/use-cases/ai-library-filters-720.webp 720w, /images/use-cases/ai-library-filters-1280.webp 1280w, /images/use-cases/ai-library-filters-1600.webp 1600w" sizes="(max-width: 900px) 90vw, 62vw" />
+            <img src="/images/use-cases/ai-library-filters-1280.webp" alt="AI Library map with crop, growth-stage, weed and device filters applied" width="2930" height="1600" loading="lazy" decoding="async" />
+          </picture>
+        </figure>
+      </div>
+    </section>
+
+    <section class="provenance-section" aria-labelledby="provenance-title">
+      <div class="case-shell provenance-heading">
+        <p class="section-label section-label-light">02 · Spatial provenance</p>
+        <div>
+          <h2 id="provenance-title">Every image stays connected to the field it came from.</h2>
+          <p>Images remain linked to the field observation that produced them — including capture date, crop conditions and device metadata. The dataset keeps its real-world origin visible all the way down to an individual photo.</p>
+        </div>
+      </div>
+
+      <figure class="case-shell provenance-visual">
+        <div class="provenance-screen">
+          <picture>
+            <source srcset="/images/use-cases/ai-library-provenance-720.webp 720w, /images/use-cases/ai-library-provenance-1077.webp 1077w" sizes="(max-width: 900px) 90vw, 1077px" />
+            <img src="/images/use-cases/ai-library-provenance-1077.webp" alt="AI Library interface showing an observation, field-image grid and its selected field on the map" width="1077" height="650" loading="lazy" decoding="async" />
+          </picture>
+        </div>
+        <figcaption class="provenance-lineage">
+          <div class="lineage-intro">
+            <small>Traceable by design</small>
+            <strong>One record. Three connected layers.</strong>
+          </div>
+          <ol>
+            <li><span aria-hidden="true">01</span><div><small>Field</small><strong>Bloemkool, zomer, productie</strong><p>Spatial origin of the dataset</p></div></li>
+            <li><span aria-hidden="true">02</span><div><small>Observation</small><strong>PixelFarming Import · Jul 11, 2026</strong><p>Capture event with agricultural metadata</p></div></li>
+            <li><span aria-hidden="true">03</span><div><small>Imagery</small><strong>1256 field photos</strong><p>Images stay linked to their source context</p></div></li>
+          </ol>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="architecture-section" aria-labelledby="architecture-title">
+      <div class="case-shell architecture-heading">
+        <p class="section-label">03 · Spatial architecture</p>
+        <div>
+          <h2 id="architecture-title">GIS scale without<br/>GIS friction.</h2>
+          <p>AI Library uses vector tiles to stream only the geographic detail needed for the current view — keeping the map fast from country scale down to individual fields.</p>
+        </div>
+      </div>
+      <ol class="case-shell architecture-flow" aria-label="Spatial data architecture">
+        <li class="architecture-stage architecture-stage-data"><span>01 · Data</span><h3>PostgreSQL<br/>+ PostGIS</h3><p>Field boundaries, observations and image metadata live in one spatial data layer.</p></li>
+        <li class="architecture-stage architecture-stage-delivery"><span>02 · Delivery</span><h3>Vector<br/>tiles</h3><p>Only the geometry needed for the current viewport and zoom is sent to the browser.</p></li>
+        <li class="architecture-stage architecture-stage-interface"><span>03 · Interface</span><h3>MapLibre<br/>+ React</h3><p>Users move smoothly from regional overview to individual fields and observations.</p></li>
+      </ol>
+      <ul class="case-shell architecture-facts">
+        <li><strong>Field-level detail</strong><span>from regional overview to individual plots</span></li>
+        <li><strong>Viewport-based delivery</strong><span>only visible spatial data is loaded</span></li>
+        <li><strong>Continuous zoom</strong><span>without loading the full geometry dataset</span></li>
+      </ul>
+    </section>
+
+    <section class="ownership-section" aria-labelledby="ownership-title">
+      <div class="case-shell ownership-layout">
+        <div class="ownership-copy">
+          <p class="section-label section-label-dark">04 · User-owned data</p>
+          <h2 id="ownership-title">Your fields.<br/>Your imagery.<br/><em>Your data.</em></h2>
+          <p>Ownership and access are part of the data model, not an afterthought. Rights stay attached to field imagery from the moment it enters the library.</p>
+        </div>
+        <div class="ownership-ui" aria-label="Ownership model in the product">
+          <div class="mode-switch"><span>All fields</span><strong>My fields</strong></div>
+          <div class="ownership-list">
+            <div><i class="state-mine" aria-hidden="true"></i><span>Mine</span><small>Created and controlled by me</small></div>
+            <div><i class="state-owned" aria-hidden="true"></i><span>Owned</span><small>Shared with access rights</small></div>
+            <div><i class="state-unowned" aria-hidden="true"></i><span>Unowned</span><small>Discoverable in the wider dataset</small></div>
+          </div>
+          <div class="access-tags"><span>Free</span><span>Paid</span><p>Access terms travel with the observation.</p></div>
+        </div>
+      </div>
+      <div class="case-shell ownership-note">
+        <span>Explore globally.</span><span>Manage locally.</span>
+        <p>Portable identity and user-controlled storage keep the platform from becoming another data silo.</p>
+      </div>
+    </section>
+
+    <section class="stack-section" aria-labelledby="stack-title">
+      <div class="case-shell stack-heading">
+        <p class="section-label">05 · One stack, one team</p>
+        <div>
+          <h2 id="stack-title">From spatial schema<br/>to production interface.</h2>
+          <p>One team designed the domain model, map delivery, application layer, user experience and release coverage as a connected product.</p>
+        </div>
+      </div>
+      <div class="case-shell stack-list">
+        {stack.map((item, index) => (
+          <article>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <h3>{item.capability}</h3>
+            <strong>{item.technology}</strong>
+            <p>{item.detail}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="case-cta" aria-labelledby="cta-title">
+      <div class="case-shell">
+        <p>Have a geospatial product in mind?</p>
+        <h2 id="cta-title">Let’s turn domain data<br/>into a product people use.</h2>
+        <a class="button-motion" href="/contact-us">Discuss your project <span aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M6 14L14 6M8 6h6v6" /></svg></span></a>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</body>
+</html>
+
+<style>
+  .ai-case-page {
+    --button-focus-color:var(--ai-green-light);
+    --case-back-accent:var(--ai-green);
+    --case-back-focus:var(--ai-green);
+    --ai-accent:#167b49;
+    --ai-accent-deep:#0a3a25;
+    --ai-accent-soft:#6fc99a;
+    --ai-surface:#fff;
+    --ai-surface-soft:#f1f4ed;
+    --ai-surface-warm:#fafaf7;
+    --ai-surface-dark:#101512;
+    --ai-ink:#0b110d;
+    --ai-ink-muted:#4d5951;
+    --ai-line:rgb(11 17 13 / 14%);
+    --ai-radius-sm:16px;
+    --ai-radius-lg:22px;
+    --ai-green:var(--ai-accent);
+    --ai-green-dark:var(--ai-accent-deep);
+    --ai-green-light:var(--ai-accent-soft);
+    --ai-pale:var(--ai-surface-soft);
+    --ai-cream:var(--ai-surface-warm);
+    overflow-x:hidden;
+  }
+  main { display:block; padding-top:var(--nav-height); }
+  .case-shell { width:min(calc(100% - (2 * var(--page-gutter))),var(--content-max)); margin-inline:auto; }
+  .section-label { margin:0; color:var(--ai-green); font:600 12px/1.35 var(--font-body); text-transform:uppercase; letter-spacing:.14em; }
+  .section-label-light { color:var(--ai-green-light); }
+  .section-label-dark { color:#fff; }
+  .case-cta a { touch-action:manipulation; }
+  .case-cta a:focus-visible { outline:3px solid var(--color-accent); outline-offset:4px; }
+  .case-hero { background:var(--ai-pale); }
+  .hero-nav-row { display:flex; align-items:center; padding-block:14px 12px; }
+  .hero-banner { position:relative; isolation:isolate; min-height:clamp(680px,56.25vw,743px); overflow:hidden; background:var(--ai-surface-warm); color:var(--ai-ink); }
+  .hero-banner::before { content:''; position:absolute; z-index:0; inset:0; background-image:linear-gradient(rgb(22 123 73 / 5%) 1px,transparent 1px),linear-gradient(90deg,rgb(22 123 73 / 5%) 1px,transparent 1px); background-size:48px 48px; -webkit-mask-image:linear-gradient(90deg,transparent 18%,#000 62%,transparent); mask-image:linear-gradient(90deg,transparent 18%,#000 62%,transparent); pointer-events:none; }
+  .banner-masthead { position:absolute; z-index:7; top:clamp(28px,3vw,38px); right:clamp(34px,5vw,64px); left:clamp(34px,5vw,64px); display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .banner-masthead p { display:flex; align-items:center; gap:11px; margin:0; color:var(--ai-ink); font-size:clamp(10px,1vw,14px); font-weight:800; text-transform:uppercase; letter-spacing:.09em; white-space:nowrap; }
+  .banner-kicker { color:var(--ai-green) !important; letter-spacing:.14em !important; }
+  .banner-masthead i { flex:none; width:10px; height:10px; border-radius:50%; background:var(--ai-green); }
+  .banner-copy { position:absolute; z-index:6; top:clamp(76px,7vw,96px); left:clamp(34px,5vw,64px); width:min(38%,520px); }
+  .banner-copy h1 { margin:0; color:var(--ai-ink); font:800 clamp(46px,5.6vw,84px)/.9 var(--font-heading); letter-spacing:-.072em; text-wrap:balance; }
+  .banner-copy h1 em { color:var(--ai-green); font-style:normal; }
+  .banner-summary { max-width:36ch; margin:clamp(16px,1.6vw,22px) 0 0; color:var(--ai-ink-muted); font-size:clamp(14px,1.15vw,17px); line-height:1.5; letter-spacing:-.015em; }
+  .banner-model { position:absolute; z-index:3; inset:0; pointer-events:none; }
+  .banner-model::before { content:''; position:absolute; top:14%; right:-1%; width:65%; aspect-ratio:2 / 1; border-radius:50%; background:radial-gradient(ellipse at center,rgb(25 122 67 / 38%) 0%,rgb(25 122 67 / 18%) 44%,transparent 76%); filter:blur(34px); }
+  .banner-model::after { content:''; position:absolute; right:0; bottom:22%; width:61%; height:11%; background:radial-gradient(ellipse at center,rgb(11 17 13 / 40%) 0%,rgb(11 17 13 / 20%) 42%,transparent 74%); filter:blur(17px); }
+  .banner-model img { position:absolute; z-index:2; top:4%; right:-1%; width:67.5%; height:auto; filter:drop-shadow(0 42px 30px rgb(11 17 13 / 30%)) drop-shadow(0 12px 11px rgb(11 17 13 / 18%)); }
+  .banner-proof { position:absolute; z-index:7; right:clamp(20px,2.5vw,32px); bottom:clamp(18px,2.2vw,28px); left:clamp(20px,2.5vw,32px); display:grid; grid-template-columns:minmax(235px,340px) 1fr; min-height:clamp(145px,11.5vw,184px); padding:clamp(20px,2.4vw,30px) clamp(24px,2.8vw,36px); border-radius:var(--ai-radius-lg); background:var(--ai-accent); color:#fff; box-shadow:0 24px 60px rgb(10 58 37 / 16%); }
+  .banner-proof-intro { display:flex; flex-direction:column; justify-content:center; gap:12px; }
+  .banner-proof-intro span,.banner-proof-list span { color:rgb(255 255 255 / 72%); font:700 clamp(9px,.9vw,13px)/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.11em; }
+  .banner-proof-intro strong { font:700 clamp(20px,2.1vw,27px)/1.02 var(--font-heading); letter-spacing:-.035em; }
+  .banner-proof-list { display:grid; grid-template-columns:repeat(3,1fr); }
+  .banner-proof-list>div { display:flex; flex-direction:column; justify-content:center; gap:15px; min-width:0; padding:0 clamp(12px,1.7vw,22px); border-left:1px solid rgb(255 255 255 / 28%); }
+  .banner-proof-list strong { color:#fff; font:700 clamp(15px,1.55vw,21px)/1.2 var(--font-heading); letter-spacing:-.025em; }
+  .banner-proof-list small { display:block; max-width:24ch; color:rgb(255 255 255 / 76%); font-size:clamp(10px,.82vw,12px); line-height:1.45; }
+  .context-section { padding-block:clamp(95px,11vw,165px); background:var(--ai-surface); scroll-margin-top:var(--nav-height); }
+  .training-intro { display:grid; grid-template-columns:minmax(190px,.31fr) minmax(0,1fr); align-items:start; gap:clamp(36px,5vw,80px); }
+  .training-intro .section-label { padding-top:.18em; }
+  .training-intro>div { display:block; }
+  .training-intro h2 { margin:0; color:var(--color-heading); font:500 clamp(52px,6vw,90px)/.92 var(--font-heading); letter-spacing:-.06em; text-wrap:balance; }
+  .training-intro h2 em { color:var(--ai-green); font-style:normal; }
+  .training-intro>div>p { max-width:760px; margin:clamp(28px,3vw,42px) 0 0; color:var(--color-text-light); font-size:clamp(17px,1.45vw,20px); line-height:1.62; }
+  .training-explorer { display:grid; grid-template-columns:minmax(230px,.52fr) minmax(0,1.48fr); gap:clamp(26px,3vw,48px); align-items:start; margin-top:clamp(70px,8vw,112px); padding-top:24px; border-top:1px solid var(--line); }
+  .training-query { display:flex; flex-direction:column; align-items:flex-start; min-height:0; padding:clamp(18px,1.8vw,26px); border:1px solid rgb(22 123 73 / 22%); border-radius:18px; background:linear-gradient(145deg,#f8faf5 0%,#e5f0e8 100%); color:var(--color-heading); box-shadow:0 24px 54px rgb(10 48 28 / 10%); }
+  .training-query-label { position:relative; z-index:1; display:block; margin-bottom:clamp(22px,2.2vw,30px); color:var(--ai-green); font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.13em; }
+  .training-query p { margin:0; }
+  .training-filters { position:relative; z-index:1; width:100%; max-width:none; margin:0; padding:0; text-align:left; }
+  .filter-steps { display:grid; gap:5px; width:100%; margin:0; padding:0; list-style:none; }
+  .filter-steps li { display:grid; place-items:center; gap:2px; width:100%; min-height:35px; margin-inline:auto; padding:5px 8px; border:1px solid rgb(22 123 73 / 14%); border-radius:9px; background:rgb(255 255 255 / 78%); box-shadow:0 4px 12px rgb(10 48 28 / 5%); text-align:center; }
+  .filter-steps li:nth-child(2) { width:84%; background:rgb(244 250 246 / 88%); }
+  .filter-steps li:nth-child(3) { width:70%; background:rgb(232 244 236 / 92%); }
+  .filter-steps li:nth-child(4) { width:58%; background:rgb(217 237 225 / 96%); }
+  .filter-steps small { color:#6c8677; font:700 8px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.07em; }
+  .filter-steps strong { color:#17452d; font:600 clamp(13px,1.1vw,16px)/1.1 var(--font-heading); letter-spacing:-.02em; white-space:nowrap; }
+  .training-query .training-match { position:relative; z-index:1; display:flex; align-items:flex-end; gap:10px; width:100%; margin:clamp(24px,2.5vw,34px) 0 0; padding-top:clamp(18px,2vw,26px); border-top:1px solid rgb(22 123 73 / 20%); text-align:left; }
+  .training-match strong { color:var(--color-heading); font:500 clamp(38px,3.5vw,52px)/.8 var(--font-heading); letter-spacing:-.06em; }
+  .training-match span { color:var(--ai-green-dark); font:600 13px/1.05 var(--font-heading); }
+  .training-match small { display:block; margin-top:5px; color:#6c8677; font:500 9px/1.25 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.01em; }
+  .training-screen { min-width:0; margin:0; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:#f1f3ed; aspect-ratio:2930 / 1600; }
+  .training-screen picture,.training-screen img { display:block; width:100%; height:auto; }
+  .section-heading { display:grid; grid-template-columns:minmax(190px,.31fr) minmax(0,.9fr) minmax(280px,.42fr); align-items:start; gap:clamp(36px,5vw,80px); }
+  .section-heading .section-label { padding-top:.18em; }
+  .section-heading h2,.provenance-heading h2,.architecture-heading h2,.ownership-copy h2,.stack-heading h2,.case-cta h2 { margin:0; color:var(--color-heading); font:500 clamp(52px,6vw,90px)/.92 var(--font-heading); letter-spacing:-.06em; text-wrap:balance; }
+  .section-heading h2 em { color:var(--ai-green); font-style:normal; }
+  .section-heading>p:last-child { margin:clamp(52px,5.8vw,78px) 0 0; color:var(--color-text-light); font-size:17px; line-height:1.65; }
+  .context-layout { display:grid; grid-template-columns:minmax(360px,.68fr) minmax(0,1.32fr); gap:clamp(42px,7vw,105px); margin-top:clamp(70px,8vw,112px); }
+  .data-lineage { margin:0; padding:0; list-style:none; }
+  .data-lineage li { position:relative; display:grid; grid-template-columns:45px 1fr; gap:18px; min-height:137px; padding:0 0 32px; }
+  .data-lineage li:not(:last-child)::before { content:''; position:absolute; top:44px; bottom:0; left:21px; width:1px; background:rgb(22 123 73 / 32%); }
+  .data-lineage li:not(:last-child)::after { content:'↓'; position:absolute; bottom:7px; left:15px; color:var(--ai-green); font-size:13px; }
+  .lineage-index { display:grid; place-items:center; align-self:start; width:44px; height:44px; border:1px solid rgb(22 123 73 / 36%); border-radius:50%; color:var(--ai-green); font-size:11px; font-weight:600; }
+  .data-lineage small { display:block; margin:1px 0 9px; color:var(--ai-green); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.12em; }
+  .data-lineage strong { display:block; color:var(--color-heading); font:500 clamp(24px,2.15vw,32px)/1.05 var(--font-heading); letter-spacing:-.035em; }
+  .data-lineage p { margin:9px 0 0; color:var(--color-muted); font-size:13px; line-height:1.45; }
+  .data-lineage .lineage-result { min-height:0; padding:22px; border-radius:16px; background:var(--ai-green); color:#fff; }
+  .lineage-result .lineage-index { border-color:rgb(255 255 255 / 45%); color:#fff; }
+  .lineage-result small,.lineage-result p { color:#e4f4eb; }
+  .lineage-result strong { color:#fff; }
+  .context-visual { min-width:0; margin:0; }
+  .context-visual picture { display:block; height:100%; min-height:610px; overflow:hidden; border-radius:18px; background:var(--ai-pale); }
+  .context-visual img { display:block; width:100%; height:100%; object-fit:cover; object-position:left center; }
+  .context-visual figcaption { max-width:580px; margin:15px 0 0 auto; color:var(--color-muted); font-size:12px; line-height:1.5; text-align:right; }
+  .provenance-section { padding-block:clamp(72px,8vw,112px); background:var(--ai-surface-dark); color:#fff; }
+  .provenance-heading { display:grid; grid-template-columns:minmax(190px,.31fr) minmax(0,1fr); align-items:start; gap:clamp(36px,5vw,80px); }
+  .provenance-heading .section-label { padding-top:.18em; }
+  .provenance-heading>div { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.48fr); align-items:end; gap:clamp(34px,5vw,72px); }
+  .provenance-heading h2 { margin:0; max-width:720px; color:#fff; }
+  .provenance-heading>div>p { max-width:430px; margin:0 0 4px; color:#aeb9b1; font-size:17px; line-height:1.58; }
+  .provenance-visual { width:min(calc(100% - (2 * var(--page-gutter))),1120px); margin-top:clamp(40px,4.5vw,60px); }
+  .provenance-screen { position:relative; overflow:hidden; border:1px solid rgb(255 255 255 / 18%); border-radius:20px; background:#263129; box-shadow:0 42px 90px rgb(0 0 0 / 32%); }
+  .provenance-screen picture,.provenance-screen img { display:block; width:100%; height:auto; }
+  .provenance-lineage { margin-top:18px; padding:clamp(24px,2.6vw,32px); border:1px solid rgb(255 255 255 / 14%); border-radius:var(--ai-radius-sm); background:#151c18; }
+  .lineage-intro { position:relative; display:grid; grid-template-columns:1fr auto 1fr; align-items:baseline; gap:16px; min-width:0; padding-bottom:20px; border-bottom:1px solid rgb(255 255 255 / 12%); }
+  .provenance-lineage small { display:block; margin-bottom:7px; color:#79b993; font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.12em; }
+  .lineage-intro small { grid-column:1; margin:0; white-space:nowrap; }
+  .lineage-intro strong { grid-column:2; display:block; color:#fff; font:500 clamp(19px,1.7vw,23px)/1.12 var(--font-heading); letter-spacing:-.03em; text-align:center; white-space:nowrap; }
+  .provenance-lineage ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:22px 0 0; padding:0; list-style:none; }
+  .provenance-lineage li { display:grid; grid-template-columns:36px minmax(0,1fr); align-content:start; gap:14px; min-width:0; padding-inline:clamp(18px,2.2vw,30px); }
+  .provenance-lineage li:first-child { padding-left:0; }
+  .provenance-lineage li:last-child { padding-right:0; }
+  .provenance-lineage li+li { border-left:1px solid rgb(255 255 255 / 12%); }
+  .provenance-lineage li>span { display:grid; place-items:center; width:36px; height:36px; border:1px solid rgb(121 185 147 / 62%); border-radius:50%; color:#9ad0af; font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .provenance-lineage strong { display:block; color:#e4ece7; font-size:14px; font-weight:500; line-height:1.4; overflow-wrap:anywhere; }
+  .provenance-lineage p { max-width:29ch; margin:7px 0 0; color:#aeb9b1; font-size:12px; line-height:1.5; }
+  .architecture-section { position:relative; isolation:isolate; overflow:hidden; padding-block:clamp(95px,11vw,165px); background:var(--ai-cream); }
+  .architecture-section::before { content:''; position:absolute; z-index:-1; inset:0 0 auto 35%; height:72%; background-image:linear-gradient(rgb(22 123 73 / 5%) 1px,transparent 1px),linear-gradient(90deg,rgb(22 123 73 / 5%) 1px,transparent 1px); background-size:48px 48px; -webkit-mask-image:linear-gradient(135deg,transparent 8%,#000 52%,transparent 92%); mask-image:linear-gradient(135deg,transparent 8%,#000 52%,transparent 92%); pointer-events:none; }
+  .architecture-heading,.stack-heading { display:grid; grid-template-columns:minmax(190px,.32fr) minmax(0,1fr); gap:50px; }
+  .architecture-heading>div,.stack-heading>div { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,.42fr); align-items:end; gap:clamp(45px,7vw,110px); }
+  .architecture-heading>div>p,.stack-heading>div>p { margin:0 0 4px; color:var(--color-text-light); font-size:17px; line-height:1.65; }
+  .architecture-flow { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:stretch; gap:72px; margin-top:clamp(70px,8vw,110px); padding:clamp(30px,4vw,52px); border:1px solid rgb(22 123 73 / 14%); border-radius:24px; background:linear-gradient(135deg,rgb(241 246 238 / 96%),rgb(250 251 247 / 96%)); box-shadow:inset 0 1px 0 rgb(255 255 255 / 80%); list-style:none; }
+  .architecture-stage { position:relative; display:flex; flex-direction:column; min-width:0; min-height:320px; padding:28px; overflow:visible; border:1px solid var(--ai-line); border-radius:var(--ai-radius-sm); background:var(--ai-surface); box-shadow:0 16px 38px rgb(10 58 37 / 7%); }
+  .architecture-stage::before { content:''; position:absolute; top:20px; right:20px; width:54px; height:54px; border:1px solid rgb(22 123 73 / 12%); border-radius:50%; box-shadow:0 0 0 9px rgb(22 123 73 / 4%),0 0 0 18px rgb(22 123 73 / 2%); }
+  .architecture-stage span { position:relative; z-index:1; color:var(--ai-green); font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.12em; }
+  .architecture-stage h3 { position:relative; z-index:1; margin:auto 0 0; color:var(--color-heading); font:500 clamp(31px,3vw,44px)/.94 var(--font-heading); letter-spacing:-.045em; }
+  .architecture-stage p { position:relative; z-index:1; max-width:29ch; margin:24px 0 0; color:var(--color-muted); font-size:13px; line-height:1.55; }
+  .architecture-stage-delivery { z-index:1; border-color:transparent; background:var(--ai-accent-deep); box-shadow:0 28px 60px rgb(10 58 37 / 22%); }
+  .architecture-stage-delivery::before { border-color:rgb(255 255 255 / 18%); box-shadow:0 0 0 9px rgb(255 255 255 / 6%),0 0 0 18px rgb(255 255 255 / 3%); }
+  .architecture-stage-delivery span { color:var(--ai-green-light); }
+  .architecture-stage-delivery h3 { color:#fff; }
+  .architecture-stage-delivery p { color:#bdd4c5; }
+  .architecture-facts { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(24px,3vw,48px); margin-top:24px; padding:clamp(24px,3vw,34px); border-radius:var(--ai-radius-sm); background:rgb(22 123 73 / 5%); counter-reset:architecture-fact; list-style:none; }
+  .architecture-facts li { display:grid; grid-template-columns:36px minmax(0,1fr); align-content:start; column-gap:16px; min-width:0; counter-increment:architecture-fact; }
+  .architecture-facts li::before { content:'0' counter(architecture-fact); display:grid; place-items:center; width:36px; height:36px; grid-row:1 / span 2; border-radius:50%; background:var(--ai-surface); color:var(--ai-green); box-shadow:inset 0 0 0 1px rgb(22 123 73 / 16%); font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.08em; }
+  .architecture-facts strong { display:block; color:var(--color-heading); font:500 clamp(21px,2vw,25px)/1.05 var(--font-heading); letter-spacing:-.025em; }
+  .architecture-facts span { display:block; max-width:30ch; margin-top:9px; color:var(--color-muted); font-size:12px; line-height:1.45; }
+  .ownership-section { padding-block:clamp(94px,10vw,150px); background:var(--ai-accent); color:#fff; }
+  .ownership-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(410px,.72fr); align-items:center; gap:clamp(55px,9vw,145px); }
+  .ownership-copy h2 { margin-top:27px; color:#fff; }
+  .ownership-copy h2 em { color:#b8e4cc; font-style:normal; }
+  .ownership-copy>p:last-child { max-width:670px; margin:38px 0 0; color:#e4f4eb; font-size:18px; line-height:1.65; }
+  .ownership-ui { padding:18px; border:1px solid rgb(255 255 255 / 24%); border-radius:24px; background:#f3f4ed; color:#111; box-shadow:0 38px 80px rgb(4 53 31 / 28%); }
+  .mode-switch { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; padding:5px; border-radius:999px; background:#e2e5dc; font-size:15px; text-align:center; }
+  .mode-switch span,.mode-switch strong { padding:13px 14px; font-weight:500; }
+  .mode-switch strong { border-radius:999px; background:#fff; box-shadow:0 3px 12px rgb(0 0 0 / 8%); }
+  .ownership-list { margin-top:18px; overflow:hidden; border:1px solid rgb(0 0 0 / 10%); border-radius:15px; background:#fff; }
+  .ownership-list>div { display:grid; grid-template-columns:17px 100px 1fr; align-items:center; gap:12px; min-height:68px; padding:14px 16px; }
+  .ownership-list>div+div { border-top:1px solid rgb(0 0 0 / 10%); }
+  .ownership-list i { width:13px; height:13px; border:2px solid; border-radius:3px; }
+  .state-mine { border-color:#5c52c8!important; background:#d9d6ff; }
+  .state-owned { border-color:#c78719!important; background:#ffe3a8; }
+  .state-unowned { border-color:#a02fa6!important; background:#f4c7f6; }
+  .ownership-list span { font-size:15px; font-weight:500; }
+  .ownership-list small { color:#70756f; font-size:13px; line-height:1.35; }
+  .access-tags { display:flex; align-items:center; gap:8px; padding:20px 4px 3px; }
+  .access-tags>span { padding:8px 12px; border-radius:999px; background:#daf2e5; color:#126d42; font-size:13px; font-weight:600; }
+  .access-tags>span:nth-child(2) { background:#f1daf2; color:#8b248f; }
+  .access-tags p { margin:0 0 0 auto; color:#6f756f; font-size:13px; }
+  .ownership-note { display:grid; grid-template-columns:auto auto 1fr; align-items:end; gap:25px; margin-top:90px; padding-top:28px; border-top:1px solid rgb(255 255 255 / 30%); }
+  .ownership-note>span { font:500 clamp(28px,3vw,44px)/1 var(--font-heading); letter-spacing:-.04em; white-space:nowrap; }
+  .ownership-note>span+span { color:#b8e4cc; }
+  .ownership-note p { max-width:480px; margin:0 0 3px auto; color:#e4f4eb; font-size:clamp(16px,1.35vw,18px); line-height:1.55; }
+  .stack-section { padding-block:clamp(95px,11vw,165px); background:var(--ai-surface); }
+  .stack-list { margin-top:clamp(70px,8vw,110px); border-top:1px solid var(--line); }
+  .stack-list article { display:grid; grid-template-columns:55px minmax(180px,.7fr) minmax(230px,.8fr) minmax(260px,1fr); align-items:center; gap:25px; min-height:122px; border-bottom:1px solid var(--line); }
+  .stack-list article>span { color:var(--ai-green); font-size:11px; }
+  .stack-list h3 { margin:0; color:var(--color-heading); font:500 22px/1.1 var(--font-heading); letter-spacing:-.025em; }
+  .stack-list strong { color:var(--color-heading); font-size:16px; font-weight:500; }
+  .stack-list article>p { max-width:420px; margin:0; color:var(--color-muted); font-size:15px; line-height:1.55; }
+  .case-cta { padding-block:clamp(85px,10vw,145px); background:var(--ai-accent-deep); color:#fff; }
+  .case-cta p { margin:0 0 28px; color:#a9d8bd; font-size:13px; }
+  .case-cta h2 { color:#fff; }
+  .case-cta a { display:inline-flex; align-items:center; justify-content:space-between; gap:45px; min-width:260px; min-height:56px; margin-top:48px; padding:0 12px 0 19px; border-radius:999px; background:#fff; color:#102219; font-size:14px; font-weight:500; transition:background .2s ease,transform .25s var(--ease-out); }
+  .case-cta a span { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:var(--ai-green); color:#fff; }
+  .case-cta a span svg { display:block; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .case-cta a:active { background:#edf5f0; transform:translateY(0); }
+  :global(.nav a[aria-current='page']),:global(.footer-links a[aria-current='page']) { color:var(--color-accent); }
+  @media(hover:hover) and (pointer:fine){
+    .case-cta a:hover { background:#edf5f0; transform:translateY(-3px); }
+  }
+  @media(max-width:1000px){
+    .training-intro { grid-template-columns:1fr; }
+    .training-intro>div { grid-template-columns:1fr; }
+    .training-intro>div>p { max-width:650px; }
+    .training-explorer { grid-template-columns:minmax(220px,.62fr) minmax(0,1.38fr); gap:26px; }
+    .training-query { min-height:0; padding:20px; }
+    .section-heading { grid-template-columns:1fr; align-items:start; }
+    .section-heading h2 { max-width:820px; }
+    .section-heading>p:last-child { max-width:660px; }
+    .provenance-heading { grid-template-columns:1fr; }
+    .provenance-heading>div { grid-template-columns:1fr; }
+    .provenance-heading>div>p { max-width:650px; margin-top:24px; }
+    .architecture-heading,.stack-heading { grid-template-columns:1fr; }
+    .architecture-heading>div,.stack-heading>div { grid-template-columns:1fr; }
+    .architecture-heading>div>p,.stack-heading>div>p { max-width:650px; }
+    .architecture-flow { grid-template-columns:1fr; gap:40px; padding:30px; }
+    .architecture-stage { min-height:240px; }
+    .ownership-layout { grid-template-columns:1fr; align-items:start; }
+    .ownership-ui { width:min(100%,680px); }
+    .ownership-note { grid-template-columns:auto auto; }
+    .ownership-note p { grid-column:1/-1; margin:10px 0 0; }
+    .stack-list article { grid-template-columns:45px 1fr 1fr; padding-block:24px; }
+    .stack-list article>p { grid-column:2/-1; }
+  }
+  @media(max-width:900px){
+    .case-shell { width:90%; }
+    .hero-banner { min-height:0; aspect-ratio:auto; padding:82px 24px 24px; }
+    .banner-masthead { top:22px; right:24px; left:24px; }
+    .banner-masthead p { font-size:9px; letter-spacing:.06em; }
+    .banner-kicker { max-width:none; }
+    .banner-masthead i { width:7px; height:7px; }
+    .banner-copy { position:relative; top:auto; left:auto; width:auto; }
+    .banner-copy h1 { font-size:clamp(43px,12vw,62px); }
+    .banner-summary { max-width:42ch; font-size:16px; }
+    .banner-model { position:relative; height:auto; margin:22px -18px -6px; aspect-ratio:1.35 / 1; }
+    .banner-model::before { top:2%; right:auto; left:50%; width:110%; height:75%; transform:translateX(-50%); }
+    .banner-model::after { right:auto; bottom:8%; left:50%; width:90%; height:12%; transform:translateX(-50%); }
+    .banner-model img { top:0; right:auto; left:50%; width:112%; transform:translateX(-50%); }
+    .banner-proof { position:relative; right:auto; bottom:auto; left:auto; display:block; min-height:0; margin-top:4px; padding:22px; border-radius:16px; }
+    .banner-proof-intro { gap:8px; }
+    .banner-proof-intro strong { font-size:23px; }
+    .banner-proof-list { grid-template-columns:repeat(3,1fr); margin-top:22px; border-top:1px solid rgb(255 255 255 / 28%); }
+    .banner-proof-list>div { min-height:116px; padding:18px 16px 8px; }
+    .banner-proof-list>div:first-child { padding-left:0; border-left:0; }
+    .banner-proof-list strong { font-size:16px; }
+    .banner-proof-list small { font-size:12px; }
+    .training-intro h2 { font-size:clamp(44px,13vw,62px); }
+    .training-explorer { grid-template-columns:1fr; margin-top:58px; }
+    .training-query { min-height:0; padding:26px 24px; }
+    .training-query .training-match { margin-top:30px; }
+    .training-screen { aspect-ratio:2930 / 1600; }
+    .section-heading h2,.provenance-heading h2,.architecture-heading h2,.ownership-copy h2,.stack-heading h2,.case-cta h2 { font-size:clamp(44px,13vw,62px); }
+    .context-layout { grid-template-columns:1fr; }
+    .context-visual { display:grid; }
+    .context-visual picture { min-height:0; aspect-ratio:1 / 1.05; }
+    .context-visual figcaption { text-align:left; }
+    .provenance-visual { width:90%; margin-top:40px; }
+    .provenance-screen { border-radius:14px; }
+    .provenance-lineage { padding:22px; }
+    .architecture-flow { padding:22px; border-radius:18px; }
+    .architecture-stage { min-height:220px; padding:24px; }
+    .architecture-facts { grid-template-columns:1fr; gap:28px; padding:24px; }
+    .ownership-ui { padding:12px; border-radius:18px; }
+    .ownership-list>div { grid-template-columns:17px 70px 1fr; gap:9px; }
+    .ownership-list small,.access-tags p { font-size:13px; }
+    .access-tags { flex-wrap:wrap; }
+    .access-tags p { flex-basis:100%; margin:7px 0 0; }
+    .ownership-note { grid-template-columns:1fr; gap:8px; margin-top:65px; }
+    .ownership-note p { grid-column:auto; }
+    .ownership-note>span { white-space:normal; }
+    .stack-list article { grid-template-columns:36px 1fr; gap:12px 15px; padding-block:25px; }
+    .stack-list article>strong,.stack-list article>p { grid-column:2; }
+    .case-cta a { width:100%; min-width:0; }
+  }
+  @media(max-width:620px){
+    .banner-proof-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .banner-proof-list>div { min-height:112px; padding-inline:14px; border-bottom:1px solid rgb(255 255 255 / 22%); }
+    .banner-proof-list>div:nth-child(odd) { padding-left:0; border-left:0; }
+    .banner-proof-list>div:last-child { grid-column:1/-1; min-height:100px; padding-right:0; }
+    .lineage-intro { grid-template-columns:1fr; gap:8px; padding-bottom:18px; }
+    .lineage-intro small,.lineage-intro strong { grid-column:auto; white-space:normal; }
+    .lineage-intro strong { text-align:left; }
+    .provenance-lineage ol { grid-template-columns:1fr; margin-top:4px; }
+    .provenance-lineage li { padding:22px 0; }
+    .provenance-lineage li+li { border-top:1px solid rgb(255 255 255 / 12%); border-left:0; }
+  }
+  @media(max-width:520px){
+    .hero-banner { padding-top:102px; }
+    .banner-masthead { align-items:flex-start; flex-direction:column; gap:7px; }
+    .banner-masthead p { font-size:10px; }
+    .banner-copy h1>span,.banner-copy h1 em>span { display:block; }
+    .banner-copy h1 { font-size:clamp(43px,14vw,58px); line-height:.88; }
+  }
+  @media(max-width:420px){
+    .hero-banner { width:94%; padding-inline:20px; }
+    .banner-masthead { right:20px; left:20px; }
+    .banner-proof { padding:19px; }
+    .banner-proof-list>div,.banner-proof-list>div:nth-child(odd) { padding-inline:0 12px; border-left:0; }
+    .banner-proof-list>div:nth-child(even) { padding-inline:12px 0; }
+    .banner-proof-list>div:last-child { padding-inline:0; }
+    .training-filters { gap:8px; }
+    .filter-steps li { font-size:16px; }
+    .ownership-list>div { grid-template-columns:17px 1fr; }
+    .ownership-list small { grid-column:2; }
+  }
+  @media(prefers-reduced-motion:reduce){.case-cta a{transition:background .2s ease}.case-cta a:hover{transform:none}}
+</style>

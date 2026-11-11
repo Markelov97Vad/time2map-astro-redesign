@@ -1,0 +1,54 @@
+---
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+interface Props {
+  src: string;
+  alt: string;
+  label: string;
+  caption: string;
+  width: number;
+  height: number;
+  fit?: 'cover' | 'contain';
+}
+
+const { src, alt, label, caption, width, height, fit = 'cover' } = Astro.props;
+const publicFile = fileURLToPath(new URL(`../../public${src}`, import.meta.url));
+const hasImage = existsSync(publicFile);
+const fileName = src.split('/').at(-1);
+---
+
+<figure class:list={['case-shot', { 'has-image': hasImage }]} style={`--shot-ratio:${width}/${height};--shot-fit:${fit}`}>
+  <div class="case-shot-frame">
+    {hasImage ? (
+      <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+    ) : (
+      <div class="case-shot-placeholder" role="img" aria-label={`Reserved screenshot: ${alt}`}>
+        <span>{label}</span>
+        <strong>Screenshot reserved</strong>
+        <code>{fileName}</code>
+        <small>{width} × {height} recommended</small>
+      </div>
+    )}
+  </div>
+  <figcaption><span>{label}</span>{caption}</figcaption>
+</figure>
+
+<style>
+  .case-shot { margin:0; min-width:0; }
+  .case-shot-frame { position:relative; aspect-ratio:var(--shot-ratio); overflow:hidden; border:1px solid rgb(255 255 255 / 14%); border-radius:14px; background:#191918; box-shadow:0 26px 70px rgb(0 0 0 / 16%); }
+  .case-shot img { display:block; width:100%; height:100%; object-fit:var(--shot-fit); object-position:center; }
+  .case-shot-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; color:#fff; text-align:center; background-color:#191918; background-image:linear-gradient(rgb(255 255 255 / 5%) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255 / 5%) 1px,transparent 1px); background-size:32px 32px; }
+  .case-shot-placeholder::before { content:''; position:absolute; inset:18px; border:1px dashed rgb(255 255 255 / 20%); border-radius:8px; pointer-events:none; }
+  .case-shot-placeholder span { color:var(--color-accent); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; }
+  .case-shot-placeholder strong { margin-top:14px; font:500 clamp(24px,3vw,42px)/1 var(--font-heading); letter-spacing:-.04em; }
+  .case-shot-placeholder code { margin-top:18px; padding:7px 10px; border-radius:4px; background:rgb(255 255 255 / 8%); color:#c8c5bd; font-size:11px; }
+  .case-shot-placeholder small { margin-top:8px; color:#77746e; font-size:10px; }
+  figcaption { display:grid; grid-template-columns:auto 1fr; gap:16px; margin-top:13px; color:var(--shot-caption,#77746e); font-size:11px; line-height:1.5; }
+  figcaption span { color:var(--color-accent); font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
+  @media(max-width:560px){
+    .case-shot-frame { border-radius:9px; }
+    .case-shot-placeholder::before { inset:10px; }
+    figcaption { grid-template-columns:1fr; gap:4px; }
+  }
+</style>

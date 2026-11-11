@@ -78,7 +78,7 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
           <div class="proof-card-top">
             <span class="proof-icon" aria-hidden="true"><img src="/images/icons/geospatial.svg" alt="" width="40" height="40" /></span>
           </div>
-          <div class="proof-stat"><strong data-count-to="6" aria-label="6">6</strong><span>years of geospatial<br/>expertise</span></div>
+          <div class="proof-stat"><strong data-count-to="10" data-count-suffix="+" aria-label="10+">10+</strong><span>years of geospatial<br/>expertise</span></div>
           <span class="proof-link">Explore expertise <i aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"/></svg></i></span>
         </a>
       </div>
@@ -111,7 +111,7 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
     <section class="all-cases-bridge" id="more-cases" aria-labelledby="all-cases-title">
       <div class="all-cases-minimal">
         <h2 id="all-cases-title">More work<br/><em>Every detail</em></h2>
-        <a href="/use-cases"><b>Explore all cases</b> <span aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M4 9h10M10 5l4 4-4 4"/></svg><svg viewBox="0 0 18 18"><path d="M4 9h10M10 5l4 4-4 4"/></svg></span></a>
+        <a class="button-motion" href="/use-cases">Explore all cases <span aria-hidden="true">↗︎</span></a>
       </div>
     </section>
 
@@ -228,12 +228,12 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
           </div>
 
           <div class="founder-links">
-            <a class="founder-social-link founder-linkedin" href="https://www.linkedin.com/in/sasfeat/" target="_blank" rel="noopener">
+            <a class="founder-social-link founder-linkedin" href={site.social.linkedinPersonal} target="_blank" rel="noopener">
               Connect with me on
               <img class="founder-wordmark" src="/images/icons/linkedin-wordmark.svg" alt="LinkedIn" width="71" height="20" />
               ↗︎
             </a>
-            <a class="founder-social-link founder-upwork" href="https://www.upwork.com/agencies/time2map" target="_blank" rel="noopener">
+            <a class="founder-social-link founder-upwork" href={site.social.upworkFreelancer} target="_blank" rel="noopener">
               Review projects on
               <img class="founder-wordmark" src="/images/icons/upwork-wordmark.svg" alt="Upwork" width="56" height="20" />
               ↗︎
@@ -269,7 +269,7 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
       </div>
     </section>
 
-    <section class="process" id="process"><div class="eyebrow process-eyebrow"><span></span> How we work</div><div class="process-head"><h2>From “what if ?”<br/>to working software</h2><p>We designed our process to make it easy to get started and build trust early on.</p></div><div class="steps"><article class="process-consultation"><b>01</b><h3>40-min FREE consultation</h3><p>We’ll listen to your needs, suggest the best approach and technologies, and answer all your questions.</p><small class="consultation-note">Free · 40 minutes · No commitment</small><a class="consultation-cta" href={bookCallUrl} target="_blank" rel="noopener">Book a free call <span aria-hidden="true">↗︎</span></a></article><article><b>02</b><h3>7-days trial</h3><p>Start working with us for 7 days without commitment. Test our communication, skills, and workflows.</p><p>If you’re satisfied, we’ll include these 7 days in the project contract.</p></article><article><b>03</b><h3>Kickoff & roadmap</h3><p>We prepare a clear roadmap with milestones, delivery timelines, and responsibilities.</p><ul><li><strong>Fixed-price</strong> for well-defined scopes</li><li><strong>Time & Material</strong> for flexible, evolving projects</li><li><strong>Hybrid</strong> tailored to your needs</li></ul></article><article><b>04</b><h3>Delivery & support</h3><p>We deliver high-quality solutions on time and provide ongoing support if needed.</p><p>From deployment to maintenance, you’re covered.</p></article></div></section>
+    <section class="process" id="process"><div class="eyebrow process-eyebrow"><span></span> How we work</div><div class="process-head"><h2>From “what if ?”<br/>to working software</h2><p>We designed our process to make it easy to get started and build trust early on.</p></div><div class="steps"><article class="process-consultation"><b>01</b><h3>40-min FREE consultation</h3><p>We’ll listen to your needs, suggest the best approach and technologies, and answer all your questions.</p><small class="consultation-note">Free · 40 minutes · No commitment</small><a class="consultation-cta" href={bookCallUrl} target="_blank" rel="noopener"><span class="consultation-cta-face">Book a free call <span aria-hidden="true">↗︎</span></span></a></article><article><b>02</b><h3>7-days trial</h3><p>Start working with us for 7 days without commitment. Test our communication, skills, and workflows.</p><p>If you’re satisfied, we’ll include these 7 days in the project contract.</p></article><article><b>03</b><h3>Kickoff & roadmap</h3><p>We prepare a clear roadmap with milestones, delivery timelines, and responsibilities.</p><ul><li><strong>Fixed-price</strong> for well-defined scopes</li><li><strong>Time & Material</strong> for flexible, evolving projects</li><li><strong>Hybrid</strong> tailored to your needs</li></ul></article><article><b>04</b><h3>Delivery & support</h3><p>We deliver high-quality solutions on time and provide ongoing support if needed.</p><p>From deployment to maintenance, you’re covered.</p></article></div></section>
 
     <section class="contact" id="contact">
       <div class="contact-main">
@@ -292,8 +292,12 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
   <script>
     // Demo video: create the Vimeo player only when its section approaches the viewport.
     // The iframe is not in the HTML at all, so the poster shows until then (and without JS).
+    // The iframe stays invisible (CSS) until the player reports frames actually rendering:
+    // between creation and first frame it is a black box, and on a slow network that is
+    // tens of seconds — the poster covers that whole time instead.
     const videoScreen = document.querySelector<HTMLElement>('.device-screen[data-video-src]');
     if (videoScreen) {
+      const VIMEO_ORIGIN = 'https://player.vimeo.com';
       const mountVideo = () => {
         if (videoScreen.querySelector('iframe')) return;
         const frame = document.createElement('iframe');
@@ -302,6 +306,21 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
         frame.allow = 'autoplay; fullscreen';
         frame.loading = 'lazy';
         frame.dataset.cmpAb = '2';
+        // Vimeo player postMessage API (what @vimeo/player wraps): after "ready", subscribe to
+        // "timeupdate"; the first tick with seconds > 0 means a frame is on screen.
+        const onPlayerMessage = (event: MessageEvent) => {
+          if (event.origin !== VIMEO_ORIGIN || event.source !== frame.contentWindow) return;
+          let data: any = event.data;
+          if (typeof data === 'string') { try { data = JSON.parse(data); } catch { return; } }
+          if (!data || typeof data !== 'object') return;
+          if (data.event === 'ready') {
+            frame.contentWindow?.postMessage({ method: 'addEventListener', value: 'timeupdate' }, VIMEO_ORIGIN);
+          } else if (data.event === 'timeupdate' && Number(data.data?.seconds) > 0) {
+            videoScreen.classList.add('is-playing');
+            window.removeEventListener('message', onPlayerMessage);
+          }
+        };
+        window.addEventListener('message', onPlayerMessage);
         videoScreen.appendChild(frame);
       };
       if ('IntersectionObserver' in window) {
@@ -555,244 +574,5 @@ const jsonLd = [organizationSchema(site, testimonials), websiteSchema(site)];
       deviceWrap.addEventListener('click', (event) => { if (deviceWrap.classList.contains('is-expanded') && event.target === deviceWrap) setExpanded(deviceWrap, false); });
     });
     document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && expandedWrap) setExpanded(expandedWrap, false); });
-
-    const projectGrid = document.querySelector<HTMLElement>('[data-project-grid]');
-    const projectShowcase = document.querySelector<HTMLElement>('.project-showcase');
-    const projectTiles = [...document.querySelectorAll<HTMLElement>('[data-project-grid] [data-project]')];
-    if (projectShowcase && projectTiles.length && !reduceMotion.matches) {
-      document.documentElement.classList.add('has-project-motion');
-      projectTiles.forEach((tile, index) => tile.style.setProperty('--project-index', String(index)));
-      const projectObserver = new IntersectionObserver(([entry], observer) => {
-        if (!entry?.isIntersecting) return;
-        projectShowcase.classList.add('is-visible');
-        window.setTimeout(() => projectShowcase.classList.add('is-settled'), 1100);
-        observer.disconnect();
-      }, { threshold:.12, rootMargin:'0px 0px -8% 0px' });
-      projectObserver.observe(projectShowcase);
-    } else {
-      projectShowcase?.classList.add('is-visible', 'is-settled');
-    }
-    if (projectGrid && projectTiles.length) {
-    const lightbox = document.createElement('div');
-    lightbox.className = 'project-lightbox';
-    lightbox.setAttribute('role', 'dialog');
-    lightbox.setAttribute('aria-modal', 'true');
-    lightbox.setAttribute('aria-label', 'Case study screenshots');
-    lightbox.innerHTML = '<button class="project-lightbox-close" type="button" aria-label="Close fullscreen case preview">×</button><button class="gallery-arrow gallery-prev" type="button" data-lightbox-dir="-1" aria-label="Previous screenshot">←</button><div class="project-lightbox-stage"></div><button class="gallery-arrow gallery-next" type="button" data-lightbox-dir="1" aria-label="Next screenshot">→</button><div class="project-lightbox-pagination" aria-hidden="true"></div>';
-    document.body.append(lightbox);
-    const lightboxStage = lightbox.querySelector<HTMLElement>('.project-lightbox-stage');
-    const lightboxClose = lightbox.querySelector<HTMLButtonElement>('.project-lightbox-close');
-    const lightboxPagination = lightbox.querySelector<HTMLElement>('.project-lightbox-pagination');
-    let fullscreenProject: HTMLElement | null = null;
-    let lightboxResizeTimer = 0;
-    let lightboxScrollFrame = 0;
-    const setLightboxPagination = (index: number) => {
-      lightboxPagination?.querySelectorAll('span').forEach((dot, dotIndex) => dot.classList.toggle('is-active', dotIndex === index));
-    };
-    const fitLightboxStage = (index: number, align = false) => {
-      if (!lightboxStage) return;
-      setLightboxPagination(index);
-      const images = [...lightboxStage.querySelectorAll<HTMLImageElement>('img')];
-      const image = images[Math.min(images.length - 1, Math.max(0, index))];
-      if (!image) return;
-      const applyRatio = () => {
-        const ratio = image.naturalWidth && image.naturalHeight ? image.naturalWidth / image.naturalHeight : 16 / 9;
-        lightboxStage.style.setProperty('--lightbox-aspect', String(ratio));
-        lightboxStage.style.setProperty('--lightbox-max-width-by-height', `${ratio * 82}dvh`);
-        lightboxStage.style.setProperty('--lightbox-mobile-max-width-by-height', `${ratio * 78}dvh`);
-        if (align) requestAnimationFrame(() => { lightboxStage.scrollLeft = index * lightboxStage.clientWidth; });
-      };
-      if (image.complete && image.naturalWidth) applyRatio();
-      else image.addEventListener('load', applyRatio, { once:true });
-    };
-    const setProjectFullscreen = (tile: HTMLElement | null, open: boolean) => {
-      if (!lightboxStage) return;
-      if (open && tile) {
-        const source = tile.querySelector<HTMLElement>('.project-gallery');
-        const sourceImages = source ? [...source.querySelectorAll<HTMLImageElement>('img')] : [];
-        const activeIndex = source?.clientWidth ? Math.round(source.scrollLeft / source.clientWidth) : 0;
-        tile.setAttribute('aria-expanded', 'true');
-        lightboxStage.replaceChildren();
-        sourceImages.forEach((image) => {
-          const clone = image.cloneNode(true) as HTMLImageElement;
-          clone.loading = 'eager';
-          lightboxStage.append(clone);
-        });
-        fitLightboxStage(activeIndex);
-        const hasSlides = lightboxStage.childElementCount > 1;
-        lightboxPagination?.replaceChildren(...sourceImages.map(() => document.createElement('span')));
-        setLightboxPagination(activeIndex);
-        lightbox.classList.toggle('has-slides', hasSlides);
-        lightbox.classList.add('is-open');
-        document.body.classList.add('project-preview-open');
-        fullscreenProject = tile;
-        requestAnimationFrame(() => {
-          lightboxStage.scrollLeft = activeIndex * lightboxStage.clientWidth;
-          lightboxClose?.focus();
-        });
-      } else {
-        lightbox.classList.remove('is-open', 'has-slides');
-        document.body.classList.remove('project-preview-open');
-        lightboxStage.replaceChildren();
-        lightboxPagination?.replaceChildren();
-        fullscreenProject?.setAttribute('aria-expanded', 'false');
-        fullscreenProject?.focus();
-        fullscreenProject = null;
-      }
-    };
-    const projectCounter = document.querySelector<HTMLElement>('[data-project-counter]');
-    const projectJumps = [...document.querySelectorAll<HTMLButtonElement>('[data-project-jump]')];
-    let currentProjectIndex = 0;
-    let projectScrollFrame = 0;
-    let projectDidDrag = false;
-    let projectPointerId: number | null = null;
-    let projectDragStartX = 0;
-    let projectDragStartScroll = 0;
-
-    const setCurrentProject = (index: number) => {
-      currentProjectIndex = Math.min(projectTiles.length - 1, Math.max(0, index));
-      projectTiles.forEach((tile, tileIndex) => {
-        const current = tileIndex === currentProjectIndex;
-        tile.classList.toggle('is-current', current);
-        tile.setAttribute('aria-current', String(current));
-      });
-      if (projectCounter) projectCounter.textContent = `${String(currentProjectIndex + 1).padStart(2, '0')} / ${String(projectTiles.length).padStart(2, '0')}`;
-      projectJumps.forEach((button, buttonIndex) => {
-        const current = buttonIndex === currentProjectIndex;
-        button.classList.toggle('is-active', current);
-        button.setAttribute('aria-pressed', String(current));
-      });
-    };
-
-    const scrollToProject = (index: number, behavior: ScrollBehavior = 'smooth') => {
-      if (!projectGrid) return;
-      const nextIndex = Math.min(projectTiles.length - 1, Math.max(0, index));
-      const tile = projectTiles[nextIndex];
-      if (!tile) return;
-      setCurrentProject(nextIndex);
-      const gridBounds = projectGrid.getBoundingClientRect();
-      const tileBounds = tile.getBoundingClientRect();
-      const centeredLeft = projectGrid.scrollLeft + tileBounds.left + tileBounds.width / 2 - gridBounds.left - projectGrid.clientWidth / 2;
-      projectGrid.scrollTo({ left:centeredLeft, behavior:reduceMotion.matches ? 'instant' : behavior });
-    };
-
-    const updateProjectFromScroll = () => {
-      projectScrollFrame = 0;
-      if (!projectGrid) return;
-      const center = projectGrid.getBoundingClientRect().left + projectGrid.clientWidth / 2;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
-      projectTiles.forEach((tile, index) => {
-        const bounds = tile.getBoundingClientRect();
-        const distance = Math.abs(bounds.left + bounds.width / 2 - center);
-        if (distance < closestDistance) { closestDistance = distance; closestIndex = index; }
-      });
-      if (closestIndex !== currentProjectIndex) setCurrentProject(closestIndex);
-    };
-
-    projectJumps.forEach((button) => button.addEventListener('click', () => {
-      scrollToProject(Number(button.dataset.projectJump));
-    }));
-    projectGrid?.addEventListener('scroll', () => {
-      if (!projectScrollFrame) projectScrollFrame = requestAnimationFrame(updateProjectFromScroll);
-    }, { passive:true });
-    projectGrid?.addEventListener('pointerdown', (event) => {
-      if (event.pointerType !== 'mouse' || event.button !== 0 || (event.target as HTMLElement).closest('button')) return;
-      projectPointerId = event.pointerId;
-      projectDragStartX = event.clientX;
-      projectDragStartScroll = projectGrid.scrollLeft;
-      projectDidDrag = false;
-    });
-    projectGrid?.addEventListener('pointermove', (event) => {
-      if (projectPointerId !== event.pointerId) return;
-      const distance = event.clientX - projectDragStartX;
-      if (!projectDidDrag && Math.abs(distance) > 5) {
-        projectDidDrag = true;
-        projectGrid.classList.add('is-dragging');
-        projectGrid.setPointerCapture(event.pointerId);
-      }
-      if (!projectDidDrag) return;
-      projectGrid.scrollLeft = projectDragStartScroll - distance;
-    });
-    const finishProjectDrag = (event: PointerEvent) => {
-      if (!projectGrid || projectPointerId !== event.pointerId) return;
-      const didDrag = projectDidDrag;
-      projectGrid.classList.remove('is-dragging');
-      if (projectGrid.hasPointerCapture(event.pointerId)) projectGrid.releasePointerCapture(event.pointerId);
-      projectPointerId = null;
-      if (didDrag) {
-        updateProjectFromScroll();
-        scrollToProject(currentProjectIndex);
-        window.setTimeout(() => { projectDidDrag = false; }, 0);
-      }
-    };
-    projectGrid?.addEventListener('pointerup', finishProjectDrag);
-    projectGrid?.addEventListener('pointercancel', finishProjectDrag);
-    projectGrid?.addEventListener('dragstart', (event) => event.preventDefault());
-
-    projectTiles.forEach((tile, tileIndex) => {
-      tile.addEventListener('click', (event) => {
-        if ((event.target as HTMLElement).closest('button')) return;
-        if (projectDidDrag) return;
-        if (tileIndex !== currentProjectIndex) {
-          scrollToProject(tileIndex);
-          return;
-        }
-        setProjectFullscreen(tile, true);
-      });
-      tile.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-          event.preventDefault();
-          const direction = event.key === 'ArrowLeft' ? -1 : 1;
-          scrollToProject(tileIndex + direction);
-          projectTiles[Math.min(projectTiles.length - 1, Math.max(0, tileIndex + direction))]?.focus();
-          return;
-        }
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          if (tileIndex !== currentProjectIndex) {
-            scrollToProject(tileIndex);
-            return;
-          }
-          setProjectFullscreen(tile, true);
-        }
-      });
-      const gallery = tile.querySelector<HTMLElement>('.project-gallery');
-      tile.querySelectorAll<HTMLButtonElement>('[data-gallery-dir]').forEach((arrow) => arrow.addEventListener('click', (event) => {
-        event.stopPropagation();
-        gallery?.scrollBy({ left: Number(arrow.dataset.galleryDir) * (gallery.clientWidth || 1), behavior: 'smooth' });
-      }));
-    });
-    setCurrentProject(0);
-    // 'instant', not 'auto': a smooth (CSS scroll-behavior) scroll at load makes Chrome
-    // stop reporting LCP for the whole page — the desktop report then has no LCP at all.
-    requestAnimationFrame(() => scrollToProject(0, 'instant'));
-    let projectResizeFrame = 0;
-    window.addEventListener('resize', () => {
-      cancelAnimationFrame(projectResizeFrame);
-      projectResizeFrame = requestAnimationFrame(() => scrollToProject(currentProjectIndex, 'instant'));
-    }, { passive:true });
-    lightboxClose?.addEventListener('click', () => setProjectFullscreen(null, false));
-    lightbox.addEventListener('click', (event) => { if (event.target === lightbox) setProjectFullscreen(null, false); });
-    lightboxStage?.addEventListener('scroll', () => {
-      if (!lightboxScrollFrame) {
-        lightboxScrollFrame = requestAnimationFrame(() => {
-          lightboxScrollFrame = 0;
-          if (!lightboxStage.clientWidth) return;
-          setLightboxPagination(Math.round(lightboxStage.scrollLeft / lightboxStage.clientWidth));
-        });
-      }
-      window.clearTimeout(lightboxResizeTimer);
-      lightboxResizeTimer = window.setTimeout(() => {
-        if (!lightboxStage.clientWidth) return;
-        fitLightboxStage(Math.round(lightboxStage.scrollLeft / lightboxStage.clientWidth), true);
-      }, 100);
-    }, { passive:true });
-    lightbox.querySelectorAll<HTMLButtonElement>('[data-lightbox-dir]').forEach((arrow) => arrow.addEventListener('click', (event) => {
-      event.stopPropagation();
-      lightboxStage?.scrollBy({ left: Number(arrow.dataset.lightboxDir) * (lightboxStage.clientWidth || 1), behavior: 'smooth' });
-    }));
-    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && fullscreenProject) setProjectFullscreen(null, false); });
-    }
   </script>
 </body></html>

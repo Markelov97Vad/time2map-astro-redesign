@@ -1,5 +1,4 @@
 {
-  "recommendations": [
-    "openai.chatgpt"
-  ]
+  "recommendations": ["astro-build.astro-vscode"],
+  "unwantedRecommendations": []
 }

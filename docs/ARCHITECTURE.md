@@ -76,7 +76,7 @@ scripts (mobile menu in `Header.astro`, image slider in `UseCaseCard.astro`).
 - Images live in `apps/web/public/images/` and are referenced by absolute path
   strings (`/images/...`), not Astro image imports. Because of that there is no
   build-time resizing: `apps/web/scripts/optimize-images.mjs` (sharp) generates the
-  responsive WebP sets (`<name>-<width>.webp`) the home page references via
+  responsive WebP sets (`<name>-<width>.webp`) the home and use-cases pages reference via
   `srcset`/`sizes`, rasterises traced SVG logos and recompresses screenshots in
   place. Run it after adding or replacing a picture (`node scripts/optimize-images.mjs
   --prune` from `apps/web`), then reference the variants. The SEO audit warns on any
@@ -98,7 +98,9 @@ scripts (mobile menu in `Header.astro`, image slider in `UseCaseCard.astro`).
 
 - Everything below the first screen is lazy: images carry `loading="lazy"`, the demo
   video's Vimeo iframe is created by the home page script only when its section
-  approaches the viewport (the poster is a plain `<img>` until then).
+  approaches the viewport. The poster (a plain `<img>`) stays on screen until the
+  player reports playback through its postMessage API (`timeupdate`), so visitors never
+  see the player's black box while it buffers.
 - The hero globe is the LCP image: it has `fetchpriority="high"` and a `<link
   rel="preload">` in the head; keep it that way if the hero changes.
 - The project carousel must never scroll smoothly at load: a smooth (CSS

@@ -1,0 +1,1190 @@
+---
+import '../../styles/global.css';
+import '../../styles/palette.css';
+import BackToUseCases from '../../components/BackToUseCases.astro';
+import CaseMedia from '../../components/CaseMedia.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import SeoHead from '../../components/SeoHead.astro';
+import site from '../../content/site.yaml';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const title = 'Archi2go — Map for Travelling Architects';
+const description = 'Archi2go: a React Native + Mapbox city guide for architects who travel — curated places, fast 3D maps, on iOS, Android and web.';
+const pageUrl = new URL('/use-cases/archi2go', site.siteUrl).href;
+const liveUrl = 'https://archi2go.time2map.com';
+const liveHost = new URL(liveUrl).host;
+const appStoreUrl = 'https://apps.apple.com/app/archi2go';
+const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.time2map.archi2go';
+const heroImage = '/images/use-cases/archi2go-prev.webp';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: 'Archi2go: Architecture Map for Travelling Architects',
+    description,
+    url: pageUrl,
+    image: new URL(heroImage, site.siteUrl).href,
+    creator: { '@type': 'Organization', name: site.title, url: site.siteUrl },
+    keywords: 'architecture map, travel, React Native, Mapbox, iOS, Android, 3D buildings, city guide',
+  },
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: 'Use Cases', item: new URL('/use-cases', site.siteUrl).href },
+    { name: 'Archi2go', item: pageUrl },
+  ]),
+];
+
+const audience = [
+  {
+    title: 'Planning the trip at home',
+    text: 'Pick a city and read down the list, strongest places first. Shortlist the ones worth the detour before you even land.',
+    src: '/images/use-cases/archi2go/mobile-case-plan.webp',
+    brief: 'Phone: ranked place list for Barcelona — first items with photo, name, category and the first line of the story; map visible behind the sheet.',
+    alt: 'Archi2go ranked place list for a city, strongest places first',
+    label: 'Plan',
+    cue: 'Ranked list / Strongest first',
+  },
+  {
+    title: 'Who built this, and why',
+    text: 'Architect, year and a short story for each building, with sources to read further.',
+    src: '/images/use-cases/archi2go/mobile-case-story.webp',
+    brief: 'Phone: place card for a building such as Walden 7 — photo carousel, architect and year, description, photo credit, Read more sources.',
+    alt: 'Archi2go place card with architect, year, story, photo credit and sources',
+    label: 'Story',
+    cue: 'Architect / Year / Sources',
+  },
+  {
+    title: 'Landing in the city',
+    text: 'The app opens on the city you are standing in. Check a place on the map, then hand it to Google Maps for the walk.',
+    src: '/images/use-cases/archi2go/mobile-case-onsite.webp',
+    brief: 'Phone: map of the current city on first launch, one place selected, place sheet at half height with the Open in Google Maps button visible.',
+    alt: 'Archi2go opened on the current city with a selected place and the Open in Google Maps button',
+    label: 'On site',
+    cue: 'Map / Open in Google Maps',
+  },
+];
+
+const journey = [
+  {
+    id: 'architecture',
+    tag: 'Architecture',
+    title: 'Buildings with an author',
+    text: 'The core of the collection: strong architecture by named architects — style, year and a short story for each building.',
+    eg: 'Architects / Style / Year',
+    kind: 'image' as const,
+    src: '/images/use-cases/archi2go/mobile-journey-01-architecture.webp',
+    brief: 'Phone: Architecture tab — Mercat de Santa Caterina and El Born CCM in the grid; photo markers on the map above.',
+    alt: 'Archi2go Architecture tab with Mercat de Santa Caterina and El Born CCM',
+  },
+  {
+    id: 'city-core',
+    tag: 'City core',
+    title: 'The names everyone knows',
+    text: 'Landmarks and the streets that connect them, so a first walk covers the essentials without a detour.',
+    eg: 'Squares / Avenues / Landmarks',
+    kind: 'image' as const,
+    src: '/images/use-cases/archi2go/mobile-journey-02-city-core.webp',
+    brief: 'Phone: City core tab — Barcelona Pavilion and Casa Batlló in the grid; photo markers on the map above.',
+    alt: 'Archi2go City core tab with Barcelona Pavilion and Casa Batlló',
+  },
+  {
+    id: 'parks',
+    tag: 'Parks',
+    title: 'Where the city exhales',
+    text: 'Parks and gardens where landscape is part of the design — a place to pause between buildings.',
+    eg: 'Parks / Gardens / Green squares',
+    kind: 'image' as const,
+    src: '/images/use-cases/archi2go/mobile-journey-03-parks.webp',
+    brief: 'Phone: Parks tab — Gardens of the Palau de Pedralbes and Parc Central de Nou Barris; photo markers on the map above.',
+    alt: 'Archi2go Parks tab with Pedralbes gardens and Parc Central de Nou Barris',
+  },
+  {
+    id: 'unusual',
+    tag: 'Unusual',
+    title: 'The ones you would miss',
+    text: 'Odd, hidden and unexpected places that do not fit a neat label but earn the detour.',
+    eg: 'Odd / Hidden / Unexpected',
+    kind: 'image' as const,
+    src: '/images/use-cases/archi2go/mobile-journey-04-unusual.webp',
+    brief: 'Phone: Unusual tab — Edifici Atalaya and Montjuïc Communications Tower in the grid; map above.',
+    alt: 'Archi2go Unusual tab with Edifici Atalaya and Montjuïc Communications Tower',
+  },
+];
+
+const platformStack = [
+  ['Web', 'A responsive map for planning at the desk.', 'TypeScript / Mapbox GL JS'],
+  ['Native', 'One shared app for the street.', 'React Native / Mapbox / iOS + Android'],
+];
+
+const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead title={title} description={description} ogImage={heroImage} jsonLd={jsonLd} />
+</head>
+<body class="archi-case-page">
+  <SiteNav />
+
+  <main>
+    <!-- 1. Hero -->
+    <header class="archi-hero" data-archi-hero>
+      <div class="hero-map" aria-hidden="true">
+        <div class="hero-map-camera" style={`--hero-map-image:url(${heroMapImage})`}></div>
+      </div>
+      <div class="archi-shell hero-nav-row"><BackToUseCases /></div>
+
+      <div class="archi-shell hero-copy">
+        <div>
+          <p class="kicker"><i class="marker" aria-hidden="true"></i>Case study / Archi2go</p>
+          <h1>A map for architects who <em>travel</em></h1>
+        </div>
+        <div class="hero-intro">
+          <p>Curated architecture, public space and unusual city stories — built as a React Native app with Mapbox, so it feels fast on the street and still works at the desk.</p>
+          <div class="store-row">
+            <a class="store-badge" href={appStoreUrl} target="_blank" rel="noopener" aria-label="Download on the App Store">
+              <img src="/images/store-badges/download-on-app-store.svg" alt="" width="120" height="40" />
+            </a>
+            <a class="store-badge" href={playStoreUrl} target="_blank" rel="noopener" aria-label="Get it on Google Play">
+              <img src="/images/store-badges/get-it-on-google-play.svg" alt="" width="239" height="71" />
+            </a>
+          </div>
+          <a class="text-link hero-web-link" href={liveUrl} target="_blank" rel="noopener">Open web version</a>
+        </div>
+      </div>
+
+      <div class="archi-shell hero-demo">
+        <div class="hero-phone">
+          <CaseMedia
+            kind="video"
+            frame="phone"
+            src="/images/use-cases/archi2go/mobile-hero-demo.mp4"
+            poster="/images/use-cases/archi2go/mobile-hero-demo-poster.webp"
+            alt="Archi2go demo: open a place, read its story and location, then see the building in 3D"
+            label="Demo"
+            brief="Phone demo from preview.mov — place card with architect, year and story; map location; 3D building context. Muted, loop."
+            width={612}
+            height={1324}
+            priority
+          />
+        </div>
+        <div class="hero-demo-copy">
+          <p class="demo-tag">In motion</p>
+          <h2>Tap a place. <em>Get the full picture.</em></h2>
+          <p>Architect, year, story and sources on the card. Exact spot on the map. The building in 3D, with its neighbours.</p>
+          <p class="demo-cue">Story / Architect / Location / 3D</p>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- 2. Who it's for -->
+    <section class="section section-paper" aria-labelledby="audience-title">
+      <div class="archi-shell split-heading">
+        <p class="section-index"><i class="marker" aria-hidden="true"></i>Who it’s for</p>
+        <div>
+          <h2 id="audience-title">Built for people who notice <em>buildings.</em></h2>
+          <p class="lead">Not another POI dump. A considered collection for architects, students and design-minded travellers who want the city to stay readable on foot.</p>
+        </div>
+      </div>
+      <div
+        class="archi-shell aud-carousel"
+        data-aud-carousel
+        role="group"
+        aria-roledescription="carousel"
+        aria-label="How people use Archi2go"
+      >
+        <div class="aud-stage-wrap">
+        <button type="button" class="aud-arrow aud-arrow-prev" data-aud-prev aria-label="Previous screen">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="aud-arrow aud-arrow-next" data-aud-next aria-label="Next screen">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="aud-stage" data-aud-stage>
+          <ul class="aud-track">
+            {audience.map((item, index) => (
+              <li
+                class="aud-slide"
+                data-aud-slide
+                data-state={index === 0 ? 'active' : index === 1 ? 'next' : 'far-next'}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${index + 1} of ${audience.length}`}
+                aria-hidden={index === 0 ? 'false' : 'true'}
+              >
+                <CaseMedia
+                  kind="image"
+                  frame="phone"
+                  src={item.src}
+                  alt={item.alt}
+                  label={item.label}
+                  brief={item.brief}
+                  width={780}
+                  height={1691}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+        </div>
+
+        <div class="aud-copy" aria-live="polite">
+          {audience.map((item, index) => (
+            <div class="aud-copy-item" data-aud-copy data-active={index === 0 ? 'true' : 'false'}>
+              <h3>{item.title}</h3>
+              <p class="aud-text">{item.text}</p>
+              <p class="aud-cue">{item.cue}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="aud-controls">
+          <div class="aud-dots" role="tablist" aria-label="Choose screen">
+            {audience.map((item, index) => (
+              <button
+                type="button"
+                class="aud-dot"
+                role="tab"
+                data-aud-dot
+                aria-selected={index === 0 ? 'true' : 'false'}
+                aria-label={item.title}
+              ></button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Scroll journey -->
+    <section class="section section-dark" aria-labelledby="journey-title" data-archi-journey>
+      <div class="archi-shell split-heading">
+        <p class="section-index"><i class="marker" aria-hidden="true"></i>Place types</p>
+        <div>
+          <h2 id="journey-title">Four ways to read a <em>city.</em></h2>
+          <p class="lead">Pick a type and the list narrows to it — from authored buildings to the quiet corners nobody put on a postcard.</p>
+        </div>
+      </div>
+
+      <div class="archi-shell journey-desktop">
+        <div class="journey-phone-sticky">
+          {journey.map((step, index) => (
+            <div class="journey-screen" data-journey-screen={step.id} data-active={index === 0 ? 'true' : 'false'}>
+              <CaseMedia
+                kind={step.kind}
+                frame="phone"
+                src={step.src}
+                alt={step.alt}
+                label={step.tag}
+                brief={step.brief}
+                width={780}
+                height={1691}
+                caption=""
+              />
+            </div>
+          ))}
+        </div>
+        <ol class="journey-steps">
+          {journey.map((step, index) => (
+            <li class="journey-step" data-journey-step={step.id} data-active={index === 0 ? 'true' : 'false'}>
+              <i class="node" aria-hidden="true"></i>
+              <div>
+                <p class="step-tag">{step.tag}</p>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+                <p class="step-eg">{step.eg}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <ol class="archi-shell journey-mobile">
+        {journey.map((step, index) => (
+          <li>
+            <div class="journey-mobile-copy">
+              <i class="node is-on" aria-hidden="true"></i>
+              <div>
+                <p class="step-tag">{step.tag}</p>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+                <p class="step-eg">{step.eg}</p>
+              </div>
+            </div>
+            <CaseMedia
+              kind={step.kind}
+              frame="phone"
+              src={step.src}
+              alt={step.alt}
+              label={step.tag}
+              brief={step.brief}
+              width={780}
+              height={1691}
+              caption=""
+            />
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- 5. 2D / 3D compare -->
+    <section class="section section-paper" aria-labelledby="compare-title" data-archi-compare>
+      <div class="archi-shell split-heading">
+        <p class="section-index"><i class="marker" aria-hidden="true"></i>Spatial feel</p>
+        <div>
+          <h2 id="compare-title">Tilt the map. See the city in <em>3D.</em></h2>
+        </div>
+      </div>
+      <div class="archi-shell compare-stage" style="--pos:50%" data-compare-stage>
+        <div class="compare-layers" role="img" aria-label="Drag to compare 2D overview and 3D view of the same place">
+          <div class="compare-layer compare-base">
+            <img
+              src="/images/use-cases/archi2go/compare-3d.webp"
+              alt=""
+              width="1600"
+              height="951"
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+            />
+          </div>
+          <div class="compare-layer compare-reveal">
+            <img
+              src="/images/use-cases/archi2go/compare-2d.webp"
+              alt=""
+              width="1600"
+              height="951"
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+            />
+          </div>
+          <div class="compare-handle" aria-hidden="true"><i></i></div>
+        </div>
+        <p class="compare-tag compare-tag-2d" aria-hidden="true">2D</p>
+        <p class="compare-tag compare-tag-3d" aria-hidden="true">3D</p>
+        <p class="compare-note">Real building heights and shapes, <em>smooth in your hand</em> — pan, tilt and zoom the same city without a stutter.</p>
+      </div>
+    </section>
+
+    <!-- 6. Web preview + platform stack -->
+    <section class="section section-dark web-section" aria-labelledby="web-title">
+      <div class="archi-shell split-heading">
+        <p class="section-index"><i class="marker" aria-hidden="true"></i>Also on the web</p>
+        <div>
+          <h2 id="web-title">The whole city, <em>in one view.</em></h2>
+        </div>
+      </div>
+
+      <div class="archi-shell web-stage" data-web-preview>
+        <div class="web-preview">
+          <CaseMedia
+            kind="image"
+            frame="browser"
+            browserHost={liveHost}
+            src="/images/use-cases/archi2go-prev.webp"
+            alt="Archi2go web app showing a curated Barcelona place list beside the city map"
+            label="Web app"
+            brief="Desktop view of the Archi2go place collection and map."
+            width={1600}
+            height={867}
+          />
+          <a class="web-open-button" href={liveUrl} target="_blank" rel="noopener">
+            <svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true">
+              <path d="M6 14L14 6M8 6h6v6" />
+            </svg>
+            Open Archi2go
+          </a>
+        </div>
+      </div>
+
+      <div class="archi-shell platform-stack" aria-label="Technology stack">
+        <p class="platform-stack-label">Built across platforms</p>
+        <dl>
+          {platformStack.map(([platform, description, stack]) => (
+            <div>
+              <dt>{platform}</dt>
+              <dd>
+                <span>{description}</span>
+                <small>{stack}</small>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <!-- 8. CTA -->
+    <section class="case-cta" aria-labelledby="cta-title">
+      <div class="archi-shell">
+        <p class="kicker"><i class="marker" aria-hidden="true"></i>Have a city, collection or spatial story?</p>
+        <h2 id="cta-title">Let’s build the map<br/>people want to <em>explore.</em></h2>
+        <div class="cta-actions">
+          <a class="primary-link button-motion" href="/contact-us">
+            Discuss your project
+            <span aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M6 14L14 6M8 6h6v6" /></svg></span>
+          </a>
+          <div class="store-row cta-stores">
+            <a class="store-badge" href={appStoreUrl} target="_blank" rel="noopener" aria-label="Download on the App Store">
+              <img src="/images/store-badges/download-on-app-store.svg" alt="" width="120" height="40" loading="lazy" decoding="async" />
+            </a>
+            <a class="store-badge" href={playStoreUrl} target="_blank" rel="noopener" aria-label="Get it on Google Play">
+              <img src="/images/store-badges/get-it-on-google-play.svg" alt="" width="239" height="71" loading="lazy" decoding="async" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <script>
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const hero = document.querySelector<HTMLElement>('[data-archi-hero]');
+    if (hero && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => {
+        hero.toggleAttribute('data-offscreen', !entry.isIntersecting);
+      }).observe(hero);
+    }
+
+    // —— Videos: play in view, pause offscreen; respect reduced motion ——
+    const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('[data-case-video]'));
+    if (!reducedMotion && 'IntersectionObserver' in window) {
+      const videoIo = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const video = entry.target as HTMLVideoElement;
+            const toggle = video.parentElement?.querySelector<HTMLButtonElement>('[data-case-video-toggle]');
+            const pausedByUser = toggle?.dataset.userPaused === 'true';
+            if (entry.isIntersecting && !pausedByUser) {
+              video.play().catch(() => {});
+              if (toggle) {
+                toggle.setAttribute('aria-pressed', 'false');
+                toggle.setAttribute('aria-label', 'Pause video');
+              }
+            } else {
+              video.pause();
+            }
+          }
+        },
+        { threshold: 0.45 },
+      );
+      videos.forEach((v) => videoIo.observe(v));
+    } else {
+      videos.forEach((v) => {
+        v.pause();
+        v.removeAttribute('autoplay');
+      });
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('[data-case-video-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const video = btn.parentElement?.querySelector<HTMLVideoElement>('[data-case-video]');
+        if (!video) return;
+        if (video.paused) {
+          btn.dataset.userPaused = 'false';
+          video.play().catch(() => {});
+          btn.setAttribute('aria-pressed', 'false');
+          btn.setAttribute('aria-label', 'Pause video');
+        } else {
+          btn.dataset.userPaused = 'true';
+          video.pause();
+          btn.setAttribute('aria-pressed', 'true');
+          btn.setAttribute('aria-label', 'Play video');
+        }
+      });
+    });
+
+    // —— Audience carousel (swipe / arrows / dots / keys) ——
+    const audRoot = document.querySelector<HTMLElement>('[data-aud-carousel]');
+    if (audRoot) {
+      const stage = audRoot.querySelector<HTMLElement>('[data-aud-stage]');
+      const slides = Array.from(audRoot.querySelectorAll<HTMLElement>('[data-aud-slide]'));
+      const copies = Array.from(audRoot.querySelectorAll<HTMLElement>('[data-aud-copy]'));
+      const dots = Array.from(audRoot.querySelectorAll<HTMLButtonElement>('[data-aud-dot]'));
+      const prevBtn = audRoot.querySelector<HTMLButtonElement>('[data-aud-prev]');
+      const nextBtn = audRoot.querySelector<HTMLButtonElement>('[data-aud-next]');
+      let current = 0;
+
+      const stateFor = (offset: number) => {
+        if (offset === 0) return 'active';
+        if (offset === -1) return 'prev';
+        if (offset === 1) return 'next';
+        return offset < 0 ? 'far-prev' : 'far-next';
+      };
+
+      // Tap on the active phone hides the copy card so the whole screen is visible.
+      const setPeek = (on: boolean) => {
+        audRoot.dataset.peek = on ? 'true' : 'false';
+        slides[current]?.setAttribute('aria-pressed', on ? 'true' : 'false');
+      };
+
+      const goTo = (index: number, focusDot = false) => {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, i) => {
+          const active = i === current;
+          slide.dataset.state = stateFor(i - current);
+          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+          slide.tabIndex = active ? 0 : -1;
+          if (active) {
+            slide.setAttribute('role', 'button');
+            slide.setAttribute('aria-label', 'Show screen without the caption');
+          } else {
+            slide.setAttribute('role', 'group');
+            slide.setAttribute('aria-label', `${i + 1} of ${slides.length}`);
+            slide.removeAttribute('aria-pressed');
+          }
+        });
+        setPeek(false);
+        copies.forEach((copy, i) => {
+          copy.dataset.active = i === current ? 'true' : 'false';
+        });
+        dots.forEach((dot, i) => {
+          const selected = i === current;
+          dot.setAttribute('aria-selected', selected ? 'true' : 'false');
+          dot.tabIndex = selected ? 0 : -1;
+          if (selected && focusDot) dot.focus();
+        });
+        if (prevBtn) prevBtn.disabled = current === 0;
+        if (nextBtn) nextBtn.disabled = current === slides.length - 1;
+      };
+
+      prevBtn?.addEventListener('click', () => goTo(current - 1));
+      nextBtn?.addEventListener('click', () => goTo(current + 1));
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => goTo(i));
+        dot.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowRight') { event.preventDefault(); goTo(current + 1, true); }
+          else if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(current - 1, true); }
+          else if (event.key === 'Home') { event.preventDefault(); goTo(0, true); }
+          else if (event.key === 'End') { event.preventDefault(); goTo(slides.length - 1, true); }
+        });
+      });
+      slides.forEach((slide, i) => {
+        slide.addEventListener('click', () => {
+          if (stage?.classList.contains('was-dragged')) return;
+          if (i !== current) goTo(i);
+          else setPeek(audRoot.dataset.peek !== 'true');
+        });
+        slide.addEventListener('keydown', (event) => {
+          if (i !== current || (event.key !== 'Enter' && event.key !== ' ')) return;
+          event.preventDefault();
+          setPeek(audRoot.dataset.peek !== 'true');
+        });
+      });
+      audRoot.querySelector<HTMLElement>('.aud-copy')?.addEventListener('click', () => setPeek(false));
+
+      // Pointer swipe / drag
+      if (stage) {
+        let startX = 0;
+        let dragging = false;
+        let moved = false;
+        stage.addEventListener('pointerdown', (event) => {
+          dragging = true;
+          moved = false;
+          startX = event.clientX;
+          stage.classList.add('is-dragging');
+          stage.classList.remove('was-dragged');
+        });
+        stage.addEventListener('pointermove', (event) => {
+          if (dragging && Math.abs(event.clientX - startX) > 8) moved = true;
+        });
+        const end = (event: PointerEvent) => {
+          if (!dragging) return;
+          dragging = false;
+          stage.classList.remove('is-dragging');
+          const dx = event.clientX - startX;
+          if (moved && Math.abs(dx) > 48) {
+            goTo(current + (dx < 0 ? 1 : -1));
+            stage.classList.add('was-dragged');
+            window.setTimeout(() => stage.classList.remove('was-dragged'), 0);
+          }
+        };
+        stage.addEventListener('pointerup', end);
+        stage.addEventListener('pointercancel', end);
+        stage.addEventListener('pointerleave', end);
+        stage.addEventListener('dragstart', (event) => event.preventDefault());
+
+        // Trackpad / horizontal wheel swipe: one step per gesture, momentum ignored
+        let wheelAcc = 0;
+        let wheelLast = 0;
+        let wheelLockUntil = 0;
+        stage.addEventListener(
+          'wheel',
+          (event) => {
+            if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return; // vertical scroll passes through
+            event.preventDefault();
+            const now = performance.now();
+            if (now - wheelLast > 160) wheelAcc = 0;
+            wheelLast = now;
+            if (now < wheelLockUntil) {
+              wheelLockUntil = Math.max(wheelLockUntil, now + 160);
+              return;
+            }
+            wheelAcc += event.deltaX;
+            if (Math.abs(wheelAcc) > 50) {
+              goTo(current + (wheelAcc > 0 ? 1 : -1));
+              wheelAcc = 0;
+              wheelLockUntil = now + 500;
+            }
+          },
+          { passive: false },
+        );
+      }
+
+      goTo(0);
+    }
+
+    // —— Scroll journey (desktop sticky phone) ——
+    const journeyRoot = document.querySelector('[data-archi-journey]');
+    if (journeyRoot && 'IntersectionObserver' in window) {
+      const steps = Array.from(journeyRoot.querySelectorAll<HTMLElement>('[data-journey-step]'));
+      const screens = Array.from(journeyRoot.querySelectorAll<HTMLElement>('[data-journey-screen]'));
+      const setActive = (id: string) => {
+        steps.forEach((step) => {
+          step.dataset.active = step.dataset.journeyStep === id ? 'true' : 'false';
+        });
+        screens.forEach((screen) => {
+          screen.dataset.active = screen.dataset.journeyScreen === id ? 'true' : 'false';
+        });
+      };
+      const journeyIo = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          const id = (visible.target as HTMLElement).dataset.journeyStep;
+          if (id) setActive(id);
+        },
+        { rootMargin: '-35% 0px -45% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
+      );
+      steps.forEach((step) => journeyIo.observe(step));
+    }
+
+    // —— 2D / 3D compare (drag on the frame) ——
+    // Left of --pos = 2D, right = 3D. Starts at 50%.
+    const compareRoot = document.querySelector<HTMLElement>('[data-archi-compare]');
+    if (compareRoot) {
+      const stage = compareRoot.querySelector<HTMLElement>('[data-compare-stage]');
+      const layers = stage?.querySelector<HTMLElement>('.compare-layers');
+      if (stage && layers) {
+        const apply = (clientX: number) => {
+          const rect = layers.getBoundingClientRect();
+          const split = Math.max(0, Math.min(100, Math.round(((clientX - rect.left) / rect.width) * 100)));
+          stage.style.setProperty('--pos', `${split}%`);
+        };
+        let dragging = false;
+        layers.addEventListener('pointerdown', (event) => {
+          dragging = true;
+          layers.setPointerCapture(event.pointerId);
+          apply(event.clientX);
+        });
+        layers.addEventListener('pointermove', (event) => {
+          if (dragging) apply(event.clientX);
+        });
+        const endDrag = () => { dragging = false; };
+        layers.addEventListener('pointerup', endDrag);
+        layers.addEventListener('pointercancel', endDrag);
+      }
+    }
+
+  </script>
+</body>
+</html>
+
+<style>
+  .archi-case-page {
+    --a-dark:#111110;
+    --a-dark-raised:#1b1b1a;
+    --a-paper:#f3f2ee;
+    --a-white:#fff;
+    --a-ink:#141413;
+    --a-muted:#5f5d58;
+    --a-muted-dark:#a3a09a;
+    --a-subtle-dark:#77746e;
+    --a-line:rgb(20 20 19 / 14%);
+    --a-line-dark:rgb(255 255 255 / 14%);
+    --a-accent:var(--color-accent);
+    --a-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+    --a-radius:4px;
+    --a-radius-lg:14px;
+    --a-section:clamp(88px,10vw,150px);
+    --case-back-accent:var(--a-accent);
+    --case-back-focus:var(--a-accent);
+    overflow-x:hidden;
+    background:var(--a-paper);
+  }
+  main { display:block; padding-top:var(--nav-height); }
+  .archi-shell { width:min(calc(100% - (2 * var(--page-gutter))),var(--content-max)); margin-inline:auto; }
+
+  .marker { display:inline-grid; place-items:center; flex:none; min-width:24px; height:24px; padding:0 4px; border:1.5px solid var(--a-ink); border-radius:2px; background:var(--a-ink); color:var(--a-white); font:600 10px/1 var(--a-mono); font-style:normal; letter-spacing:.04em; }
+  .archi-hero .marker,.section-dark .marker,.case-cta .marker { border-color:var(--a-white); background:var(--a-white); color:var(--a-ink); box-shadow:0 0 0 4px rgb(255 255 255 / 8%); }
+  /* Same optical line as the uppercase label (11px mono) */
+  .kicker .marker,.section-index .marker {
+    display:block;
+    min-width:11px;
+    width:11px;
+    height:11px;
+    padding:0;
+    box-sizing:border-box;
+    border-width:1.5px;
+    border-radius:0;
+    translate:none;
+  }
+
+  /* Node — a small square map-pin without digits; `.is-on` / active state adds an inner square. */
+  .node { position:relative; z-index:1; display:block; flex:none; width:11px; height:11px; box-sizing:border-box; border:1.5px solid rgb(255 255 255 / 55%); border-radius:0; background:var(--a-dark); transition:border-color .25s ease; }
+  .node::after { content:''; position:absolute; inset:2px; background:#fff; opacity:0; transition:opacity .25s ease; }
+  .node.is-on,.journey-step[data-active="true"] .node { border-color:#fff; }
+  .node.is-on::after,.journey-step[data-active="true"] .node::after { opacity:1; }
+
+  .kicker,.section-index { display:flex; align-items:center; gap:12px; margin:0; font:600 11px/1 var(--a-mono); letter-spacing:.12em; text-transform:uppercase; }
+  .section-index { color:var(--a-ink); }
+  h1,h2 { margin:0; font-family:var(--font-heading); font-weight:500; text-wrap:balance; }
+  h1 em,h2 em { font-style:normal; }
+  .lead { max-width:46ch; margin:28px 0 0; color:var(--a-muted); font-size:17px; line-height:1.65; }
+  .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+  /* Hero */
+  .archi-hero { padding-bottom:clamp(64px,7vw,104px); background:var(--a-dark); color:var(--a-white); }
+  .archi-hero { --case-back-ink:var(--a-muted-dark); position:relative; isolation:isolate; overflow:hidden; }
+  .archi-hero > :not(.hero-map) { position:relative; z-index:1; }
+  .hero-map {
+    position:absolute; inset:0 0 auto; z-index:0; height:clamp(560px, 64vw, 940px); overflow:hidden; pointer-events:none;
+    mask-image:linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+  }
+  .hero-map-camera {
+    position:absolute; inset:-4%;
+    background:var(--hero-map-image) center / cover no-repeat;
+    opacity:.72;
+    transform-origin:62% 38%;
+    animation:archi-map-camera 44s ease-in-out infinite alternate;
+    will-change:transform;
+  }
+  .hero-map::after {
+    content:''; position:absolute; inset:0;
+    background:
+      linear-gradient(90deg, var(--a-dark) 0%, rgb(17 17 16 / 90%) 34%, rgb(17 17 16 / 40%) 66%, rgb(17 17 16 / 50%) 100%),
+      linear-gradient(180deg, rgb(17 17 16 / 50%) 0%, transparent 32%);
+  }
+  .archi-hero[data-offscreen] .hero-map-camera { animation-play-state:paused; }
+  @keyframes archi-map-camera {
+    from { transform:scale(1.02) translate3d(0, 0, 0); }
+    to { transform:scale(1.14) translate3d(-3%, 2%, 0); }
+  }
+  .hero-nav-row { display:flex; padding-block:14px 12px; }
+  .hero-copy {
+    display:grid; grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr); align-items:start;
+    gap:clamp(32px,5vw,88px); padding-block:clamp(28px,4vw,56px) clamp(24px,3.5vw,40px);
+  }
+  .archi-hero .kicker { color:#cfccc5; }
+  h1 {
+    margin-top:18px; color:#fff; font-size:clamp(44px,6.2vw,84px); line-height:.9; letter-spacing:-.055em;
+    text-shadow:0 2px 24px rgb(0 0 0 / 50%);
+  }
+  h1 em { display:block; color:#dedbd4; }
+  .hero-intro>p {
+    max-width:40ch; margin:0; color:#f3f2ee; font-size:clamp(17px,1.4vw,20px); line-height:1.6;
+    text-shadow:0 1px 16px rgb(0 0 0 / 55%);
+  }
+
+  .store-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:28px; }
+  .store-badge {
+    display:block;
+    width:auto;
+    height:52px;
+    border-radius:8px;
+  }
+  .store-badge img { display:block; width:auto; height:100%; }
+  .hero-web-link { margin-top:18px; color:#fff; border-bottom-color:rgb(255 255 255 / 45%); text-shadow:0 1px 12px rgb(0 0 0 / 45%); }
+
+  .primary-link { display:inline-flex; align-items:center; justify-content:space-between; gap:28px; min-width:220px; min-height:52px; margin-top:30px; padding:0 9px 0 20px; border-radius:999px; background:var(--a-white); color:var(--a-ink); font-size:14px; font-weight:600; transition:transform .25s var(--ease-out); }
+  .primary-link span { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:var(--a-accent); color:var(--a-white); pointer-events:none; transition:background .2s ease,color .2s ease; }
+  .primary-link svg { display:block; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .primary-link:focus-visible,.text-link:focus-visible,.store-badge:focus-visible,.tab:focus-visible { outline:3px solid var(--a-white); outline-offset:4px; }
+  .section-white .tab:focus-visible,.section-paper .primary-link:focus-visible { outline-color:var(--a-ink); }
+
+  .text-link { display:inline-flex; align-items:center; min-height:44px; border-bottom:1px solid #6d6a64; color:#cfccc5; font-size:14px; transition:color .2s ease,border-color .2s ease; }
+
+  .hero-demo { display:grid; grid-template-columns:minmax(260px,340px) minmax(0,520px); align-items:center; justify-content:center; gap:clamp(40px,6vw,110px); margin-top:clamp(12px,2vw,28px); }
+  .hero-phone { width:100%; min-width:0; max-height:min(68svh,720px); }
+  .hero-phone :global(.case-media-phone-frame) { width:min(100%,calc(min(68svh,720px) * 612 / 1324)); margin-inline:auto; }
+  .hero-demo-copy { min-width:0; text-align:left; }
+  .hero-demo-copy .demo-tag { display:flex; align-items:center; margin:0; color:#cfccc5; font:600 11px/1 var(--a-mono); letter-spacing:.12em; text-transform:uppercase; }
+  .hero-demo-copy h2 { margin:18px 0 0; color:#fff; font:500 clamp(32px,4vw,52px)/1.02 var(--font-heading); letter-spacing:-.045em; text-wrap:balance; text-shadow:0 2px 20px rgb(0 0 0 / 45%); }
+  .hero-demo-copy h2 em { display:block; color:#dedbd4; font-style:normal; }
+  .hero-demo-copy > p:not(.demo-tag):not(.demo-cue) { max-width:44ch; margin:20px 0 0; color:#e7e4dd; font-size:17px; line-height:1.6; text-shadow:0 1px 14px rgb(0 0 0 / 50%); }
+  .hero-demo-copy .demo-cue { max-width:44ch; margin:28px 0 0; padding-top:16px; border-top:1px solid var(--a-line-dark); color:#cfccc5; font:500 11px/1.4 var(--a-mono); letter-spacing:.06em; text-transform:uppercase; }
+
+  [data-archi-compare] { padding-bottom:clamp(48px,6vw,80px); }
+
+  /* Sections */
+  .section { padding-block:var(--a-section); }
+  .section-paper { background:var(--a-paper); }
+  .section-white { background:var(--a-white); }
+  .section-dark { background:var(--a-dark); color:var(--a-white); }
+  .section h2 { color:var(--a-ink); font-size:clamp(42px,5.4vw,78px); line-height:.94; letter-spacing:-.055em; }
+  .section h2 em { color:var(--a-muted); }
+  .section-dark .section-index { color:var(--a-white); }
+  .section-dark h2 { color:var(--a-white); }
+  .section-dark h2 em { color:#dedbd4; }
+  .section-dark .lead { color:#cfccc5; }
+
+  .split-heading { display:grid; grid-template-columns:minmax(180px,.3fr) minmax(0,1fr); align-items:start; gap:clamp(36px,7vw,110px); }
+  .split-heading .section-index { padding-top:12px; }
+
+  /* Audience carousel */
+  .aud-carousel { --aud-phone:300px; --aud-step:calc(var(--aud-phone) * 1.12); margin-top:clamp(56px,7vw,96px); }
+  .aud-stage-wrap { position:relative; }
+  .aud-stage { overflow-x:clip; overflow-y:visible; padding-block:8px; touch-action:pan-y; cursor:grab; user-select:none; -webkit-user-select:none; }
+  .aud-stage.is-dragging { cursor:grabbing; }
+  .aud-track { display:grid; justify-items:center; margin:0; padding:0; list-style:none; }
+  .aud-slide {
+    grid-area:1 / 1;
+    width:var(--aud-phone);
+    transition:transform .7s var(--ease-out), filter .7s var(--ease-out), opacity .7s var(--ease-out);
+    will-change:transform, filter, opacity;
+  }
+  .aud-slide :global(.case-media-phone-frame) { width:100%; }
+  .aud-slide[data-state="active"] { z-index:3; transform:none; filter:none; opacity:1; }
+  .aud-slide[data-state="prev"],.aud-slide[data-state="next"] { z-index:2; filter:blur(3px); opacity:.72; cursor:pointer; }
+  .aud-slide[data-state="prev"] { transform:translateX(calc(var(--aud-step) * -1)) scale(.84); }
+  .aud-slide[data-state="next"] { transform:translateX(var(--aud-step)) scale(.84); }
+  .aud-slide[data-state="far-prev"],.aud-slide[data-state="far-next"] { z-index:1; filter:blur(12px); opacity:0; pointer-events:none; }
+  .aud-slide[data-state="far-prev"] { transform:translateX(calc(var(--aud-step) * -1.7)) scale(.72); }
+  .aud-slide[data-state="far-next"] { transform:translateX(calc(var(--aud-step) * 1.7)) scale(.72); }
+
+  .aud-copy {
+    position:relative;
+    z-index:4;
+    display:grid;
+    width:min(calc(100% - 24px),400px);
+    margin:0 auto;
+    margin-top:calc(var(--aud-phone) * 1691 / 780 * -.25);
+    padding:24px 24px 22px;
+    border-radius:12px;
+    background:rgb(243 242 238 / 88%);
+    -webkit-backdrop-filter:blur(10px);
+    backdrop-filter:blur(10px);
+    box-shadow:0 18px 40px rgb(0 0 0 / 28%), 0 4px 12px rgb(0 0 0 / 16%);
+    transition:opacity .35s ease, transform .4s var(--ease-out), filter .35s ease;
+  }
+  .aud-carousel[data-peek="true"] .aud-copy {
+    opacity:0;
+    filter:blur(6px);
+    transform:translateY(24px);
+    pointer-events:none;
+  }
+  .aud-slide[data-state="active"] { cursor:zoom-in; }
+  .aud-carousel[data-peek="true"] .aud-slide[data-state="active"] { cursor:zoom-out; }
+  .aud-slide[data-state="active"]:focus-visible { outline:none; }
+  .aud-slide[data-state="active"]:focus-visible :global(.case-media-phone-frame) { outline:3px solid var(--a-ink); outline-offset:6px; }
+  .aud-copy-item {
+    grid-area:1 / 1;
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    opacity:0;
+    filter:blur(6px);
+    transform:translateY(8px);
+    visibility:hidden;
+    transition:opacity .45s ease, filter .45s ease, transform .45s var(--ease-out), visibility 0s linear .45s;
+  }
+  .aud-copy-item[data-active="true"] { opacity:1; filter:none; transform:none; visibility:visible; transition-delay:.12s,.12s,.12s,0s; }
+  .aud-copy h3 { margin:0; color:var(--a-ink); font:500 26px/1.08 var(--font-heading); letter-spacing:-.035em; }
+  .aud-copy .aud-text { margin:12px 0 0; color:var(--a-muted); font-size:15px; line-height:1.55; }
+  .aud-copy .aud-cue {
+    margin:auto 0 0;
+    padding-top:14px;
+    border-top:1px solid var(--a-line);
+    color:var(--a-ink);
+    font:500 11px/1.4 var(--a-mono);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+
+  .aud-controls { display:flex; align-items:center; justify-content:center; margin-top:28px; }
+  .aud-arrow {
+    position:absolute; top:calc(var(--aud-phone) * 1691 / 780 / 2); z-index:5; translate:0 -50%;
+    display:inline-grid; place-items:center; width:48px; height:48px; padding:0;
+    border:1px solid var(--a-ink); border-radius:50%; background:rgb(243 242 238 / 92%); color:var(--a-ink); cursor:pointer;
+    transition:background .2s ease, color .2s ease, opacity .2s ease;
+  }
+  .aud-arrow-prev { left:0; }
+  .aud-arrow-next { right:0; }
+  .aud-arrow:disabled { opacity:.3; cursor:default; }
+  .aud-arrow:focus-visible,.aud-dot:focus-visible { outline:3px solid var(--a-ink); outline-offset:4px; }
+  .aud-dots { display:flex; align-items:center; gap:6px; }
+  .aud-dot { position:relative; width:28px; height:44px; padding:0; border:0; background:transparent; cursor:pointer; }
+  .aud-dot::before { content:''; position:absolute; left:50%; top:50%; width:8px; height:8px; margin:-4px 0 0 -4px; border:1px solid var(--a-ink); background:transparent; transition:background .25s ease, transform .25s var(--ease-out); }
+  .aud-dot[aria-selected="true"]::before { background:var(--a-ink); transform:scale(1.25); }
+
+  @media (hover:hover) and (pointer:fine) {
+    .aud-arrow:not(:disabled):hover { background:var(--a-ink); color:var(--a-white); }
+  }
+
+  /* Journey */
+  .journey-desktop {
+    display:grid;
+    grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);
+    align-items:start;
+    gap:clamp(48px,8vw,120px);
+    margin-top:clamp(56px,7vw,96px);
+    padding-bottom:clamp(120px,18vh,240px);
+  }
+  .journey-phone-sticky {
+    position:sticky;
+    top:calc(var(--nav-height) + 24px);
+    justify-self:center;
+    align-self:start;
+    width:min(100%,calc((100svh - var(--nav-height) - 48px) * 780 / 1691));
+  }
+  .journey-screen { position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .35s ease; }
+  .journey-screen:first-child { position:relative; }
+  .journey-screen[data-active="true"] { opacity:1; pointer-events:auto; z-index:1; }
+  .journey-steps { display:grid; margin:0; padding:0; list-style:none; }
+  .journey-step {
+    position:relative;
+    display:grid;
+    grid-template-columns:32px 1fr;
+    align-items:start;
+    gap:0;
+    min-height:calc(100svh - var(--nav-height) - 48px);
+    padding:36px 0;
+    opacity:.5;
+    transition:opacity .3s ease;
+  }
+  /* Node sits on the step-tag baseline (11px mono), not mid-headline */
+  .journey-step .node { margin-top:0; }
+  /* Rail: a hairline that threads the nodes together. */
+  .journey-step::before { content:''; position:absolute; left:5px; top:0; bottom:0; width:1px; background:rgb(255 255 255 / 22%); }
+  .journey-step:first-child::before { top:40px; }
+  .journey-step:last-child::before { bottom:auto; height:40px; }
+  .journey-step[data-active="true"] { opacity:1; }
+  .journey-step .step-tag,.journey-mobile .step-tag { margin:0 0 12px; max-width:none; color:var(--a-white); font:600 11px/1 var(--a-mono); letter-spacing:.12em; text-transform:uppercase; }
+  .journey-step .step-eg,.journey-mobile .step-eg { margin:22px 0 0; max-width:none; padding-top:14px; border-top:1px solid var(--a-line-dark); color:var(--a-muted-dark); font:500 11px/1.4 var(--a-mono); letter-spacing:.06em; text-transform:uppercase; }
+  .journey-step h3 { margin:0; color:var(--a-white); font:500 26px/1.1 var(--font-heading); letter-spacing:-.03em; }
+  .journey-step p { margin:10px 0 0; max-width:40ch; color:var(--a-muted-dark); font-size:16px; line-height:1.55; }
+  .journey-mobile { display:none; margin:clamp(48px,6vw,72px) auto 0; padding:0; list-style:none; }
+  .journey-mobile li { display:grid; gap:24px; padding:36px 0; border-bottom:1px solid var(--a-line-dark); }
+  .journey-mobile-copy { display:grid; grid-template-columns:28px 1fr; gap:0; }
+  .journey-mobile-copy .node { margin-top:0; }
+  .journey-mobile h3 { margin:0; color:var(--a-white); font:500 24px/1.1 var(--font-heading); letter-spacing:-.03em; }
+  .journey-mobile p { margin:10px 0 0; color:var(--a-muted-dark); font-size:15px; line-height:1.55; }
+
+  /* Compare — stage width = photo width so the range sits flush under the frame */
+  .compare-stage {
+    --compare-max-h:min(62svh,580px);
+    position:relative;
+    width:min(100%,calc(var(--compare-max-h) * 1600 / 951));
+    margin:clamp(48px,6vw,80px) auto 0;
+  }
+  .compare-layers {
+    position:relative;
+    container-type:inline-size;
+    aspect-ratio:1600 / 951;
+    width:100%;
+    max-height:var(--compare-max-h);
+    border-radius:var(--a-radius-lg);
+    overflow:hidden;
+    background:#0b0b0a;
+    cursor:ew-resize;
+    touch-action:none;
+  }
+  .compare-layer { border-radius:inherit; height:100%; }
+  .compare-layer img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    user-select:none;
+    -webkit-user-drag:none;
+    pointer-events:none;
+  }
+  .compare-base { position:relative; }
+  .compare-reveal {
+    position:absolute;
+    inset:0 auto 0 0;
+    z-index:1;
+    width:var(--pos, 50%);
+    overflow:hidden;
+  }
+  .compare-reveal img { width:100cqw; max-width:none; }
+  .compare-handle {
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:var(--pos, 50%);
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:2px;
+    translate:-50% 0;
+    background:var(--a-white);
+    box-shadow:0 0 0 1px rgb(0 0 0 / 25%);
+    pointer-events:none;
+  }
+  .compare-handle i {
+    position:relative;
+    width:38px;
+    height:38px;
+    border:1.5px solid var(--a-white);
+    border-radius:50%;
+    background:rgb(17 17 16 / 45%);
+    box-shadow:0 6px 20px rgb(0 0 0 / 28%);
+    backdrop-filter:blur(6px);
+  }
+  .compare-handle i::before,
+  .compare-handle i::after {
+    content:"";
+    position:absolute;
+    top:50%;
+    width:7px;
+    height:7px;
+    border-top:1.5px solid var(--a-white);
+    border-right:1.5px solid var(--a-white);
+  }
+  .compare-handle i::before { left:10px; translate:0 -50%; rotate:-135deg; }
+  .compare-handle i::after { right:10px; translate:0 -50%; rotate:45deg; }
+
+  /* 2D / 3D sit outside the frame, on its left and right edges */
+  .compare-tag {
+    position:absolute;
+    top:50%;
+    z-index:2;
+    margin:0;
+    color:var(--a-ink);
+    font:700 12px/1 var(--a-mono);
+    letter-spacing:.14em;
+    pointer-events:none;
+  }
+  .compare-tag-2d { left:0; translate:calc(-100% - clamp(12px,1.6vw,22px)) -50%; }
+  .compare-tag-3d { right:0; translate:calc(100% + clamp(12px,1.6vw,22px)) -50%; }
+
+  /* Effect copy under the frame — one line */
+  .compare-note {
+    margin:clamp(16px,1.8vw,22px) 0 0;
+    color:var(--a-muted);
+    font-size:14px;
+    line-height:1.5;
+    text-align:center;
+  }
+  .compare-note em { color:var(--a-ink); font-style:normal; font-weight:600; }
+  /* Narrow screens have no room beside the frame — sit the labels under it */
+  @media (max-width:860px) {
+    .compare-tag { position:static; translate:none; display:block; margin-top:12px; }
+    .compare-tag-3d { margin-top:-13px; text-align:right; }
+  }
+
+  /* Web preview: one dominant product view, followed by compact platform detail. */
+  .web-section .split-heading h2 { max-width:11ch; }
+  .web-stage {
+    width:min(calc(100% - (2 * var(--page-gutter))),880px);
+    margin:clamp(40px,5vw,72px) auto 0;
+  }
+  .web-preview { position:relative; }
+  .web-stage :global(.case-media) { width:100%; }
+  .web-stage :global(.case-media-browser) { width:100%; }
+  .web-open-button {
+    position:absolute;
+    right:16px;
+    bottom:16px;
+    z-index:3;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    min-height:44px;
+    padding:0 16px;
+    border:1px solid rgb(255 255 255 / 24%);
+    border-radius:999px;
+    background:rgb(17 17 16 / 86%);
+    color:var(--a-white);
+    font-size:13px;
+    font-weight:600;
+    backdrop-filter:blur(10px);
+    box-shadow:0 12px 32px rgb(0 0 0 / 35%);
+    transition:transform .2s var(--ease-out),background .2s ease;
+  }
+  .web-open-button svg { fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Both this section and the CTA are dark — don't stack two full section paddings */
+  .web-section { padding-bottom:clamp(36px,4vw,56px); }
+  .platform-stack {
+    width:min(calc(100% - (2 * var(--page-gutter))),880px);
+    margin-top:clamp(36px,4.5vw,56px);
+    padding-top:24px;
+    border-top:1px solid var(--a-line-dark);
+  }
+  .platform-stack-label { margin:0 0 22px; color:var(--a-muted-dark); font:600 10px/1.5 var(--a-mono); letter-spacing:.12em; text-transform:uppercase; }
+  .platform-stack dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); margin:0; }
+  .platform-stack dl div { min-width:0; padding:0 28px; border-left:1px solid var(--a-line-dark); }
+  .platform-stack dl div:first-child { padding-left:0; border-left:0; }
+  .platform-stack dt { color:var(--a-white); font:500 22px/1.1 var(--font-heading); letter-spacing:-.025em; }
+  .platform-stack dd { margin:12px 0 0; }
+  .platform-stack dd span { display:block; color:#d4d1ca; font-size:14px; line-height:1.45; }
+  .platform-stack dd small { display:block; margin-top:8px; color:var(--a-muted-dark); font:500 11px/1.5 var(--a-mono); }
+  .web-open-button:focus-visible { outline:3px solid var(--a-white); outline-offset:3px; }
+
+  /* CTA */
+  .case-cta { padding:clamp(48px,5vw,72px) 0 clamp(88px,10vw,148px); background:var(--a-dark); color:var(--a-white); }
+  .case-cta .kicker { color:var(--a-muted-dark); }
+  .case-cta h2 { margin-top:28px; font-size:clamp(42px,5.4vw,78px); line-height:.94; letter-spacing:-.055em; }
+  .case-cta h2 em { color:var(--a-muted-dark); }
+  .cta-actions { display:flex; flex-wrap:wrap; align-items:center; gap:28px; margin-top:46px; }
+  .cta-actions .primary-link { margin-top:0; min-width:250px; }
+  .cta-stores { margin-top:0; }
+
+  @media (hover:hover) and (pointer:fine) {
+    .primary-link:hover { transform:translateY(-2px); }
+    .primary-link:hover span { background:var(--a-ink); }
+    .text-link:hover { border-color:var(--a-white); color:var(--a-white); }
+    .web-open-button:hover { transform:translateY(-2px); background:var(--a-dark); }
+  }
+
+  @media (max-width:980px) {
+    .hero-copy,.split-heading,.journey-desktop { grid-template-columns:1fr; }
+    .split-heading .section-index { padding-top:0; }
+    .hero-demo { grid-template-columns:1fr; justify-items:center; gap:40px; }
+    .hero-phone { width:min(100%,320px); }
+    .hero-demo-copy { width:min(100%,520px); text-align:center; }
+    .hero-demo-copy .demo-tag { justify-content:center; }
+    .hero-demo-copy > p:not(.demo-tag):not(.demo-cue),.hero-demo-copy .demo-cue { margin-inline:auto; }
+    .aud-carousel { --aud-phone:min(62vw,270px); --aud-step:calc(var(--aud-phone) * .92); }
+    .aud-arrow { width:40px; height:40px; }
+    .aud-arrow-prev { left:-4px; }
+    .aud-arrow-next { right:-4px; }
+    .journey-desktop { display:none; }
+    .journey-mobile { display:grid; }
+  }
+
+  @media (max-width:720px) {
+    .archi-shell { width:90%; }
+    .cta-actions { flex-direction:column; align-items:stretch; }
+    .cta-actions .primary-link { width:100%; }
+  }
+
+  @media (max-width:520px) {
+    .archi-shell { width:92%; }
+    h1 { font-size:clamp(40px,11vw,58px); }
+    .section h2,.case-cta h2 { font-size:clamp(36px,11vw,52px); }
+    .store-row { flex-direction:column; align-items:flex-start; }
+    .web-stage { width:92%; }
+    .web-open-button { right:10px; bottom:10px; padding-inline:13px; }
+    .platform-stack dl { grid-template-columns:1fr; gap:16px; }
+    .platform-stack dl div,.platform-stack dl div:first-child { padding:18px 0 0; border-top:1px solid var(--a-line-dark); border-left:0; }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .hero-map-camera { animation:none; }
+    .primary-link,.primary-link span,.text-link,.journey-screen,.journey-step,.aud-slide,.aud-copy-item,.aud-dot::before,.web-open-button { transition:none; }
+    .primary-link:hover,.web-open-button:hover { transform:none; }
+  }
+</style>

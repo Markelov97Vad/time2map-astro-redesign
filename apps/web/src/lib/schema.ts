@@ -102,7 +102,11 @@ export function useCasesSchema(site: Site, useCases: Entry[], description: strin
           name: useCase.data.title,
           keywords: useCase.data.tags.join(', '),
           image: abs(site, useCase.data.images[0]),
-          ...(useCase.data.tryItUrl && { url: useCase.data.tryItUrl }),
+          ...((useCase.data.caseStudyUrl || useCase.data.tryItUrl) && {
+            url: useCase.data.caseStudyUrl
+              ? abs(site, useCase.data.caseStudyUrl)
+              : useCase.data.tryItUrl,
+          }),
         },
       })),
     },

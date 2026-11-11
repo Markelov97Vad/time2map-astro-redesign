@@ -3,6 +3,7 @@ import site from '../content/site.yaml';
 
 const year = new Date().getFullYear();
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isUseCases = path === '/use-cases' || path.startsWith('/use-cases/');
 ---
 
 <footer class="site-footer">
@@ -19,15 +20,15 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     </div>
     <div class="footer-actions">
       <nav class="footer-links" aria-label="Footer navigation">
-        <a href="/use-cases" aria-current={path === '/use-cases' ? 'page' : undefined}>Use Cases</a>
+        <a href="/use-cases" aria-current={isUseCases ? 'page' : undefined}>Use Cases</a>
         <a href="/contact-us" aria-current={path === '/contact-us' ? 'page' : undefined}>Contact Us</a>
         <a href={site.privacyPolicyUrl} target="_blank" rel="noopener">Privacy Policy <span>↗︎</span></a>
       </nav>
       <nav class="footer-social" aria-label="Social links">
-        <a href={site.social.linkedinPersonal} target="_blank" rel="noopener" aria-label="LinkedIn">
+        <a href={site.social.linkedinCompany} target="_blank" rel="noopener" aria-label="time2map on LinkedIn">
           <img src="/images/icons/linkedin.svg" alt="" width="32" height="32" />
         </a>
-        <a href={site.social.upworkAgency} target="_blank" rel="noopener" aria-label="Upwork">
+        <a href={site.social.upworkAgency} target="_blank" rel="noopener" aria-label="time2map on Upwork">
           <img src="/images/icons/upwork.svg" alt="" width="32" height="32" />
         </a>
       </nav>

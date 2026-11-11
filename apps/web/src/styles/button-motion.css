@@ -1,0 +1,46 @@
+:root {
+  --button-motion-duration: 180ms;
+  --button-motion-ease: cubic-bezier(.23, 1, .32, 1);
+}
+
+/* Shared mechanics only; each component keeps its own color and surface treatment. */
+:is(.button-motion.button-motion, .consultation-cta.consultation-cta) {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--button-motion-duration) var(--button-motion-ease),
+    background-color var(--button-motion-duration) ease,
+    color var(--button-motion-duration) ease,
+    border-color var(--button-motion-duration) ease,
+    box-shadow var(--button-motion-duration) ease;
+}
+
+:is(.button-motion.button-motion, .consultation-cta.consultation-cta):focus-visible {
+  outline: 3px solid var(--button-focus-color, var(--color-accent, #c94e43));
+  outline-offset: 4px;
+}
+
+:is(.button-motion.button-motion, .consultation-cta.consultation-cta):active:not(:disabled, [aria-disabled='true']) {
+  transform: translateY(0) scale(.985);
+  transition-duration: 110ms;
+}
+
+:is(.button-motion.button-motion, .consultation-cta.consultation-cta):is(:disabled, [aria-disabled='true']) {
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(.button-motion.button-motion, .consultation-cta.consultation-cta):hover:not(:disabled, [aria-disabled='true']) {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.button-motion.button-motion, .consultation-cta.consultation-cta),
+  :is(.button-motion.button-motion, .consultation-cta.consultation-cta):hover,
+  :is(.button-motion.button-motion, .consultation-cta.consultation-cta):active {
+    transform: none;
+    transition-duration: 0ms;
+  }
+}

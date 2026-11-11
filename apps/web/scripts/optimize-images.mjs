@@ -12,8 +12,10 @@
  *  - `toWebp`     → same picture as WebP next to the original (references updated by hand).
  *  - `rasterise`  → traced "SVG" logos (hundreds of KB of paths) rendered to small PNGs.
  *
- * With `--prune`, sources of `variants`, `toWebp` and `rasterise` are deleted once their
- * outputs exist. Idempotent: outputs are regenerated on every run.
+ * With `--prune`, sources of `variants` (unless `keep`), `toWebp` and `rasterise` are
+ * deleted once their outputs exist. `--only=variants,rasterise` limits the run to those
+ * steps: `inPlace`/`toWebp` re-encode lossy files, so run them once per new source, not
+ * on every invocation. `variants` and `rasterise` are idempotent.
  */
 import sharp from 'sharp';
 import { readFile, rename, stat, unlink } from 'node:fs/promises';
@@ -23,16 +25,19 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public/images');
 const PRUNE = process.argv.includes('--prune');
+const ONLY = (process.argv.find((arg) => arg.startsWith('--only=')) ?? '').slice('--only='.length).split(',').filter(Boolean);
+const runStep = (name) => ONLY.length === 0 || ONLY.includes(name);
 
 const DEVICE = ['audio-guides-1', 'audio-guides-2', 'audio-guides-3', 'recycling-1', 'recycling-2', 'recycling-3', 'airport-maps-1', 'airport-maps-2', 'airport-maps-3'];
-const PROJECTS = ['coal-mining', 'coal-mining-2', 'coal-mining-3', 'ski', 'land-certificates', 'land-certificates-2', 'land-certificates-3', 'georeferencing'];
+const USE_CASES = ['airport-maps-1', 'airport-maps-2', 'airport-maps-3', 'audio-guides-1', 'audio-guides-2', 'audio-guides-3', 'coal-mining-1', 'coal-mining-2', 'coal-mining-3', 'georeferencing-1', 'land-certificates-1', 'land-certificates-2', 'land-certificates-3', 'recycling-1', 'recycling-2', 'recycling-3', 'ski-resort-1', 'weed-detection-1', 'weed-detection-2', 'weed-detection-3'];
 
-/** @type {{ src: string, widths: number[], quality: number }[]} */
+/** @type {{ src: string, widths: number[], quality: number, keep?: boolean }[]} */
 const variants = [
   // Device-frame slides: the frame is at most 860 CSS px wide (×2 for retina).
   ...DEVICE.map((n) => ({ src: `${n}.webp`, widths: [720, 1280, 1720], quality: 75 })),
-  // Project carousel tiles: min(76vw, 1120px) wide, object-fit: cover.
-  ...PROJECTS.map((n) => ({ src: `projects/${n}.webp`, widths: [640, 1120, 1600], quality: 72 })),
+  // /use-cases cards (preview ≈ 740 px, lightbox up to 1500 px). Sources stay: the content
+  // collection references them (JSON-LD image, UseCaseCard derives the variant names).
+  ...USE_CASES.map((n) => ({ src: `use-cases/${n}.webp`, widths: [720, 1280, 1600], quality: 75, keep: true })),
   // Expertise bento cards (PNG → WebP, alpha kept).
   { src: 'maps-card.png', widths: [700, 1100, 1360], quality: 75 },
   { src: 'postGIS.png', widths: [520, 900], quality: 75 },
@@ -44,6 +49,7 @@ const variants = [
   { src: 'cicd-pipeline.png', widths: [700, 1360], quality: 75 },
   // Hero globe: the LCP image.
   { src: 'globe-light.png', widths: [800, 1400], quality: 80 },
+  { src: 'use-cases/ai-library-map.webp', widths: [720, 1280], quality: 75, keep: true },
 ];
 
 /** @type {{ src: string, width?: number, quality?: number, png?: boolean }[]} */
@@ -120,7 +126,7 @@ async function runVariants() {
     }
     manifest[`/images/${v.src}`] = outs;
     log(`${v.src} ${meta.width}×${meta.height} ${kb(await size(src))} → ${outs.map((o) => `${o.width}w ${kb(o.bytes)}`).join(', ')}`);
-    if (PRUNE) pending.push(src);
+    if (PRUNE && !v.keep) pending.push(src);
   }
   return manifest;
 }
@@ -166,9 +172,9 @@ async function runRasterise() {
   }
 }
 
-const manifest = await runVariants();
-await runInPlace();
-await runToWebp();
-await runRasterise();
+const manifest = runStep('variants') ? await runVariants() : {};
+if (runStep('inplace')) await runInPlace();
+if (runStep('towebp')) await runToWebp();
+if (runStep('rasterise')) await runRasterise();
 if (PRUNE) await pruneAll();
 console.log('\nMANIFEST ' + JSON.stringify(manifest));

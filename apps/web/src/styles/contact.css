@@ -16,14 +16,14 @@
 .form-field-message { border-bottom:0; }
 .form-field textarea { min-height:150px; padding:14px 16px; resize:vertical; border:1px solid rgb(0 0 0 / 14%); border-radius:10px; }
 .form-field textarea:focus { border-color:var(--color-accent); box-shadow:0 0 0 3px rgb(201 78 67 / 10%); }
-.form-consent { display:flex; align-items:flex-start; gap:12px; margin:18px 0 26px; color:#777; font-size:13px; line-height:1.45; cursor:pointer; }
+.form-consent { display:flex; align-items:flex-start; gap:12px; margin:18px 0 26px; color:#6a6a6a; font-size:13px; line-height:1.45; cursor:pointer; }
 .form-consent input { flex:none; width:18px; height:18px; margin:1px 0 0; accent-color:var(--color-accent); }
 .form-consent a { color:var(--color-accent); text-decoration:underline; text-underline-offset:3px; }
 .form-submit { display:flex; align-items:center; justify-content:center; gap:18px; width:100%; min-height:58px; padding:8px 12px 8px 24px; border:0; border-radius:999px; background:var(--color-accent); color:#fff; font:500 15px var(--font-body); cursor:pointer; transition:transform .25s ease,background .2s ease,box-shadow .25s ease; }
 .form-submit i { display:grid; place-items:center; width:40px; height:40px; margin-left:auto; border-radius:50%; background:#fff; color:var(--color-accent); font-style:normal; }
 .form-submit::before { content:''; width:40px; margin-right:auto; }
 .form-submit:hover { background:var(--color-heading); box-shadow:0 15px 35px rgb(0 0 0 / 18%); transform:translateY(-2px); }
-.contact-alternatives { display:grid; justify-items:center; gap:16px; margin-top:30px; color:#777; font-size:13px; }
+.contact-alternatives { display:grid; justify-items:center; gap:16px; margin-top:30px; color:#6a6a6a; font-size:13px; }
 .contact-alternatives>span { display:flex; align-items:center; gap:14px; width:100%; white-space:nowrap; }
 .contact-alternatives>span::before,.contact-alternatives>span::after { content:''; width:100%; height:1px; background:rgb(0 0 0 / 10%); }
 .contact-channels { display:flex; gap:12px; }

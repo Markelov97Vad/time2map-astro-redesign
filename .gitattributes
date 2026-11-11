@@ -1,0 +1,11 @@
+* text=auto
+*.webp binary
+*.png binary
+*.jpg binary
+*.ico binary
+
+# Shebangs / shell must stay LF (Windows checkout otherwise breaks Docker builds).
+*.sh text eol=lf
+*.mjs text eol=lf
+deploy/docker/*.conf text eol=lf
+deploy/docker/*.template text eol=lf

@@ -4,6 +4,7 @@ import {
   organizationSchema,
   websiteSchema,
   faqSchema,
+  useCasesSchema,
   contactPageSchema,
   articleSchema,
   breadcrumbSchema,
@@ -67,6 +68,25 @@ describe('faqSchema', () => {
     expect(ld['@type']).toBe('FAQPage');
     expect(ld.mainEntity[0].name).toBe('How?');
     expect(ld.mainEntity[0].acceptedAnswer.text).toBe('Use bold docs.');
+  });
+});
+
+describe('useCasesSchema', () => {
+  it('lists use cases with absolute images and 1-based positions', () => {
+    const useCases = [
+      { data: { title: 'A', tags: ['gis', 'web'], images: ['/images/a.webp'], tryItUrl: 'https://a' } },
+      { data: { title: 'B', tags: [], images: ['/images/b.webp'] } },
+    ];
+    const ld = useCasesSchema(site, useCases, 'Editable description.');
+    expect(ld['@type']).toBe('CollectionPage');
+    expect(ld.description).toBe('Editable description.');
+    expect(ld.url).toBe('https://time2map.com/use-cases');
+    const items = ld.mainEntity.itemListElement;
+    expect(items.map((i: any) => i.position)).toEqual([1, 2]);
+    expect(items[0].item.image).toBe('https://time2map.com/images/a.webp');
+    expect(items[0].item.keywords).toBe('gis, web');
+    expect(items[0].item.url).toBe('https://a');
+    expect(items[1].item.url).toBeUndefined();
   });
 });
 

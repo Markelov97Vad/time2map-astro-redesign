@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_WEB: ghcr.io/time2map/t2m-astro-web
+  IMAGE_APP: ghcr.io/time2map/t2m-astro-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # `build` runs `astro build` + the SEO audit; it fails on any invariant error.
+      - run: npm run build
+      - run: npm run build:server
+
+  docker:
+    name: Build & push images
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta_web
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_WEB }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=,format=long
+          bake-target: docker-metadata-action-web
+
+      - id: meta_app
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_APP }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=,format=long
+          bake-target: docker-metadata-action-app
+
+      - name: Build & push (web + app)
+        uses: docker/bake-action@v6
+        with:
+          files: |
+            ./docker-bake.hcl
+            cwd://${{ steps.meta_web.outputs.bake-file }}
+            cwd://${{ steps.meta_app.outputs.bake-file }}
+          push: true
+
+  deploy:
+    name: Deploy (SSH)
+    needs: docker
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: prod
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render .env from secrets
+        env:
+          ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
+          CONTACT_TO: ${{ secrets.CONTACT_TO }}
+          CONTACT_FROM: ${{ secrets.CONTACT_FROM }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          ALLOWED_ORIGIN: ${{ secrets.ALLOWED_ORIGIN }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gettext-base
+          export ADMIN_USER="${ADMIN_USER:-admin}"
+          export CONTACT_TO="${CONTACT_TO:-contact@time2map.com}"
+          export CONTACT_FROM="${CONTACT_FROM:-}"
+          export SMTP_PORT="${SMTP_PORT:-587}"
+          export SMTP_SECURE="${SMTP_SECURE:-false}"
+          export SITE_URL="${SITE_URL:-https://time2map.com}"
+          export ALLOWED_ORIGIN="${ALLOWED_ORIGIN:-https://time2map.com}"
+          : "${ADMIN_PASS:?ADMIN_PASS secret is required}"
+          umask 077
+          envsubst '$ADMIN_USER $ADMIN_PASS $CONTACT_TO $CONTACT_FROM $SMTP_HOST $SMTP_PORT $SMTP_SECURE $SMTP_USER $SMTP_PASS $SITE_URL $ALLOWED_ORIGIN' \
+            < deploy/docker/server.env.template > .env
+
+      - name: Copy compose + .env
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: docker-compose.yml,.env
+          target: ${{ secrets.DEPLOY_PATH }}
+          overwrite: true
+
+      - name: Pull & restart
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd "${{ secrets.DEPLOY_PATH }}"
+            chmod 600 .env
+            export IMAGE_TAG="${{ github.sha }}"
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f

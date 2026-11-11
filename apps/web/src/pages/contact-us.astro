@@ -10,8 +10,8 @@ import seo from '../content/seo.yaml';
 import { contactPageSchema, breadcrumbSchema } from '../lib/schema';
 
 const socials = [
-  { href: site.social.upworkFreelancer, icon: '/images/icons/upwork.svg', label: 'Alexander Semenov on Upwork' },
-  { href: site.social.linkedinPersonal, icon: '/images/icons/linkedin.svg', label: 'Alexander Semenov on LinkedIn' },
+  { href: site.social.upworkAgency, icon: '/images/icons/upwork.svg', label: 'time2map on Upwork' },
+  { href: site.social.linkedinCompany, icon: '/images/icons/linkedin.svg', label: 'time2map on LinkedIn' },
   { href: site.social.telegram, icon: '/images/icons/telegram.svg', label: 'Contact Alexander Semenov on Telegram' },
   { href: site.social.whatsapp, icon: '/images/icons/whatsapp.svg', label: 'Contact time2map on WhatsApp' },
 ];
@@ -72,7 +72,7 @@ const jsonLd = [
             <input name="privacy" type="checkbox" required/>
             <span>I agree to the processing of my personal data so time2map can respond to my inquiry. <a href={site.privacyPolicyUrl} target="_blank" rel="noopener">Privacy Policy</a>.</span>
           </label>
-          <button class="form-submit" type="submit"><span>Submit the message</span><i>↗︎</i></button>
+          <button class="form-submit button-motion" type="submit"><span>Submit the message</span><i>↗︎</i></button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
 
           <div class="contact-alternatives">
@@ -86,7 +86,7 @@ const jsonLd = [
         </form>
       ) : (
         <div class="contact-form no-form">
-          <a href={`mailto:${site.email}`} class="form-submit email-btn"><span>{site.email}</span><i>↗︎</i></a>
+          <a href={`mailto:${site.email}`} class="form-submit email-btn button-motion"><span>{site.email}</span><i>↗︎</i></a>
           <div class="contact-alternatives">
             <span>Or contact us on social media</span>
             <div class="contact-channels">
