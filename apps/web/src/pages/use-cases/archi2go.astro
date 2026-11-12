@@ -172,7 +172,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
         </div>
         <div class="hero-demo-copy">
           <p class="demo-tag">In motion</p>
-          <h2>Tap a place. <em>Get the full picture.</em></h2>
+          <h2>Tap a place <em>Get the full picture</em></h2>
           <p>Architect, year, story and sources on the card. Exact spot on the map. The building in 3D, with its neighbours.</p>
           <p class="demo-cue">Story / Architect / Location / 3D</p>
         </div>
@@ -185,7 +185,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
       <div class="archi-shell split-heading">
         <p class="section-index"><i class="marker" aria-hidden="true"></i>Who it’s for</p>
         <div>
-          <h2 id="audience-title">Built for people who notice <em>buildings.</em></h2>
+          <h2 id="audience-title">Built for people who notice <em>buildings</em></h2>
           <p class="lead">Not another POI dump. A considered collection for architects, students and design-minded travellers who want the city to stay readable on foot.</p>
         </div>
       </div>
@@ -263,9 +263,9 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
       <div class="archi-shell split-heading">
         <p class="section-index"><i class="marker" aria-hidden="true"></i>Place types</p>
         <div>
-          <h2 id="journey-title">Four ways to read a <em>city.</em></h2>
+          <h2 id="journey-title">Four ways to read a <em>city</em></h2>
           <p class="lead">Pick a type and the list narrows to it — from authored buildings to the quiet corners nobody put on a postcard.</p>
-        </div>
+          </div>
       </div>
 
       <div class="archi-shell journey-desktop">
@@ -297,14 +297,15 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
                 <p class="step-eg">{step.eg}</p>
               </div>
             </li>
-          ))}
-        </ol>
-      </div>
+            ))}
+          </ol>
+        </div>
 
-      <ol class="archi-shell journey-mobile">
-        {journey.map((step, index) => (
+      <!-- Tablet / narrow desktop: stacked steps, each with its own phone -->
+      <ol class="archi-shell journey-stack">
+        {journey.map((step) => (
           <li>
-            <div class="journey-mobile-copy">
+            <div class="journey-stack-copy">
               <i class="node is-on" aria-hidden="true"></i>
               <div>
                 <p class="step-tag">{step.tag}</p>
@@ -327,6 +328,42 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
           </li>
         ))}
       </ol>
+
+      <!-- Phone: one phone, app-style type tabs above, swipeable cards below -->
+      <div class="archi-shell journey-mobile" data-journey-mobile>
+        <div class="jm-tabs" aria-label="Place types">
+          {journey.map((step, index) => (
+            <button type="button" class="jm-tab" data-jm-tab aria-pressed={index === 0 ? 'true' : 'false'}>{step.tag}</button>
+          ))}
+        </div>
+        <div class="jm-phone" data-jm-phone>
+          {journey.map((step, index) => (
+            <div class="jm-screen" data-jm-screen data-active={index === 0 ? 'true' : 'false'}>
+              <CaseMedia
+                kind={step.kind}
+                frame="phone"
+                src={step.src}
+                alt={step.alt}
+                label={step.tag}
+                brief={step.brief}
+                width={780}
+                height={1691}
+                caption=""
+              />
+            </div>
+          ))}
+        </div>
+        <ol class="jm-track" data-jm-track>
+          {journey.map((step, index) => (
+            <li class="jm-card" data-jm-card data-active={index === 0 ? 'true' : 'false'}>
+              <p class="step-tag"><span>{String(index + 1).padStart(2, '0')} / {String(journey.length).padStart(2, '0')}</span>{step.tag}</p>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+              <p class="step-eg">{step.eg}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
 
     <!-- 5. 2D / 3D compare -->
@@ -334,8 +371,8 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
       <div class="archi-shell split-heading">
         <p class="section-index"><i class="marker" aria-hidden="true"></i>Spatial feel</p>
         <div>
-          <h2 id="compare-title">Tilt the map. See the city in <em>3D.</em></h2>
-        </div>
+          <h2 id="compare-title">Tilt the map<br/><em>See the city in 3D</em></h2>
+      </div>
       </div>
       <div class="archi-shell compare-stage" style="--pos:50%" data-compare-stage>
         <div class="compare-layers" role="img" aria-label="Drag to compare 2D overview and 3D view of the same place">
@@ -374,7 +411,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
       <div class="archi-shell split-heading">
         <p class="section-index"><i class="marker" aria-hidden="true"></i>Also on the web</p>
         <div>
-          <h2 id="web-title">The whole city, <em>in one view.</em></h2>
+          <h2 id="web-title">The whole city, <em>in one view</em></h2>
         </div>
       </div>
 
@@ -443,6 +480,72 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
 
   <script>
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Trackpad / horizontal wheel swipe → one step per gesture.
+    // After a step, the trackpad's inertia tail (a decaying stream of deltas, up to ~1 s) is
+    // swallowed. A new swipe is recognised either by a quiet gap or by the delta *speeding up
+    // again*: mean of the newest 4 events vs the 4 before them (inertia only ever slows down,
+    // so a rise means fingers are back on the pad).
+    const bindWheelSteps = (el: HTMLElement, onStep: (dir: number) => void) => {
+      const WHEEL_STEP = 28;
+      const WHEEL_WINDOW = 8;
+      let acc = 0;
+      let last = 0;
+      let locked = false;
+      let lastDir = 0;
+      let stepAt = 0;
+      let history: number[] = [];
+      const mean = (values: number[]) => values.reduce((sum, v) => sum + v, 0) / values.length;
+      el.addEventListener(
+        'wheel',
+        (event) => {
+          const dx = event.deltaX;
+          const adx = Math.abs(dx);
+          if (adx <= Math.abs(event.deltaY)) return; // vertical scroll passes through
+          event.preventDefault();
+
+          const now = performance.now();
+          const dir = Math.sign(dx);
+          const gap = now - last;
+          last = now;
+
+          if (gap > 100) {
+            locked = false;
+            acc = 0;
+            history = [];
+          }
+          history.push(adx);
+          if (history.length > WHEEL_WINDOW) history.shift();
+
+          if (locked && now - stepAt > 200) {
+            const reversed = dir !== lastDir && adx > 10;
+            let speedingUp = false;
+            if (history.length === WHEEL_WINDOW) {
+              const older = mean(history.slice(0, WHEEL_WINDOW / 2));
+              const newer = mean(history.slice(WHEEL_WINDOW / 2));
+              speedingUp = newer > 6 && newer > older * 1.5;
+            }
+            if (reversed || speedingUp) {
+              locked = false;
+              acc = 0;
+            }
+          }
+
+          if (locked) return;
+
+          acc += dx;
+          if (Math.abs(acc) > WHEEL_STEP) {
+            lastDir = Math.sign(acc);
+            onStep(lastDir);
+            acc = 0;
+            locked = true;
+            stepAt = now;
+            history = [];
+          }
+        },
+        { passive: false },
+      );
+    };
 
     const hero = document.querySelector<HTMLElement>('[data-archi-hero]');
     if (hero && 'IntersectionObserver' in window) {
@@ -609,32 +712,10 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
         stage.addEventListener('pointerleave', end);
         stage.addEventListener('dragstart', (event) => event.preventDefault());
 
-        // Trackpad / horizontal wheel swipe: one step per gesture, momentum ignored
-        let wheelAcc = 0;
-        let wheelLast = 0;
-        let wheelLockUntil = 0;
-        stage.addEventListener(
-          'wheel',
-          (event) => {
-            if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return; // vertical scroll passes through
-            event.preventDefault();
-            const now = performance.now();
-            if (now - wheelLast > 160) wheelAcc = 0;
-            wheelLast = now;
-            if (now < wheelLockUntil) {
-              wheelLockUntil = Math.max(wheelLockUntil, now + 160);
-              return;
-            }
-            wheelAcc += event.deltaX;
-            if (Math.abs(wheelAcc) > 50) {
-              goTo(current + (wheelAcc > 0 ? 1 : -1));
-              wheelAcc = 0;
-              wheelLockUntil = now + 500;
-            }
-          },
-          { passive: false },
-        );
       }
+
+      // Trackpad swipe on the whole carousel (phones, caption card, arrows), not just the stage.
+      bindWheelSteps(audRoot, (dir) => goTo(current + dir));
 
       goTo(0);
     }
@@ -666,6 +747,89 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
       steps.forEach((step) => journeyIo.observe(step));
     }
 
+    // —— Journey (mobile): tabs, snap cards and the phone stay in sync ——
+    const jmRoot = document.querySelector<HTMLElement>('[data-journey-mobile]');
+    if (jmRoot) {
+      const tabs = Array.from(jmRoot.querySelectorAll<HTMLButtonElement>('[data-jm-tab]'));
+      const screens = Array.from(jmRoot.querySelectorAll<HTMLElement>('[data-jm-screen]'));
+      const cards = Array.from(jmRoot.querySelectorAll<HTMLElement>('[data-jm-card]'));
+      const track = jmRoot.querySelector<HTMLElement>('[data-jm-track]');
+      const tabsRow = jmRoot.querySelector<HTMLElement>('.jm-tabs');
+      const phone = jmRoot.querySelector<HTMLElement>('[data-jm-phone]');
+      let active = 0;
+
+      const setActive = (index: number) => {
+        if (index === active) return;
+        active = index;
+        tabs.forEach((tab, i) => tab.setAttribute('aria-pressed', i === index ? 'true' : 'false'));
+        screens.forEach((screen, i) => { screen.dataset.active = i === index ? 'true' : 'false'; });
+        cards.forEach((card, i) => { card.dataset.active = i === index ? 'true' : 'false'; });
+        const tab = tabs[index];
+        if (tabsRow && tab) {
+          tabsRow.scrollTo({ left: tab.offsetLeft - (tabsRow.clientWidth - tab.offsetWidth) / 2, behavior: reducedMotion ? 'auto' : 'smooth' });
+        }
+      };
+      const cardLeft = (index: number) => (cards[index]?.offsetLeft ?? 0) - (cards[0]?.offsetLeft ?? 0);
+      // While a programmatic smooth scroll runs, intermediate scroll positions must not
+      // pull `active` back — otherwise a quick second swipe steps from the wrong card.
+      let pendingCard: number | null = null;
+      const scrollToCard = (index: number) => {
+        const i = Math.max(0, Math.min(cards.length - 1, index));
+        pendingCard = i;
+        track?.scrollTo({ left: cardLeft(i), behavior: reducedMotion ? 'auto' : 'smooth' });
+        setActive(i);
+      };
+
+      let scrollFrame = 0;
+      track?.addEventListener(
+        'scroll',
+        () => {
+          cancelAnimationFrame(scrollFrame);
+          scrollFrame = requestAnimationFrame(() => {
+            if (pendingCard !== null) {
+              if (Math.abs(track.scrollLeft - cardLeft(pendingCard)) > 2) return;
+              pendingCard = null;
+            }
+            const pitch = cardLeft(1) || 1;
+            setActive(Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / pitch))));
+          });
+        },
+        { passive: true },
+      );
+      // A finger on the cards cancels any programmatic target — native scroll takes over.
+      track?.addEventListener('touchstart', () => { pendingCard = null; }, { passive: true });
+      tabs.forEach((tab, i) => tab.addEventListener('click', () => scrollToCard(i)));
+
+      // Swipe left / right anywhere in the block flips the type, like the tabs inside the app:
+      // trackpad → one type per gesture; mouse drag anywhere; finger on the phone
+      // (on the cards a finger already scrolls the snap track natively).
+      bindWheelSteps(jmRoot, (dir) => scrollToCard(active + dir));
+      jmRoot.addEventListener('dragstart', (event) => event.preventDefault());
+
+      let swipeId: number | null = null;
+      let startX = 0;
+      let startY = 0;
+      jmRoot.addEventListener('pointerdown', (event) => {
+        const onPhone = phone?.contains(event.target as Node) ?? false;
+        if (event.pointerType === 'touch' && !onPhone) return;
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        swipeId = event.pointerId;
+        startX = event.clientX;
+        startY = event.clientY;
+      });
+      const endSwipe = (event: PointerEvent) => {
+        if (event.pointerId !== swipeId) return;
+        swipeId = null;
+        if (event.type !== 'pointerup') return;
+        const dx = event.clientX - startX;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(event.clientY - startY)) {
+          scrollToCard(active + (dx < 0 ? 1 : -1));
+        }
+      };
+      window.addEventListener('pointerup', endSwipe);
+      window.addEventListener('pointercancel', endSwipe);
+    }
+
     // —— 2D / 3D compare (drag on the frame) ——
     // Left of --pos = 2D, right = 3D. Starts at 50%.
     const compareRoot = document.querySelector<HTMLElement>('[data-archi-compare]');
@@ -679,17 +843,64 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
           stage.style.setProperty('--pos', `${split}%`);
         };
         let dragging = false;
+        let touched = false;
+        let hintFrame = 0;
+        // Touch waits for a horizontal move so a vertical page scroll over the frame doesn't jump the split.
+        let pendingTouch = false;
+        let startX = 0;
+        let startY = 0;
         layers.addEventListener('pointerdown', (event) => {
+          touched = true;
+          cancelAnimationFrame(hintFrame);
+          if (event.pointerType === 'touch') {
+            pendingTouch = true;
+            startX = event.clientX;
+            startY = event.clientY;
+            return;
+          }
           dragging = true;
           layers.setPointerCapture(event.pointerId);
           apply(event.clientX);
         });
         layers.addEventListener('pointermove', (event) => {
+          if (pendingTouch) {
+            const dx = Math.abs(event.clientX - startX);
+            if (dx > 6 && dx > Math.abs(event.clientY - startY)) {
+              pendingTouch = false;
+              dragging = true;
+            }
+          }
           if (dragging) apply(event.clientX);
         });
-        const endDrag = () => { dragging = false; };
+        const endDrag = (event: PointerEvent) => {
+          if (pendingTouch && event.type === 'pointerup') apply(event.clientX);
+          pendingTouch = false;
+          dragging = false;
+        };
         layers.addEventListener('pointerup', endDrag);
         layers.addEventListener('pointercancel', endDrag);
+
+        // Phone layout only: one slow sweep the first time the frame is in view, so it reads as draggable.
+        if (!reducedMotion && window.matchMedia('(max-width:720px)').matches && 'IntersectionObserver' in window) {
+          const hintIo = new IntersectionObserver(
+            ([entry]) => {
+              if (!entry.isIntersecting) return;
+              hintIo.disconnect();
+              const start = performance.now();
+              const duration = 1800;
+              const tick = (now: number) => {
+                if (touched) return;
+                const t = Math.min(1, (now - start) / duration);
+                const split = 50 + Math.sin(t * Math.PI * 2) * -22 * (1 - t * 0.35);
+                stage.style.setProperty('--pos', `${t < 1 ? split.toFixed(2) : 50}%`);
+                if (t < 1) hintFrame = requestAnimationFrame(tick);
+              };
+              window.setTimeout(() => { if (!touched) hintFrame = requestAnimationFrame(tick); }, 350);
+            },
+            { threshold: 0.6 },
+          );
+          hintIo.observe(layers);
+        }
       }
     }
 
@@ -839,7 +1050,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   .split-heading .section-index { padding-top:12px; }
 
   /* Audience carousel */
-  .aud-carousel { --aud-phone:300px; --aud-step:calc(var(--aud-phone) * 1.12); margin-top:clamp(56px,7vw,96px); }
+  .aud-carousel { --aud-phone:300px; --aud-step:calc(var(--aud-phone) * 1.12); margin-top:clamp(56px,7vw,96px); overscroll-behavior-x:contain; }
   .aud-stage-wrap { position:relative; }
   .aud-stage { overflow-x:clip; overflow-y:visible; padding-block:8px; touch-action:pan-y; cursor:grab; user-select:none; -webkit-user-select:none; }
   .aud-stage.is-dragging { cursor:grabbing; }
@@ -847,15 +1058,16 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   .aud-slide {
     grid-area:1 / 1;
     width:var(--aud-phone);
-    transition:transform .7s var(--ease-out), filter .7s var(--ease-out), opacity .7s var(--ease-out);
-    will-change:transform, filter, opacity;
+    /* Transform + opacity only: animating blur() on big phone frames drops frames */
+    transition:transform .5s var(--ease-out), opacity .5s var(--ease-out);
+    will-change:transform, opacity;
   }
   .aud-slide :global(.case-media-phone-frame) { width:100%; }
-  .aud-slide[data-state="active"] { z-index:3; transform:none; filter:none; opacity:1; }
-  .aud-slide[data-state="prev"],.aud-slide[data-state="next"] { z-index:2; filter:blur(3px); opacity:.72; cursor:pointer; }
+  .aud-slide[data-state="active"] { z-index:3; transform:none; opacity:1; }
+  .aud-slide[data-state="prev"],.aud-slide[data-state="next"] { z-index:2; opacity:.5; cursor:pointer; }
   .aud-slide[data-state="prev"] { transform:translateX(calc(var(--aud-step) * -1)) scale(.84); }
   .aud-slide[data-state="next"] { transform:translateX(var(--aud-step)) scale(.84); }
-  .aud-slide[data-state="far-prev"],.aud-slide[data-state="far-next"] { z-index:1; filter:blur(12px); opacity:0; pointer-events:none; }
+  .aud-slide[data-state="far-prev"],.aud-slide[data-state="far-next"] { z-index:1; opacity:0; pointer-events:none; }
   .aud-slide[data-state="far-prev"] { transform:translateX(calc(var(--aud-step) * -1.7)) scale(.72); }
   .aud-slide[data-state="far-next"] { transform:translateX(calc(var(--aud-step) * 1.7)) scale(.72); }
 
@@ -872,11 +1084,10 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     -webkit-backdrop-filter:blur(10px);
     backdrop-filter:blur(10px);
     box-shadow:0 18px 40px rgb(0 0 0 / 28%), 0 4px 12px rgb(0 0 0 / 16%);
-    transition:opacity .35s ease, transform .4s var(--ease-out), filter .35s ease;
+    transition:opacity .3s ease, transform .35s var(--ease-out);
   }
   .aud-carousel[data-peek="true"] .aud-copy {
     opacity:0;
-    filter:blur(6px);
     transform:translateY(24px);
     pointer-events:none;
   }
@@ -890,12 +1101,11 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     flex-direction:column;
     height:100%;
     opacity:0;
-    filter:blur(6px);
-    transform:translateY(8px);
+    transform:translateY(6px);
     visibility:hidden;
-    transition:opacity .45s ease, filter .45s ease, transform .45s var(--ease-out), visibility 0s linear .45s;
+    transition:opacity .25s ease, transform .3s var(--ease-out), visibility 0s linear .25s;
   }
-  .aud-copy-item[data-active="true"] { opacity:1; filter:none; transform:none; visibility:visible; transition-delay:.12s,.12s,.12s,0s; }
+  .aud-copy-item[data-active="true"] { opacity:1; transform:none; visibility:visible; transition-delay:.05s,.05s,0s; }
   .aud-copy h3 { margin:0; color:var(--a-ink); font:500 26px/1.08 var(--font-heading); letter-spacing:-.035em; }
   .aud-copy .aud-text { margin:12px 0 0; color:var(--a-muted); font-size:15px; line-height:1.55; }
   .aud-copy .aud-cue {
@@ -970,12 +1180,62 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   .journey-step .step-eg,.journey-mobile .step-eg { margin:22px 0 0; max-width:none; padding-top:14px; border-top:1px solid var(--a-line-dark); color:var(--a-muted-dark); font:500 11px/1.4 var(--a-mono); letter-spacing:.06em; text-transform:uppercase; }
   .journey-step h3 { margin:0; color:var(--a-white); font:500 26px/1.1 var(--font-heading); letter-spacing:-.03em; }
   .journey-step p { margin:10px 0 0; max-width:40ch; color:var(--a-muted-dark); font-size:16px; line-height:1.55; }
-  .journey-mobile { display:none; margin:clamp(48px,6vw,72px) auto 0; padding:0; list-style:none; }
-  .journey-mobile li { display:grid; gap:24px; padding:36px 0; border-bottom:1px solid var(--a-line-dark); }
-  .journey-mobile-copy { display:grid; grid-template-columns:28px 1fr; gap:0; }
-  .journey-mobile-copy .node { margin-top:0; }
-  .journey-mobile h3 { margin:0; color:var(--a-white); font:500 24px/1.1 var(--font-heading); letter-spacing:-.03em; }
-  .journey-mobile p { margin:10px 0 0; color:var(--a-muted-dark); font-size:15px; line-height:1.55; }
+  .journey-stack { display:none; margin:clamp(48px,6vw,72px) auto 0; padding:0; list-style:none; }
+  .journey-stack li { display:grid; gap:24px; padding:36px 0; border-bottom:1px solid var(--a-line-dark); }
+  .journey-stack-copy { display:grid; grid-template-columns:28px 1fr; gap:0; }
+  .journey-stack-copy .node { margin-top:0; }
+  .journey-stack .step-tag { margin:0 0 12px; color:var(--a-white); font:600 11px/1 var(--a-mono); letter-spacing:.12em; text-transform:uppercase; }
+  .journey-stack .step-eg { margin:22px 0 0; padding-top:14px; border-top:1px solid var(--a-line-dark); color:var(--a-muted-dark); font:500 11px/1.4 var(--a-mono); letter-spacing:.06em; text-transform:uppercase; }
+  .journey-stack h3 { margin:0; color:var(--a-white); font:500 24px/1.1 var(--font-heading); letter-spacing:-.03em; }
+  .journey-stack p:not(.step-tag):not(.step-eg) { margin:10px 0 0; color:var(--a-muted-dark); font-size:15px; line-height:1.55; }
+
+  /* Journey (phone) — phone sized so tabs + phone + card fit one viewport */
+  .journey-mobile {
+    --jm-phone:min(64vw,270px,calc((100svh - var(--nav-height) - 290px) * 780 / 1691));
+    display:none;
+    margin-top:clamp(36px,6vw,56px);
+  }
+  .jm-tabs {
+    display:flex; gap:4px; margin:0 auto; width:fit-content; max-width:100%; padding:4px;
+    overflow-x:auto; scrollbar-width:none;
+    border:1px solid var(--a-line-dark); border-radius:999px; background:var(--a-dark-raised);
+  }
+  .jm-tabs::-webkit-scrollbar { display:none; }
+  .jm-tab {
+    flex:none; min-height:40px; padding:0 14px; border:0; border-radius:999px;
+    background:transparent; color:var(--a-muted-dark); font:500 13px/1 var(--font-body, inherit); letter-spacing:-.005em; white-space:nowrap; cursor:pointer;
+    transition:background .25s ease, color .25s ease;
+  }
+  .jm-tab[aria-pressed="true"] { background:var(--a-white); color:var(--a-ink); }
+  .jm-tab:focus-visible { outline:2px solid var(--a-white); outline-offset:2px; }
+  .jm-phone { display:grid; width:var(--jm-phone); margin:20px auto 0; touch-action:pan-y; user-select:none; -webkit-user-select:none; }
+  .jm-phone :global(.case-media-phone-frame) { width:100%; }
+  .jm-screen { grid-area:1 / 1; opacity:0; transform:scale(.97); transition:opacity .35s ease, transform .45s var(--ease-out); pointer-events:none; }
+  .jm-screen[data-active="true"] { opacity:1; transform:none; pointer-events:auto; z-index:1; }
+  /* Full-bleed scroller; side padding = the shell's outer margin so card 1 lines up with the text */
+  .jm-track {
+    --jm-bleed:5vw;
+    display:grid; grid-auto-flow:column; grid-auto-columns:min(86%,420px); gap:12px;
+    margin:20px calc(var(--jm-bleed) * -1) 0; padding:0 var(--jm-bleed) 2px; list-style:none;
+    overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scroll-padding-inline:var(--jm-bleed); scrollbar-width:none;
+    user-select:none; -webkit-user-select:none;
+  }
+  @media (hover:hover) and (pointer:fine) {
+    .jm-phone,.jm-track { cursor:grab; }
+    .jm-phone:active,.jm-track:active { cursor:grabbing; }
+  }
+  .jm-track::-webkit-scrollbar { display:none; }
+  .jm-card {
+    display:flex; flex-direction:column; scroll-snap-align:start; min-width:0; padding:20px 20px 18px;
+    border:1px solid var(--a-line-dark); border-radius:12px; background:var(--a-dark-raised);
+    opacity:.45; transition:opacity .3s ease;
+  }
+  .jm-card[data-active="true"] { opacity:1; }
+  .jm-card .step-tag { display:flex; justify-content:space-between; gap:12px; }
+  .jm-card .step-tag span { order:1; color:var(--a-subtle-dark); }
+  .jm-card h3 { margin:0; color:var(--a-white); font:500 23px/1.1 var(--font-heading); letter-spacing:-.03em; }
+  .jm-card p:not(.step-tag):not(.step-eg) { margin:10px 0 18px; color:var(--a-muted-dark); font-size:15px; line-height:1.5; }
+  .jm-card .step-eg { margin-top:auto; padding-top:12px; }
 
   /* Compare — stage width = photo width so the range sits flush under the frame */
   .compare-stage {
@@ -994,7 +1254,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     overflow:hidden;
     background:#0b0b0a;
     cursor:ew-resize;
-    touch-action:none;
+    touch-action:pan-y;
   }
   .compare-layer { border-radius:inherit; height:100%; }
   .compare-layer img {
@@ -1162,20 +1422,45 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     .aud-arrow-prev { left:-4px; }
     .aud-arrow-next { right:-4px; }
     .journey-desktop { display:none; }
-    .journey-mobile { display:grid; }
+    .journey-stack { display:grid; }
   }
 
   @media (max-width:720px) {
+    .journey-stack { display:none; }
+    .journey-mobile { display:block; }
+
     .archi-shell { width:90%; }
     .cta-actions { flex-direction:column; align-items:stretch; }
     .cta-actions .primary-link { width:100%; }
+
+    /* Hero: demo copy leads, the phone follows as the payoff */
+    .hero-copy { gap:24px; padding-bottom:8px; }
+    .hero-demo { gap:28px; margin-top:28px; }
+    .hero-demo-copy { order:-1; text-align:left; }
+    .hero-demo-copy .demo-tag { justify-content:flex-start; }
+    .hero-demo-copy > p:not(.demo-tag):not(.demo-cue),.hero-demo-copy .demo-cue { margin-inline:0; }
+    .hero-demo-copy h2 { font-size:clamp(30px,8.6vw,40px); }
+    .hero-demo-copy .demo-cue { margin-top:20px; }
+    .hero-phone { width:min(76vw,300px); }
+
+    /* Compare: a landscape strip is too thin on a phone — crop to portrait */
+    .compare-stage { width:100%; }
+    .compare-layers { aspect-ratio:4 / 5; max-height:min(68svh,560px); }
+    .compare-handle i { width:44px; height:44px; }
+    .compare-handle i::before { left:13px; }
+    .compare-handle i::after { right:13px; }
   }
 
   @media (max-width:520px) {
+    .archi-case-page { --a-section:72px; }
     .archi-shell { width:92%; }
+    .jm-track { --jm-bleed:4vw; }
     h1 { font-size:clamp(40px,11vw,58px); }
     .section h2,.case-cta h2 { font-size:clamp(36px,11vw,52px); }
-    .store-row { flex-direction:column; align-items:flex-start; }
+    .lead { margin-top:20px; font-size:16px; }
+    .aud-carousel,.compare-stage,.web-stage { margin-top:40px; }
+    .store-row { margin-top:24px; }
+    .store-badge { height:44px; }
     .web-stage { width:92%; }
     .web-open-button { right:10px; bottom:10px; padding-inline:13px; }
     .platform-stack dl { grid-template-columns:1fr; gap:16px; }
@@ -1184,7 +1469,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
 
   @media (prefers-reduced-motion:reduce) {
     .hero-map-camera { animation:none; }
-    .primary-link,.primary-link span,.text-link,.journey-screen,.journey-step,.aud-slide,.aud-copy-item,.aud-dot::before,.web-open-button { transition:none; }
+    .primary-link,.primary-link span,.text-link,.journey-screen,.journey-step,.aud-slide,.aud-copy-item,.aud-dot::before,.web-open-button,.jm-tab,.jm-screen,.jm-card { transition:none; }
     .primary-link:hover,.web-open-button:hover { transform:none; }
   }
 </style>

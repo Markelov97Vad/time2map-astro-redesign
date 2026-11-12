@@ -1,5 +1,6 @@
 ---
-import { publicFileExists } from '../lib/public-file';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 interface Props {
   kind?: 'image' | 'video';
@@ -33,8 +34,14 @@ const {
   class: className,
 } = Astro.props;
 
-const hasMedia = publicFileExists(src);
-const hasPoster = poster ? publicFileExists(poster) : false;
+const publicFile = fileURLToPath(new URL(`../../public${src}`, import.meta.url));
+const hasMedia = existsSync(publicFile);
+const posterFile = poster
+  ? fileURLToPath(new URL(`../../public${poster}`, import.meta.url))
+  : null;
+const hasPoster = posterFile ? existsSync(posterFile) : false;
+// Poster also paints the surface itself, so it shows before the <video> renders and under reduced motion.
+const surfaceStyle = kind === 'video' && hasMedia && hasPoster ? `background-image:url(${poster})` : undefined;
 const fileName = src.split('/').at(-1) ?? src;
 const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
 ---
@@ -44,6 +51,7 @@ const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
   style={`--media-ratio:${width}/${height}`}
   data-case-media
   data-kind={kind}
+  data-video-state={kind === 'video' && hasMedia ? 'loading' : undefined}
 >
   {frame === 'browser' ? (
     <div class="case-media-browser">
@@ -51,7 +59,7 @@ const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
         <span></span><span></span><span></span>
         {browserHost && <code>{browserHost}</code>}
       </div>
-      <div class="case-media-surface">
+      <div class="case-media-surface" style={surfaceStyle}>
         {hasMedia ? (
           kind === 'video' ? (
             <>
@@ -97,7 +105,7 @@ const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
   ) : frame === 'phone' ? (
     <div class="case-media-phone">
       <div class="case-media-phone-frame">
-        <div class="case-media-surface">
+        <div class="case-media-surface" style={surfaceStyle}>
           {hasMedia ? (
             kind === 'video' ? (
               <>
@@ -142,7 +150,7 @@ const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
       </div>
     </div>
   ) : (
-    <div class="case-media-surface case-media-plain">
+    <div class="case-media-surface case-media-plain" style={surfaceStyle}>
       {hasMedia ? (
         kind === 'video' ? (
           <>
@@ -194,14 +202,51 @@ const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
   ) : null}
 </figure>
 
+<script>
+  // Loading state: spinner in the corner button until frames actually play.
+  document.querySelectorAll<HTMLVideoElement>('[data-case-video]').forEach((video) => {
+    const figure = video.closest<HTMLElement>('[data-case-media]');
+    if (!figure) return;
+    const set = (state: string) => { figure.dataset.videoState = state; };
+    video.addEventListener('waiting', () => set('loading'));
+    video.addEventListener('playing', () => set('ready'));
+    video.addEventListener('pause', () => set('ready'));
+    if (video.readyState >= 3 && !video.paused) set('ready');
+  });
+</script>
+
 <style>
   .case-media { margin:0; min-width:0; }
   .case-media-surface {
     position:relative;
     aspect-ratio:var(--media-ratio);
     overflow:hidden;
-    background:#0b0b0a;
+    background:#0b0b0a center / cover no-repeat;
   }
+  [data-video-state="loading"] .case-media-surface::after {
+    content:'';
+    position:absolute;
+    inset:auto 0 0;
+    z-index:1;
+    height:2px;
+    background:linear-gradient(90deg, transparent, rgb(255 255 255 / 70%), transparent) 0 0 / 40% 100% no-repeat;
+    animation:case-media-loading 1.2s ease-in-out infinite;
+  }
+  @keyframes case-media-loading {
+    from { background-position:-40% 0; }
+    to { background-position:140% 0; }
+  }
+  [data-video-state="loading"] .case-media-pause svg { display:none; }
+  [data-video-state="loading"] .case-media-pause::after {
+    content:'';
+    width:14px;
+    height:14px;
+    border:1.5px solid rgb(255 255 255 / 30%);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:case-media-spin .8s linear infinite;
+  }
+  @keyframes case-media-spin { to { transform:rotate(360deg); } }
   .case-media-plain {
     border:1px solid rgb(255 255 255 / 14%);
     border-radius:14px;
@@ -376,6 +421,7 @@ const kindLabel = kind === 'video' ? 'Video' : 'Screenshot';
   @media (prefers-reduced-motion: reduce) {
     .case-media-video { display:none; }
     .case-media-pause { display:none; }
+    [data-video-state] .case-media-surface::after { display:none; }
     .has-media .case-media-surface::after {
       content:attr(data-fallback);
     }
