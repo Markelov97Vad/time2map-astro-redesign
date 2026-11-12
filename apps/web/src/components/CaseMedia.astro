@@ -1,6 +1,5 @@
 ---
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { publicFileExists } from '../lib/public-file';
 
 interface Props {
   kind?: 'image' | 'video';
@@ -34,12 +33,8 @@ const {
   class: className,
 } = Astro.props;
 
-const publicFile = fileURLToPath(new URL(`../../public${src}`, import.meta.url));
-const hasMedia = existsSync(publicFile);
-const posterFile = poster
-  ? fileURLToPath(new URL(`../../public${poster}`, import.meta.url))
-  : null;
-const hasPoster = posterFile ? existsSync(posterFile) : false;
+const hasMedia = publicFileExists(src);
+const hasPoster = poster ? publicFileExists(poster) : false;
 // Poster also paints the surface itself, so it shows before the <video> renders and under reduced motion.
 const surfaceStyle = kind === 'video' && hasMedia && hasPoster ? `background-image:url(${poster})` : undefined;
 const fileName = src.split('/').at(-1) ?? src;
