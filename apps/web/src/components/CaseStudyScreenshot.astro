@@ -1,5 +1,6 @@
 ---
-import { publicFileExists } from '../lib/public-file';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 interface Props {
   src: string;
@@ -12,7 +13,8 @@ interface Props {
 }
 
 const { src, alt, label, caption, width, height, fit = 'cover' } = Astro.props;
-const hasImage = publicFileExists(src);
+const publicFile = fileURLToPath(new URL(`../../public${src}`, import.meta.url));
+const hasImage = existsSync(publicFile);
 const fileName = src.split('/').at(-1);
 ---
 

@@ -36,6 +36,11 @@ full layout, content model, and conventions.
   vector arrow (`<svg viewBox="0 0 20 20">…</svg>`, stroked, sized to the
   badge or button). Inline **text links**, menus and captions use the Unicode
   glyph `↗︎`. Never mix the two.
+- **No em dash (`—`) in any text you write or edit** — page copy, content
+ (`apps/web/src/content/`), component strings, alt text, meta/SEO text, docs
+ and commit messages. Rephrase with a period, comma, colon or parentheses, or
+ use a plain hyphen `-` where a dash is really needed. The en dash `–` is
+ allowed only for numeric/date ranges (`2019–2025`).
 - The built site must satisfy the content/SEO invariants in
   [docs/CONTENT-INVARIANTS.md](docs/CONTENT-INVARIANTS.md) — `npm run build`
   enforces them. Don't silence a rule to hide a real issue.
