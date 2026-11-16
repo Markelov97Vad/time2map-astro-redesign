@@ -91,6 +91,71 @@ export function buildKeystaticConfig({ prefix = '' }: { prefix?: string } = {}) 
         },
       }),
 
+      caseStudies: collection({
+        label: 'Case studies',
+        path: p('src/content/case-studies/*'),
+        slugField: 'title',
+        format: { contentField: 'content' },
+        schema: {
+          title: fields.slug({
+            name: {
+              label: 'Title',
+              description: 'Text after “: ” becomes the accented second line of the headline',
+            },
+          }),
+          navLabel: fields.text({
+            label: 'Short name',
+            description: 'Used in breadcrumbs and the “Open …” button',
+            validation: { isRequired: true },
+          }),
+          // ——— SEO / social tags ———
+          seoTitle: fields.text({
+            label: 'SEO title (browser tab — defaults to Title)',
+          }),
+          description: fields.text({
+            label: 'Meta description',
+            multiline: true,
+            validation: { isRequired: true },
+          }),
+          ogTitle: fields.text({
+            label: 'og:title (social preview — defaults to SEO title)',
+          }),
+          ogDescription: fields.text({
+            label: 'og:description (social preview — defaults to meta description)',
+            multiline: true,
+          }),
+          ogImage: fields.image({
+            label: 'og:image (social preview image)',
+            directory: p('public/images/use-cases'),
+            publicPath: '/images/use-cases/',
+          }),
+          // ——— Page fields ———
+          eyebrow: fields.text({
+            label: 'Eyebrow (shown before the date, e.g. “Crowdmapping case study”)',
+            validation: { isRequired: true },
+          }),
+          lead: fields.text({
+            label: 'Intro paragraph (under the headline)',
+            multiline: true,
+            validation: { isRequired: true },
+          }),
+          publishDate: fields.date({ label: 'Publish date', validation: { isRequired: true } }),
+          displayDate: fields.text({ label: 'Displayed date (e.g. “July 2024”)', validation: { isRequired: true } }),
+          readTime: fields.text({ label: 'Read time (e.g. “3 min read”)', validation: { isRequired: true } }),
+          tryItUrl: fields.url({
+            label: '“Try it” link',
+            description: 'Live product URL. Leave empty to hide the buttons',
+          }),
+          content: fields.markdoc({
+            label: 'Case study',
+            extension: 'md',
+            options: {
+              image: { directory: p('public/images/use-cases'), publicPath: '/images/use-cases/' },
+            },
+          }),
+        },
+      }),
+
       lab: collection({
         label: 'LAB articles',
         path: p('src/content/lab/*'),
@@ -102,6 +167,10 @@ export function buildKeystaticConfig({ prefix = '' }: { prefix?: string } = {}) 
             label: 'Menu label',
             description: 'Short name shown in the LAB dropdown',
             validation: { isRequired: true },
+          }),
+          navCaption: fields.text({
+            label: 'Menu caption',
+            description: 'One short line under the name in the LAB dropdown (e.g. “Route planner for walking and cycling”)',
           }),
           // ——— SEO / social tags (grouped so they read as one block) ———
           seoTitle: fields.text({
@@ -235,6 +304,22 @@ export function buildKeystaticConfig({ prefix = '' }: { prefix?: string } = {}) 
               bio: fields.text({ label: 'Bio', multiline: true }),
             },
             { label: 'Author / founder' }
+          ),
+          labLinks: fields.array(
+            fields.object({
+              label: fields.text({ label: 'Name', validation: { isRequired: true } }),
+              caption: fields.text({ label: 'Short caption' }),
+              url: fields.text({
+                label: 'URL',
+                description: 'Relative path (e.g. /lab/archi2go) or absolute https URL. Absolute links get a ↗︎.',
+                validation: { isRequired: true },
+              }),
+            }),
+            {
+              label: 'LAB menu — extra links',
+              description: 'Shown after the LAB articles. Absolute http(s) URLs open off-site with ↗︎; relative paths stay on this site.',
+              itemLabel: (props) => props.fields.label.value,
+            }
           ),
           formEndpoint: fields.text({
             label: 'Contact form endpoint',

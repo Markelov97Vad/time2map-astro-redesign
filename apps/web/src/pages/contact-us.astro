@@ -44,8 +44,11 @@ const jsonLd = [
   <main class="contact-main">
     <section class="contact-hero" aria-labelledby="contact-title">
       <div class="contact-heading">
-        <h1 id="contact-title">Ready to start?<br/> <em>Tell us about it</em></h1>
-        <p>Share the essentials. We’ll get back to you as soon as possible with a clear next step.</p>
+        <h1 id="contact-title">Ready to start?<br/> <em>Tell us about your project</em></h1>
+        <p>
+          Share the essentials. We’ll get back to you as soon as possible with a clear next step —
+          or <a class="contact-book-link" href={site.bookCallUrl} target="_blank" rel="noopener">book a call</a>.
+        </p>
       </div>
 
       {site.formEndpoint ? (
@@ -72,7 +75,7 @@ const jsonLd = [
             <input name="privacy" type="checkbox" required/>
             <span>I agree to the processing of my personal data so time2map can respond to my inquiry. <a href={site.privacyPolicyUrl} target="_blank" rel="noopener">Privacy Policy</a>.</span>
           </label>
-          <button class="form-submit button-motion" type="submit"><span>Submit the message</span><i>↗︎</i></button>
+          <button class="form-submit button-motion" type="submit"><span>Submit the message</span><i aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M6 14L14 6M8 6h6v6" /></svg></i></button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
 
           <div class="contact-alternatives">
@@ -86,7 +89,7 @@ const jsonLd = [
         </form>
       ) : (
         <div class="contact-form no-form">
-          <a href={`mailto:${site.email}`} class="form-submit email-btn button-motion"><span>{site.email}</span><i>↗︎</i></a>
+          <a href={`mailto:${site.email}`} class="form-submit email-btn button-motion"><span>{site.email}</span><i aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M6 14L14 6M8 6h6v6" /></svg></i></a>
           <div class="contact-alternatives">
             <span>Or contact us on social media</span>
             <div class="contact-channels">

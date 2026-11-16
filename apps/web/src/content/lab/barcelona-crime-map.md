@@ -1,6 +1,7 @@
 ---
 title: 'Barcelona Crime Map: Safety Index'
 navLabel: Barcelona Crime Map
+navCaption: Safety index for Catalunya's 59 police zones, benchmarked against Spain, 2019–2025.
 seoTitle: 'Barcelona Crime by Neighborhood: Safety Analysis 2019–2025'
 description: >-
   Crime analysis across Catalunya's 59 police zones: a composite safety index

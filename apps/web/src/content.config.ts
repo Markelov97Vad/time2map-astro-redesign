@@ -19,6 +19,7 @@ const lab = defineCollection({
   schema: z.object({
     title: z.string(),
     navLabel: z.string(),
+    navCaption: z.string().optional(),
     seoTitle: z.string().optional(),
     description: z.string(),
     ogTitle: z.string().optional(),
@@ -40,6 +41,26 @@ const lab = defineCollection({
   }),
 });
 
+// Long-form case studies rendered at /use-cases/<slug> by pages/use-cases/[slug].astro.
+const caseStudies = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/case-studies' }),
+  schema: z.object({
+    title: z.string(),
+    navLabel: z.string(),
+    seoTitle: z.string().optional(),
+    description: z.string(),
+    ogTitle: z.string().optional(),
+    ogDescription: z.string().optional(),
+    ogImage: z.string().optional(),
+    eyebrow: z.string(),
+    lead: z.string(),
+    publishDate: z.coerce.date(),
+    displayDate: z.string(),
+    readTime: z.string(),
+    tryItUrl: z.string().optional(),
+  }),
+});
+
 const faq = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/faq' }),
   schema: z.object({
@@ -58,4 +79,4 @@ const testimonials = defineCollection({
   }),
 });
 
-export const collections = { useCases, lab, faq, testimonials };
+export const collections = { useCases, caseStudies, lab, faq, testimonials };

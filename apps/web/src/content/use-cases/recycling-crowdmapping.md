@@ -13,6 +13,7 @@ images:
   - /images/use-cases/recycling-2.webp
   - /images/use-cases/recycling-3.webp
 tryItUrl: https://wastefreemap.com
+caseStudyUrl: /use-cases/wastefreemap
 ---
 
 Developed a crowdmapping platform for [Greenpeace's](https://es.greenpeace.org/) Recyclemap project, enabling volunteers to map and manage recycling collection points across the country. Built mobile and desktop web apps (Angular, Mapbox GL) for adding, updating, and moderating recycling and ZeroWaste locations. Backend (Python, PostGIS, Martin, H3 clustering) processes OSM data and powers scalable spatial queries. The system empowers communities to contribute and access up-to-date information on waste-free living, supporting thousands of active users.

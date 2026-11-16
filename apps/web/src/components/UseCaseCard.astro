@@ -9,12 +9,9 @@ interface Props {
 }
 
 const { entry, index, priority = false } = Astro.props;
-const { title, tags, images, tryItUrl, caseStudyUrl: configuredCaseStudyUrl } = entry.data;
-const caseStudyUrl = configuredCaseStudyUrl
-  ?? (images.includes('/images/use-cases/archi2go-prev.webp') ? '/use-cases/archi2go' : undefined);
+const { title, tags, images, tryItUrl, caseStudyUrl } = entry.data;
 const { Content } = await render(entry);
 const imageDimensions: Record<string, { width: number; height: number }> = {
-  '/images/use-cases/archi2go-prev.webp': { width: 1600, height: 867 },
   '/images/use-cases/audio-guides-1.webp': { width: 1441, height: 813 },
   '/images/use-cases/audio-guides-2.webp': { width: 1441, height: 813 },
   '/images/use-cases/audio-guides-3.webp': { width: 1441, height: 813 },

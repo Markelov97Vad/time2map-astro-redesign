@@ -59,7 +59,7 @@ Files: [`docker-compose.yml`](../docker-compose.yml), [`Dockerfile`](../Dockerfi
    export ADMIN_PASS='…' SMTP_HOST='…' SMTP_USER='…' SMTP_PASS='…'
    export ADMIN_USER=admin SMTP_PORT=587 SMTP_SECURE=false
    export CONTACT_TO=contact@time2map.com CONTACT_FROM=
-   export SITE_URL=https://time2map.com ALLOWED_ORIGIN=https://time2map.com
+   export SITE_URL=https://time2map.com ALLOWED_ORIGIN=https://time2map.com,https://archi2go.time2map.com
    umask 077
    envsubst '$ADMIN_USER $ADMIN_PASS $CONTACT_TO $CONTACT_FROM $SMTP_HOST $SMTP_PORT $SMTP_SECURE $SMTP_USER $SMTP_PASS $SITE_URL $ALLOWED_ORIGIN' \
      < deploy/docker/server.env.template > /opt/time2map/.env
@@ -114,7 +114,34 @@ Repo → **Settings → Secrets and variables → Actions**.
 | `CONTACT_TO` | no | `contact@time2map.com` | Inbox for form |
 | `CONTACT_FROM` | no | empty | From header (optional) |
 | `SITE_URL` | no | `https://time2map.com` | Redirects / links |
-| `ALLOWED_ORIGIN` | no | `https://time2map.com` | CORS |
+| `ALLOWED_ORIGIN` | no | `https://time2map.com,https://archi2go.time2map.com` | CORS: comma-separated browser origins allowed to post the contact form (the Archi2go site, archi2go.time2map.com, uses this API too) |
+
+If the `ALLOWED_ORIGIN` secret is set, it overrides that default: make it
+`https://time2map.com,https://archi2go.time2map.com`, or the Archi2go site's
+form is blocked by the browser (the app is not affected: native requests carry
+no Origin).
+
+### Contact email (SMTP via IONOS)
+
+time2map.com mail is hosted at IONOS (MX `mx00.ionos.de`, SPF
+`include:_spf-eu.ionos.com`), so the form sends through an IONOS mailbox:
+
+| Secret | Value |
+|--------|-------|
+| `SMTP_HOST` | `smtp.ionos.de` |
+| `SMTP_PORT` | `587` (STARTTLS) |
+| `SMTP_SECURE` | `false` (`true` only with port 465) |
+| `SMTP_USER` | the full mailbox address, e.g. `contact@time2map.com` |
+| `SMTP_PASS` | that mailbox's password |
+| `CONTACT_FROM` | `time2map website <contact@time2map.com>`: must be the `SMTP_USER` mailbox, IONOS rejects other senders |
+| `CONTACT_TO` | `contact@time2map.com` |
+
+Without `SMTP_HOST` the API still answers `{"ok":true}` but only logs the
+message in the `app` container (`docker compose logs app`): nothing reaches the
+inbox. After changing a secret, re-run the latest CI run (or push) so the new
+`.env` is rendered and the `app` container restarts. Then send one message from
+https://time2map.com/contact-us and check the inbox, and the container log for
+`[contact] failed to send` if the form shows an error (HTTP 502).
 
 CI flow on push to `master`: npm test/build → bake & push GHCR → render `.env`
 via `envsubst` → SCP compose + `.env` → `IMAGE_TAG=$GITHUB_SHA docker compose

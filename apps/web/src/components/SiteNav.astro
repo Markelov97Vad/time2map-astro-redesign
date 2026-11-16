@@ -14,10 +14,23 @@ const section = (id: string) => (home ? `#${id}` : `/#${id}`);
 const labEntries = (await getCollection('lab')).sort(
   (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
 );
-const exploreCta: Record<string, string> = {
-  'time-2-route': 'Explore the project ↗︎',
-  'barcelona-crime-map': 'Explore the research ↗︎',
-};
+// LAB menu: articles first, then site.yaml labLinks. Absolute http(s) → off-site with ↗︎;
+// relative paths (e.g. /lab/archi2go) stay on this site, no arrow.
+const isOffSite = (url: string) => /^https?:\/\//i.test(url);
+const labItems = [
+  ...labEntries.map((entry) => ({
+    href: `/lab/${entry.id}`,
+    label: entry.data.navLabel,
+    caption: entry.data.navCaption,
+    external: false,
+  })),
+  ...(site.labLinks ?? []).map((link: { label: string; caption?: string; url: string }) => ({
+    href: link.url,
+    label: link.label,
+    caption: link.caption,
+    external: isOffSite(link.url),
+  })),
+];
 ---
 
 <header class="nav">
@@ -33,15 +46,14 @@ const exploreCta: Record<string, string> = {
     <details class="lab-nav">
       <summary>Lab <span class="lab-chevron" aria-hidden="true"><i></i></span></summary>
       <div class="lab-dropdown">
-        {labEntries.map((entry) => (
-          <a href={`/lab/${entry.id}`}>
-            <div class="lab-card-meta">
-              <small>{entry.data.displayDate}</small>
-              <small>{entry.data.readTime}</small>
-            </div>
-            <strong>{entry.data.navLabel}</strong>
-            <span>{entry.data.description}</span>
-            <em>{exploreCta[entry.id] ?? 'Explore ↗︎'}</em>
+        {labItems.map((item) => (
+          <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener' : undefined}>
+            <strong>
+              {item.label}
+              {item.external && <i class="lab-ext" aria-hidden="true">↗︎</i>}
+            </strong>
+            {item.caption && <span>{item.caption}</span>}
+            {item.external && <span class="lab-sr">(opens in a new tab)</span>}
           </a>
         ))}
       </div>

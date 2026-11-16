@@ -3,7 +3,7 @@
 time2map.com — a business-card site for a GIS/web development agency, migrated
 from Webflow. The public site is **100% static**. The repo is an npm-workspaces
 monorepo so a backend (contact form, authenticated admin) can live alongside the
-static site without compromising it.
+static site without compromising it
 
 ## Monorepo layout
 
@@ -64,7 +64,7 @@ scripts (mobile menu in `Header.astro`, image slider in `UseCaseCard.astro`).
   - `seo.yaml` — per-page SEO (title, description, ogImage, noindex) for the
     static pages (home, use-cases, contact, 404). Lab articles carry their own
     SEO fields per markdown file.
-  - `use-cases/*.md`, `lab/*.md`, `faq/*.md`, `testimonials/*.yaml` — collections, schemas in `apps/web/src/content.config.ts`.
+  - `use-cases/*.md`, `case-studies/*.md`, `lab/*.md`, `faq/*.md`, `testimonials/*.yaml` — collections, schemas in `apps/web/src/content.config.ts`.
 - YAML singletons are imported directly (`import site from '../content/site.yaml'`)
   via `@rollup/plugin-yaml`; collections via `getCollection()`.
 - The Keystatic schema lives in `packages/keystatic-config` (a factory shared by
@@ -142,6 +142,19 @@ scripts (mobile menu in `Header.astro`, image slider in `UseCaseCard.astro`).
   `#### Finding title` and never hardcode the number. Keep `####` for the
   numbered findings only; use `###` for other subheadings so they aren't
   numbered.
+
+### Case studies
+
+- `src/content/case-studies/<slug>.md` renders at `/use-cases/<slug>` through
+  `pages/use-cases/[slug].astro`, in the Lab article look (hero and closing CTA
+  from `lab.css`, markdown body styled by `styles/case-study.css`). Link it from
+  its use-case card with `caseStudyUrl`. Bespoke pages such as
+  `use-cases/ai-library.astro` are static routes and win over the dynamic one.
+- `##` headings become numbered sections, laid out next to their copy on
+  desktop. Images are HTML `<figure>`s (for `srcset`/`width`/`height`); the
+  `case-stage` (one wide image), `case-duo` (two side by side) and `case-pair`
+  (cards on a soft panel) classes give full-width rows. Give animated WebPs a
+  still-frame `<source media="(prefers-reduced-motion: reduce)">`.
 
 ## Conventions
 

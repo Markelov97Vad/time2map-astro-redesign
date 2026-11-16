@@ -110,7 +110,7 @@ jobs:
           export SMTP_PORT="${SMTP_PORT:-587}"
           export SMTP_SECURE="${SMTP_SECURE:-false}"
           export SITE_URL="${SITE_URL:-https://time2map.com}"
-          export ALLOWED_ORIGIN="${ALLOWED_ORIGIN:-https://time2map.com}"
+          export ALLOWED_ORIGIN="${ALLOWED_ORIGIN:-https://time2map.com,https://archi2go.time2map.com}"
           : "${ADMIN_PASS:?ADMIN_PASS secret is required}"
           umask 077
           envsubst '$ADMIN_USER $ADMIN_PASS $CONTACT_TO $CONTACT_FROM $SMTP_HOST $SMTP_PORT $SMTP_SECURE $SMTP_USER $SMTP_PASS $SITE_URL $ALLOWED_ORIGIN' \

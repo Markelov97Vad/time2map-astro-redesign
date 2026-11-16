@@ -27,6 +27,15 @@ full layout, content model, and conventions.
 - Per-page SEO (static pages) lives in `apps/web/src/content/seo.yaml`; build
   JSON-LD via the tested builders in `apps/web/src/lib/schema.ts` — never
   hand-roll structured data inline in a page.
+- **Every link that leaves the site (absolute `http(s)` URL, `target="_blank"`)
+  shows an external arrow and gets `rel="noopener"`** (plus visually-hidden
+  “(opens in a new tab)” for icon/arrow-only cases). Internal links never show
+  the external arrow. Official App Store / Google Play badges are the only
+  exception.
+- **Arrow form depends on the control:** pill / CTA **buttons** use an SVG
+  vector arrow (`<svg viewBox="0 0 20 20">…</svg>`, stroked, sized to the
+  badge or button). Inline **text links**, menus and captions use the Unicode
+  glyph `↗︎`. Never mix the two.
 - The built site must satisfy the content/SEO invariants in
   [docs/CONTENT-INVARIANTS.md](docs/CONTENT-INVARIANTS.md) — `npm run build`
   enforces them. Don't silence a rule to hide a real issue.

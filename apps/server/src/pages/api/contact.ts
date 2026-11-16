@@ -2,14 +2,15 @@ import type { APIRoute } from 'astro';
 import { validateContact } from '../../lib/validate';
 import { rateLimit } from '../../lib/rateLimit';
 import { sendContactEmail } from '../../lib/mailer';
+import { allowedOriginFor, parseAllowedOrigins } from '../../lib/cors';
 
 export const prerender = false;
 
-const ALLOWED_ORIGIN = import.meta.env.ALLOWED_ORIGIN ?? process.env.ALLOWED_ORIGIN ?? '*';
+const ALLOWED_ORIGINS = parseAllowedOrigins(import.meta.env.ALLOWED_ORIGIN ?? process.env.ALLOWED_ORIGIN);
 const SITE_URL = import.meta.env.SITE_URL ?? process.env.SITE_URL ?? 'https://time2map.com';
 
-const corsHeaders = (): Record<string, string> => ({
-  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+const corsHeaders = (origin: string | null): Record<string, string> => ({
+  'Access-Control-Allow-Origin': allowedOriginFor(ALLOWED_ORIGINS, origin),
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With',
   Vary: 'Origin',
@@ -25,8 +26,14 @@ interface Body {
  * Respond as JSON (fetch/AJAX) or as a 303 redirect back to the contact page
  * (a plain no-JS HTML form POST), so the form degrades gracefully.
  */
-function respond(wantsJson: boolean, status: number, body: Body, retryAfterSec?: number): Response {
-  const headers = corsHeaders();
+function respond(
+  origin: string | null,
+  wantsJson: boolean,
+  status: number,
+  body: Body,
+  retryAfterSec?: number
+): Response {
+  const headers = corsHeaders(origin);
   if (retryAfterSec) headers['Retry-After'] = String(retryAfterSec);
 
   if (wantsJson) {
@@ -39,9 +46,11 @@ function respond(wantsJson: boolean, status: number, body: Body, retryAfterSec?:
   return new Response(null, { status: 303, headers });
 }
 
-export const OPTIONS: APIRoute = () => new Response(null, { status: 204, headers: corsHeaders() });
+export const OPTIONS: APIRoute = ({ request }) =>
+  new Response(null, { status: 204, headers: corsHeaders(request.headers.get('origin')) });
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  const origin = request.headers.get('origin');
   const contentType = request.headers.get('content-type') ?? '';
   const accept = request.headers.get('accept') ?? '';
   const wantsJson =
@@ -57,12 +66,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       raw = Object.fromEntries(await request.formData());
     }
   } catch {
-    return respond(wantsJson, 400, { ok: false, error: 'bad_request' });
+    return respond(origin, wantsJson, 400, { ok: false, error: 'bad_request' });
   }
 
   // Honeypot: bots fill the hidden "website" field. Pretend success, drop silently.
   if (typeof raw.website === 'string' && raw.website.trim() !== '') {
-    return respond(wantsJson, 200, { ok: true });
+    return respond(origin, wantsJson, 200, { ok: true });
   }
 
   // Behind the nginx reverse proxy clientAddress is 127.0.0.1, so prefer the
@@ -70,18 +79,19 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
   const limit = rateLimit(forwarded || clientAddress || 'unknown');
   if (!limit.allowed) {
-    return respond(wantsJson, 429, { ok: false, error: 'rate_limited' }, Math.ceil(limit.retryAfterMs / 1000));
+    const retryAfterSec = Math.ceil(limit.retryAfterMs / 1000);
+    return respond(origin, wantsJson, 429, { ok: false, error: 'rate_limited' }, retryAfterSec);
   }
 
   const { ok, errors, data } = validateContact(raw);
-  if (!ok) return respond(wantsJson, 422, { ok: false, errors });
+  if (!ok) return respond(origin, wantsJson, 422, { ok: false, errors });
 
   try {
     await sendContactEmail(data!);
   } catch (err) {
     console.error('[contact] failed to send', err);
-    return respond(wantsJson, 502, { ok: false, error: 'send_failed' });
+    return respond(origin, wantsJson, 502, { ok: false, error: 'send_failed' });
   }
 
-  return respond(wantsJson, 200, { ok: true });
+  return respond(origin, wantsJson, 200, { ok: true });
 };

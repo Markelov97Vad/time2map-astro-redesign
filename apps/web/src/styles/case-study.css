@@ -1,0 +1,66 @@
+/* Markdown case studies (/use-cases/<slug>, src/content/case-studies). The hero and the
+   closing CTA reuse the Lab article blocks from lab.css; this file styles the rendered markdown. */
+.case-study-page { --case-gap:clamp(76px,8.5vw,120px); --case-label:29px; }
+.case-study-hero { padding-top:clamp(14px,1.6vw,22px); }
+.case-study-hero .case-back-link { margin-bottom:clamp(34px,4.4vw,58px); }
+.case-study-hero .lab-hero-topline>span { white-space:nowrap; }
+.case-study-hero h1 { font-size:clamp(52px,6.6vw,108px); }
+/* A block, not <br/> + inline: Chromium skips text-wrap:balance for text with forced breaks. */
+.case-study-hero h1 em { display:block; text-wrap:balance; }
+.case-study-try { --button-focus-color:var(--color-heading); display:inline-flex; align-items:center; justify-content:space-between; gap:28px; min-width:190px; min-height:58px; padding:0 10px 0 24px; border-radius:999px; background:var(--color-accent); color:#fff; font:500 16px var(--font-body); white-space:nowrap; box-shadow:0 14px 34px rgb(201 78 67 / 24%); }
+.case-study-try span { display:grid; place-items:center; width:38px; height:38px; border-radius:50%; background:#fff; color:var(--color-accent); }
+.case-study-try span svg { display:block; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+@media(hover:hover) and (pointer:fine){
+  .case-study-try:hover { background:color-mix(in srgb,var(--color-accent) 88%,#000); }
+}
+
+/* Section headings sit in the left column next to their copy (CSS grid auto-placement:
+   an h2 opens a new row in column 1, everything else flows down column 2). */
+.case-study-prose { display:grid; grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr); column-gap:clamp(40px,6vw,96px); width:min(100%,1180px); margin:0 auto; color:var(--color-text-light); counter-reset:case-section; }
+.case-study-prose>* { grid-column:2; min-width:0; }
+.case-study-prose>h2 { grid-column:1; margin:var(--case-gap) 0 0; color:var(--color-heading); font:500 clamp(34px,3.4vw,52px)/.98 var(--font-heading); letter-spacing:-.05em; text-wrap:balance; counter-increment:case-section; }
+.case-study-prose>h2::before { content:counter(case-section,decimal-leading-zero); display:block; margin-bottom:18px; color:var(--color-accent); font:600 11px/1 var(--font-body); letter-spacing:.14em; }
+.case-study-prose p { margin:0 0 22px; font-size:18px; line-height:1.7; }
+.case-study-prose a { color:var(--color-accent); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+.case-study-prose strong { color:var(--color-heading); font-weight:500; }
+.case-study-prose ul { display:grid; gap:14px; margin:0 0 22px; padding:0; list-style:none; }
+.case-study-prose li { position:relative; padding-left:26px; font-size:18px; line-height:1.65; }
+.case-study-prose li::before { content:''; position:absolute; top:.68em; left:2px; width:8px; height:8px; border-radius:50%; background:var(--color-accent); }
+.case-study-prose figure { margin:0; }
+.case-study-prose picture { display:block; }
+.case-study-prose img { display:block; width:100%; height:auto; }
+.case-study-prose figcaption { margin-top:12px; color:var(--color-muted); font-size:13px; line-height:1.45; }
+/* After the element rules above: same specificity as `.case-study-prose p`, so order decides. */
+.case-study-prose>h2+* { margin-top:calc(var(--case-gap) + var(--case-label)); }
+
+/* Full-width product screen recordings: device mockups on a transparent background.
+   The duo's column ratio matches the two images' aspect ratios, so they share a height. */
+.case-stage,.case-duo { grid-column:1/-1; }
+.case-duo { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,3.39fr); align-items:start; gap:clamp(16px,2.6vw,36px); margin:34px 0 40px; }
+.case-pair { grid-column:1/-1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(16px,2.4vw,32px); margin:34px 0 40px; padding:clamp(20px,3.4vw,48px); border-radius:28px; background:#f4f2ee; }
+.case-pair figure { width:100%; max-width:520px; justify-self:center; }
+.case-pair img { filter:drop-shadow(0 14px 26px rgb(17 20 17 / 9%)); }
+.case-study-outro { margin-top:var(--case-gap); }
+/* lab.css colours this label for large type only; at 11px it needs 4.5:1 on the accent. */
+.case-study-outro small { color:var(--color-heading); }
+/* Without a tryItUrl the contact link is alone, and lab.css would give it the ghost
+   (:last-child) style meant for the secondary button. */
+.case-study-outro .lab-outro-actions a:only-child { border:0; background:#fff; color:var(--color-heading); }
+.case-study-outro .lab-outro-actions a:only-child:hover { background:var(--color-heading); color:#fff; }
+
+@media(max-width:900px){
+  .case-study-page { --case-gap:72px; }
+  .case-study-prose { grid-template-columns:minmax(0,1fr); }
+  .case-study-prose>*,.case-study-prose>h2 { grid-column:1; }
+  .case-study-prose>h2 { margin-bottom:24px; }
+  .case-study-prose>h2+* { margin-top:0; }
+  .case-study-prose p,.case-study-prose li { font-size:17px; }
+  .case-pair { grid-template-columns:minmax(0,1fr); }
+  .case-duo { grid-template-columns:minmax(0,1fr); }
+  .case-duo figure:first-child { width:min(100%,280px); justify-self:center; }
+}
+@media(max-width:620px){
+  .case-pair { margin-inline:-2vw; border-radius:21px; }
+  .case-study-hero h1 { font-size:clamp(42px,12vw,64px); }
+  .case-study-try { width:100%; }
+}

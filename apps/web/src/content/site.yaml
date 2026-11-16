@@ -29,6 +29,22 @@ author:
     Geospatial developer based in Barcelona. I build maps and data tools —
     sometimes for clients, sometimes because the data is interesting.
 
+# Extra links in the LAB menu (after the LAB articles). Absolute http(s) URLs open
+# off-site with ↗︎; relative paths stay on this site, no arrow.
+labLinks:
+  - label: Archi2go
+    caption: Architecture map for travelling architects — curated places and fast 3D maps.
+    url: /lab/archi2go
+  - label: Barcelona Noise Map
+    caption: Official 2022 noise at every facade, by day and night, against WHO guidelines.
+    url: https://bcn-noise.time2map.com/
+  - label: Barcelona Livability Map
+    caption: Set your limits on price, noise, walkability and city-core access to see where homes fit.
+    url: https://livability.time2map.com/
+  - label: Walkability Map
+    caption: Street walkability from 23,574 isovists — greenery, quiet, human scale. Set your own weights.
+    url: https://walkability.time2map.com/
+
 # Contact form endpoint. Served by apps/server and reverse-proxied at the same
 # origin, so a relative path works. Empty = show email + social links instead.
 formEndpoint: /api/contact

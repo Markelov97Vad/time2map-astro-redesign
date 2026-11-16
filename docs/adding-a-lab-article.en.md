@@ -89,6 +89,7 @@ authorBio: >-                                        # optional bio in the autho
 | --- | --- | --- |
 | `title` | yes | The `<h1>` on the page. Make it descriptive and keyword-rich. |
 | `navLabel` | yes | Short name in the LAB dropdown and breadcrumbs. |
+| `navCaption` | no | One short line under the name in the LAB dropdown (e.g. “Route planner for walking and cycling”). |
 | `seoTitle` | no | Title in the browser tab and Google results. If omitted, `title` is used. Keep it under ~60 characters. |
 | `description` | yes | Meta description (Google snippet + social preview). 1–2 sentences, ~150–160 characters, with the main keywords. |
 | `publishDate` | yes | `YYYY-MM-DD`. Sorts the LAB menu (newest first) and feeds the SEO/`<time>` tags. |

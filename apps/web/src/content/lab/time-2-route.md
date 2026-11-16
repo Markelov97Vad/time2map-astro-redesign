@@ -1,6 +1,7 @@
 ---
 title: 'Time2Route: Build the Route Worth Taking'
 navLabel: Time2Route
+navCaption: Build a walking or cycling route, add places along the line as stops and read the elevation.
 seoTitle: 'Time2Route — Route Planner with Places, Stops, Elevation and Shareable Links'
 description: >-
   A map-first route planner for walking and cycling. Build a route between two

@@ -1,0 +1,93 @@
+---
+import { getCollection, render } from 'astro:content';
+import '../../styles/global.css';
+import '../../styles/palette.css';
+import '../../styles/lab.css';
+import '../../styles/case-study.css';
+import BackToUseCases from '../../components/BackToUseCases.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import SeoHead from '../../components/SeoHead.astro';
+import site from '../../content/site.yaml';
+import { articleSchema, breadcrumbSchema } from '../../lib/schema';
+
+// Markdown case studies (src/content/case-studies). Bespoke pages such as
+// ai-library.astro are static routes and take precedence over this one.
+export async function getStaticPaths() {
+  const entries = await getCollection('caseStudies');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const pageUrl = new URL(`/use-cases/${entry.id}`, site.siteUrl).href;
+const jsonLd = [
+  articleSchema(site, data, pageUrl),
+  breadcrumbSchema([
+    { name: 'Home', item: site.siteUrl },
+    { name: 'Use Cases', item: new URL('/use-cases', site.siteUrl).href },
+    { name: data.navLabel, item: pageUrl },
+  ]),
+];
+
+// "Name: tagline" titles put the tagline on its own, accented line.
+const [titleName, ...titleTail] = data.title.split(': ');
+const titleTagline = titleTail.join(': ');
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <SeoHead
+    title={data.seoTitle ?? data.title}
+    description={data.description}
+    ogTitle={data.ogTitle || undefined}
+    ogDescription={data.ogDescription || undefined}
+    ogImage={data.ogImage}
+    jsonLd={jsonLd}
+    ogType="article"
+    publishedTime={data.publishDate.toISOString()}
+    author={site.author.name}
+  />
+</head>
+<body class="lab-page case-study-page">
+  <a class="skip-link" href="#case-content">Skip to case study</a>
+  <SiteNav />
+
+  <main class="lab-main">
+    <section class="lab-hero case-study-hero" aria-labelledby="case-title">
+      <BackToUseCases />
+      <div class="lab-hero-topline">
+        <div class="eyebrow"><span></span><div>{data.eyebrow} · <time datetime={data.publishDate.toISOString().slice(0, 10)}>{data.displayDate}</time></div></div>
+        <span>{data.readTime}</span>
+      </div>
+      <h1 id="case-title">{titleTagline ? <Fragment>{titleName}: <em>{titleTagline}</em></Fragment> : data.title}</h1>
+      <div class="lab-hero-footer">
+        <p>{data.lead}</p>
+        {data.tryItUrl && (
+          <a class="case-study-try button-motion" href={data.tryItUrl} target="_blank" rel="noopener">
+            Try it <span aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M6 14L14 6M8 6h6v6" /></svg></span>
+          </a>
+        )}
+      </div>
+    </section>
+
+    <article class="lab-article" id="case-content">
+      <div class="case-study-prose"><Content /></div>
+
+      <div class="lab-outro case-study-outro">
+        <div><small>Have a project in mind?</small><h2>Let’s build the map<br/><em>your product needs</em></h2></div>
+        <div class="lab-outro-actions">
+          <a class="button-motion" href="/contact-us">Discuss your project <span aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M7 10h7M11 6l4 4-4 4" /></svg></span></a>
+          {data.tryItUrl && (
+            <a class="button-motion" href={data.tryItUrl} target="_blank" rel="noopener">Open {data.navLabel} <span aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M6 14L14 6M8 6h6v6" /></svg></span></a>
+          )}
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <SiteFooter />
+</body>
+</html>
