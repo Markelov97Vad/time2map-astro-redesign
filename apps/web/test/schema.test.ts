@@ -18,7 +18,7 @@ const site = {
   vat: 'ES Z2405174T',
   email: 'contact@time2map.com',
   author: { name: 'Alexander Semenov' },
-  social: { upworkAgency: 'https://upwork/a', linkedinCompany: 'https://li/c', linkedinPersonal: 'https://li/p' },
+  social: { upworkAgency: 'https://upwork/a', linkedinCompany: 'https://li/c', github: 'https://github.com/time2map', linkedinPersonal: 'https://li/p' },
 };
 
 describe('stripMarkdown', () => {
@@ -38,7 +38,7 @@ describe('organizationSchema', () => {
     expect(ld['@type']).toBe('Organization');
     expect(ld.vatID).toBe(site.vat);
     expect(ld.logo.url).toBe('https://time2map.com/images/logo.svg');
-    expect(ld.sameAs).toEqual([site.social.upworkAgency, site.social.linkedinCompany]);
+    expect(ld.sameAs).toEqual([site.social.upworkAgency, site.social.linkedinCompany, site.social.github]);
   });
 
   it('maps testimonials to reviews', () => {

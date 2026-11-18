@@ -283,12 +283,14 @@ export function buildKeystaticConfig({ prefix = '' }: { prefix?: string } = {}) 
           email: fields.text({ label: 'Contact email', validation: { isRequired: true } }),
           bookCallUrl: fields.url({ label: '“Book a call” URL', validation: { isRequired: true } }),
           location: fields.text({ label: 'Location', validation: { isRequired: true } }),
+          locationUrl: fields.url({ label: 'Location map URL', validation: { isRequired: true } }),
           vat: fields.text({ label: 'VAT', validation: { isRequired: true } }),
           privacyPolicyUrl: fields.url({ label: 'Privacy Policy URL', validation: { isRequired: true } }),
           social: fields.object(
             {
               linkedinCompany: fields.url({ label: 'LinkedIn (company)' }),
               upworkAgency: fields.url({ label: 'Upwork (agency)' }),
+              github: fields.url({ label: 'GitHub' }),
               linkedinPersonal: fields.url({ label: 'LinkedIn (personal)' }),
               upworkFreelancer: fields.url({ label: 'Upwork (freelancer)' }),
               telegram: fields.url({ label: 'Telegram' }),

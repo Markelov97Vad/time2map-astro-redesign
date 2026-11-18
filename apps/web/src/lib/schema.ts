@@ -46,7 +46,7 @@ export function organizationSchema(site: Site, testimonials: Entry[]) {
       jobTitle: 'Founder',
       description: '10+ years in GIS & Web development',
     },
-    sameAs: [site.social.upworkAgency, site.social.linkedinCompany],
+    sameAs: [site.social.upworkAgency, site.social.linkedinCompany, site.social.github],
     areaServed: 'Worldwide',
     review: testimonials.map((t) => ({
       '@type': 'Review',
