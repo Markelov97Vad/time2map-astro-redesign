@@ -8,7 +8,6 @@ import SeoHead from '../../components/SeoHead.astro';
 import site from '../../content/site.yaml';
 import {
   ARCHI2GO_APP_STORE_URL,
-  ARCHI2GO_DOWNLOAD_PATH,
   ARCHI2GO_PLAY_STORE_AVAILABLE,
   ARCHI2GO_PLAY_STORE_URL,
 } from '../../lib/archi2go';
@@ -135,28 +134,29 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
               <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M6 14L14 6M8 6h6v6" /></svg>
               <span class="visually-hidden">(opens in a new tab)</span>
             </a>
-          </div>
-          <div class="desktop-download" aria-label="Get Archi2go on your phone">
-            <a class="download-qr" href={ARCHI2GO_DOWNLOAD_PATH} data-download-qr-link aria-label="Open the Archi2go mobile download page">
-              <img src="/images/use-cases/archi2go/download-qr.svg" data-download-qr-image alt="" width="112" height="112" />
-            </a>
-            <div class="download-copy">
-              <span>Get the mobile app</span>
-              <strong>Scan with your phone</strong>
-              <small>We’ll open the right download option for your device.</small>
+            <div class="mobile-download">
+              <div class="download-qr">
+                <span class="download-qr-code" aria-hidden="true">
+                  <img src="/images/use-cases/archi2go/download-qr.png" alt="" width="96" height="96" />
+                </span>
+              </div>
+              <div class="download-qr-copy">
+                <strong>Mobile app</strong>
+                <span>Scan to get the app</span>
+              </div>
             </div>
           </div>
-          <div class="store-row" aria-label="Download Archi2go">
+          <div class="store-row hero-store-row" aria-label="Download Archi2go">
             <a class="store-badge" href={appStoreUrl} target="_blank" rel="noopener" aria-label="Download on the App Store">
-              <img src="/images/store-badges/download-on-app-store.svg" alt="" width="120" height="40" />
+              <img src="/images/store-badges/archi2go-appstore.svg" alt="" width="180" height="52" />
             </a>
             {ARCHI2GO_PLAY_STORE_AVAILABLE ? (
               <a class="store-badge" href={playStoreUrl} target="_blank" rel="noopener" aria-label="Get it on Google Play">
-                <img src="/images/store-badges/get-it-on-google-play.svg" alt="" width="239" height="71" />
+                <img src="/images/store-badges/archi2go-googleplay.svg" alt="" width="180" height="52" />
               </a>
             ) : (
-              <span class="store-coming" role="status">
-                <span>Google Play</span>
+              <span class="store-badge store-coming" role="status" aria-label="Google Play, coming soon">
+                <img src="/images/store-badges/archi2go-googleplay.svg" alt="" width="180" height="52" />
                 <small>Coming soon</small>
               </span>
             )}
@@ -419,11 +419,28 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
       <div class="archi-shell platform-stack" aria-label="Technology stack">
         <dl>
           {platformStack.map(([platform, description, stack]) => (
-            <div>
+            <div class={platform === 'Native' ? 'platform-native' : undefined}>
               <dt>{platform}</dt>
               <dd>
                 <span>{description}</span>
                 <small>{stack}</small>
+                {platform === 'Native' && (
+                  <div class="store-row" aria-label="Download Archi2go">
+                    <a class="store-badge" href={appStoreUrl} target="_blank" rel="noopener" aria-label="Download on the App Store">
+                      <img src="/images/store-badges/archi2go-appstore.svg" alt="" width="180" height="52" />
+                    </a>
+                    {ARCHI2GO_PLAY_STORE_AVAILABLE ? (
+                      <a class="store-badge" href={playStoreUrl} target="_blank" rel="noopener" aria-label="Get it on Google Play">
+                        <img src="/images/store-badges/archi2go-googleplay.svg" alt="" width="180" height="52" />
+                      </a>
+                    ) : (
+                      <span class="store-badge store-coming" role="status" aria-label="Google Play, coming soon">
+                        <img src="/images/store-badges/archi2go-googleplay.svg" alt="" width="180" height="52" />
+                        <small>Coming soon</small>
+                      </span>
+                    )}
+                  </div>
+                )}
               </dd>
             </div>
           ))}
@@ -448,25 +465,6 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   <SiteFooter />
 
   <script>
-    import QRCode from 'qrcode';
-
-    // Build the QR from the page's current origin. Vercel previews therefore
-    // point to their own smart-link route, while production points to time2map.com.
-    const downloadQrLink = document.querySelector<HTMLAnchorElement>('[data-download-qr-link]');
-    const downloadQrImage = document.querySelector<HTMLImageElement>('[data-download-qr-image]');
-    if (downloadQrLink && downloadQrImage) {
-      QRCode.toDataURL(downloadQrLink.href, {
-        errorCorrectionLevel: 'M',
-        margin: 1,
-        width: 224,
-        color: { dark: '#000000', light: '#ffffff' },
-      }).then((dataUrl) => {
-        downloadQrImage.src = dataUrl;
-      }).catch(() => {
-        // Keep the committed production QR as a no-network/no-JS-safe fallback.
-      });
-    }
-
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Trackpad / horizontal wheel swipe → one step per gesture.
@@ -942,20 +940,11 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     color:#cfccc5; font-size:15px; line-height:1.6; text-shadow:0 1px 14px rgb(0 0 0 / 50%);
   }
   /* Named hero-cta — homepage .hero-actions is position:absolute and would pin this to the viewport bottom. */
-  .hero-cta { display:flex; align-items:flex-start; margin-top:clamp(28px,4vh,42px); }
+  .hero-cta { display:flex; flex-wrap:wrap; align-items:center; gap:20px; margin-top:clamp(28px,4vh,42px); }
 
-  .desktop-download {
-    display:flex; align-items:center; gap:16px; width:max-content; max-width:100%; margin:clamp(18px,2.5vh,24px) 0 0;
-    padding:10px 16px 10px 10px; border:1px solid rgb(255 255 255 / 24%); border-radius:18px;
-    background:rgb(10 10 9 / 78%); box-shadow:0 14px 34px rgb(0 0 0 / 28%); backdrop-filter:blur(10px);
-  }
-  .download-qr { display:block; flex:none; width:112px; height:112px; padding:7px; border-radius:10px; background:#fff; }
-  .download-qr img { display:block; width:100%; height:100%; }
-  .download-copy { display:grid; gap:4px; max-width:190px; }
-  .download-copy span { color:#aaa79f; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
-  .download-copy strong { color:#fff; font-size:17px; line-height:1.2; }
-  .download-copy small { color:#cfccc5; font-size:12px; line-height:1.45; }
-  .store-row { display:none; flex-direction:row; flex-wrap:wrap; align-items:center; gap:10px; margin:clamp(18px,2.5vh,24px) 0 0; }
+  .store-row { display:flex; flex-direction:row; flex-wrap:wrap; align-items:center; gap:10px; margin:clamp(18px,2.5vh,24px) 0 0; }
+  .store-row[hidden] { display:none; }
+  .hero-store-row { display:none; }
   .store-badge {
     display:block;
     width:auto;
@@ -964,11 +953,29 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   }
   .store-badge img { display:block; width:auto; height:100%; }
   .store-coming {
-    display:grid; align-content:center; min-height:52px; padding:7px 17px; border:1px solid rgb(255 255 255 / 35%); border-radius:8px;
-    background:rgb(10 10 9 / 72%); color:#fff; line-height:1.15;
+    position:relative;
   }
-  .store-coming span { font-size:13px; font-weight:700; }
-  .store-coming small { margin-top:3px; color:#aaa79f; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  .store-coming img { opacity:.72; }
+  .store-coming small {
+    position:absolute; top:-7px; right:-5px; padding:4px 7px; border-radius:999px;
+    background:var(--a-accent); color:#fff; font-size:9px; font-weight:700; line-height:1; letter-spacing:.08em; text-transform:uppercase;
+    box-shadow:0 4px 12px rgb(0 0 0 / 35%);
+  }
+  .mobile-download {
+    display:flex; align-items:center; gap:14px; min-height:112px; padding-left:20px;
+    border-left:1px solid rgb(255 255 255 / 28%);
+  }
+  .download-qr {
+    display:block; flex:none; width:112px; height:112px;
+    background:#fff; box-shadow:0 12px 30px rgb(0 0 0 / 22%);
+  }
+  .download-qr-code { display:block; width:112px; height:112px; background:#fff; }
+  .download-qr-code img { display:block; width:100%; height:100%; }
+  .download-qr-copy {
+    display:grid; gap:6px; min-width:148px;
+  }
+  .download-qr-copy strong { color:#fff; font-size:16px; font-weight:600; line-height:1.2; }
+  .download-qr-copy span { color:#aaa79f; font-size:14px; line-height:1.35; }
   /* Off-site link over the map: black pill with light ring so it still reads on the dark hero. */
   .hero-web-link {
     display:inline-flex; align-items:center; justify-content:space-between; gap:24px; min-height:54px;
@@ -1246,12 +1253,14 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     border-top:1px solid var(--a-line-dark);
   }
   .platform-stack dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); margin:0; }
-  .platform-stack dl div { min-width:0; padding:0 28px; border-left:1px solid var(--a-line-dark); }
-  .platform-stack dl div:first-child { padding-left:0; border-left:0; }
+  .platform-stack dl > div { min-width:0; padding:0 28px; border-left:1px solid var(--a-line-dark); }
+  .platform-stack dl > div:first-child { padding-left:0; border-left:0; }
   .platform-stack dt { color:var(--a-white); font:500 22px/1.1 var(--font-heading); letter-spacing:-.025em; }
   .platform-stack dd { margin:12px 0 0; }
   .platform-stack dd span { display:block; color:#d4d1ca; font-size:14px; line-height:1.45; }
-  .platform-stack dd small { display:block; margin-top:8px; color:var(--a-muted-dark); font:500 11px/1.5 var(--a-mono); }
+  .platform-stack dd > small { display:block; margin-top:8px; color:var(--a-muted-dark); font:500 11px/1.5 var(--a-mono); }
+  .platform-native .store-row { margin-top:18px; gap:8px; }
+  .platform-native .store-badge { height:40px; }
   .web-open-button:focus-visible { outline:3px solid var(--a-white); outline-offset:3px; }
 
   /* CTA */
@@ -1301,8 +1310,10 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     .journey-mobile { display:block; }
 
     .archi-shell { width:90%; }
-    .desktop-download { display:none; }
-    .store-row { display:flex; }
+    .mobile-download { display:none; }
+    .hero-store-row { display:flex; }
+    .platform-stack dl { grid-template-columns:1fr; gap:28px; }
+    .platform-stack dl > div { padding:0; border-left:0; }
     .cta-actions { flex-direction:column; align-items:stretch; }
     .cta-actions .primary-link { width:100%; }
 
@@ -1327,12 +1338,11 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     .aud-carousel,.flyover-stage,.web-stage { margin-top:40px; }
     .store-badge { display:flex; align-items:center; min-height:44px; height:44px; }
     .store-badge img { height:40px; }
-    .store-coming { min-height:44px; padding-block:5px; }
     .hero-web-link { min-height:48px; padding-block:11px; }
     .web-stage { width:92%; }
     .web-open-button { right:10px; bottom:10px; padding-inline:13px; }
     .platform-stack dl { grid-template-columns:1fr; gap:16px; }
-    .platform-stack dl div,.platform-stack dl div:first-child { padding:18px 0 0; border-top:1px solid var(--a-line-dark); border-left:0; }
+    .platform-stack dl > div,.platform-stack dl > div:first-child { padding:18px 0 0; border-top:1px solid var(--a-line-dark); border-left:0; }
   }
 
   @media (prefers-reduced-motion:reduce) {
