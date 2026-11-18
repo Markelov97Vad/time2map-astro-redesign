@@ -6,6 +6,12 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteNav from '../../components/SiteNav.astro';
 import SeoHead from '../../components/SeoHead.astro';
 import site from '../../content/site.yaml';
+import {
+  ARCHI2GO_APP_STORE_URL,
+  ARCHI2GO_DOWNLOAD_PATH,
+  ARCHI2GO_PLAY_STORE_AVAILABLE,
+  ARCHI2GO_PLAY_STORE_URL,
+} from '../../lib/archi2go';
 import { breadcrumbSchema } from '../../lib/schema';
 
 const title = 'Archi2go — Map for Travelling Architects';
@@ -13,8 +19,9 @@ const description = 'Archi2go: a React Native + Mapbox city guide for architects
 const pageUrl = new URL('/lab/archi2go', site.siteUrl).href;
 const liveUrl = 'https://archi2go.time2map.com';
 const liveHost = new URL(liveUrl).host;
-const appStoreUrl = 'https://apps.apple.com/app/archi2go';
-const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.time2map.archi2go';
+const appStoreUrl = ARCHI2GO_APP_STORE_URL;
+const playStoreUrl = ARCHI2GO_PLAY_STORE_URL;
+const smartDownloadUrl = new URL(ARCHI2GO_DOWNLOAD_PATH, site.siteUrl).href;
 const heroImage = '/images/use-cases/archi2go-prev.webp';
 const jsonLd = [
   {
@@ -104,7 +111,9 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
 <!doctype html>
 <html lang="en">
 <head>
-  <SeoHead title={title} description={description} ogImage={heroImage} jsonLd={jsonLd} />
+  <SeoHead title={title} description={description} ogImage={heroImage} jsonLd={jsonLd}>
+    <meta name="apple-itunes-app" content="app-id=6758726197" />
+  </SeoHead>
 </head>
 <body class="archi-case-page">
   <SiteNav />
@@ -123,18 +132,35 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
           <p class="hero-detail">Architect, year, story and sources on the card. Exact spot on the map. The building in 3D, with its neighbours.</p>
           <div class="hero-cta">
             <a class="hero-web-link" href={liveUrl} target="_blank" rel="noopener">
-              Open desktop version
+              Open web version
               <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M6 14L14 6M8 6h6v6" /></svg>
               <span class="visually-hidden">(opens in a new tab)</span>
             </a>
+          </div>
+          <div class="desktop-download" aria-label="Get Archi2go on your phone">
+            <a class="download-qr" href={smartDownloadUrl} aria-label="Open the Archi2go mobile download page">
+              <img src="/images/use-cases/archi2go/download-qr.svg" alt="" width="112" height="112" />
+            </a>
+            <div class="download-copy">
+              <span>Get the mobile app</span>
+              <strong>Scan with your phone</strong>
+              <small>We’ll open the right download option for your device.</small>
+            </div>
           </div>
           <div class="store-row" aria-label="Download Archi2go">
             <a class="store-badge" href={appStoreUrl} target="_blank" rel="noopener" aria-label="Download on the App Store">
               <img src="/images/store-badges/download-on-app-store.svg" alt="" width="120" height="40" />
             </a>
-            <a class="store-badge" href={playStoreUrl} target="_blank" rel="noopener" aria-label="Get it on Google Play">
-              <img src="/images/store-badges/get-it-on-google-play-mono.svg" alt="" width="239" height="71" />
-            </a>
+            {ARCHI2GO_PLAY_STORE_AVAILABLE ? (
+              <a class="store-badge" href={playStoreUrl} target="_blank" rel="noopener" aria-label="Get it on Google Play">
+                <img src="/images/store-badges/get-it-on-google-play.svg" alt="" width="239" height="71" />
+              </a>
+            ) : (
+              <span class="store-coming" role="status">
+                <span>Google Play</span>
+                <small>Coming soon</small>
+              </span>
+            )}
           </div>
         </div>
 
@@ -900,7 +926,18 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   /* Named hero-cta — homepage .hero-actions is position:absolute and would pin this to the viewport bottom. */
   .hero-cta { display:flex; align-items:flex-start; margin-top:clamp(28px,4vh,42px); }
 
-  .store-row { display:flex; flex-direction:row; flex-wrap:wrap; align-items:center; gap:10px; margin:clamp(18px,2.5vh,24px) 0 0; }
+  .desktop-download {
+    display:flex; align-items:center; gap:16px; width:max-content; max-width:100%; margin:clamp(18px,2.5vh,24px) 0 0;
+    padding:10px 16px 10px 10px; border:1px solid rgb(255 255 255 / 24%); border-radius:18px;
+    background:rgb(10 10 9 / 78%); box-shadow:0 14px 34px rgb(0 0 0 / 28%); backdrop-filter:blur(10px);
+  }
+  .download-qr { display:block; flex:none; width:112px; height:112px; padding:7px; border-radius:10px; background:#fff; }
+  .download-qr img { display:block; width:100%; height:100%; }
+  .download-copy { display:grid; gap:4px; max-width:190px; }
+  .download-copy span { color:#aaa79f; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  .download-copy strong { color:#fff; font-size:17px; line-height:1.2; }
+  .download-copy small { color:#cfccc5; font-size:12px; line-height:1.45; }
+  .store-row { display:none; flex-direction:row; flex-wrap:wrap; align-items:center; gap:10px; margin:clamp(18px,2.5vh,24px) 0 0; }
   .store-badge {
     display:block;
     width:auto;
@@ -908,12 +945,22 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     border-radius:8px;
   }
   .store-badge img { display:block; width:auto; height:100%; }
-  /* Off-site link over the map: solid black pill so it reads on any background; SVG ↗︎ */
+  .store-coming {
+    display:grid; align-content:center; min-height:52px; padding:7px 17px; border:1px solid rgb(255 255 255 / 35%); border-radius:8px;
+    background:rgb(10 10 9 / 72%); color:#fff; line-height:1.15;
+  }
+  .store-coming span { font-size:13px; font-weight:700; }
+  .store-coming small { margin-top:3px; color:#aaa79f; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  /* Off-site link over the map: black pill with light ring so it still reads on the dark hero. */
   .hero-web-link {
     display:inline-flex; align-items:center; justify-content:space-between; gap:24px; min-height:54px;
-    margin:0; padding:13px 17px; border-radius:999px;
-    background:#111110; color:#fff; font-size:16px; font-weight:700; line-height:1; letter-spacing:-.01em;
-    transition:transform .2s var(--ease-out),background .2s ease;
+    margin:0; padding:13px 17px; border:1.5px solid rgb(255 255 255 / 72%); border-radius:999px;
+    background:#0a0a09; color:#fff; font-size:16px; font-weight:700; line-height:1; letter-spacing:-.01em;
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 55%),
+      0 12px 28px rgb(0 0 0 / 45%),
+      inset 0 1px 0 rgb(255 255 255 / 14%);
+    transition:transform .2s var(--ease-out),border-color .2s ease,box-shadow .2s ease,background .2s ease;
   }
   .hero-web-link svg { display:block; flex:none; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
   .hero-web-link:focus-visible { outline:3px solid var(--a-white); outline-offset:4px; }
@@ -1199,7 +1246,15 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     .primary-link:hover { transform:translateY(-2px); }
     .primary-link:hover span { background:var(--a-ink); }
     .text-link:hover { border-color:var(--a-white); color:var(--a-white); }
-    .hero-web-link:hover { transform:translateY(-2px); background:#000; }
+    .hero-web-link:hover {
+      transform:translateY(-2px);
+      border-color:#fff;
+      background:#000;
+      box-shadow:
+        0 0 0 1px rgb(0 0 0 / 65%),
+        0 16px 34px rgb(0 0 0 / 55%),
+        inset 0 1px 0 rgb(255 255 255 / 18%);
+    }
     .web-open-button:hover { transform:translateY(-2px); background:var(--a-dark); }
   }
 
@@ -1228,6 +1283,8 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     .journey-mobile { display:block; }
 
     .archi-shell { width:90%; }
+    .desktop-download { display:none; }
+    .store-row { display:flex; }
     .cta-actions { flex-direction:column; align-items:stretch; }
     .cta-actions .primary-link { width:100%; }
 
@@ -1252,6 +1309,7 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     .aud-carousel,.flyover-stage,.web-stage { margin-top:40px; }
     .store-badge { display:flex; align-items:center; min-height:44px; height:44px; }
     .store-badge img { height:40px; }
+    .store-coming { min-height:44px; padding-block:5px; }
     .hero-web-link { min-height:48px; padding-block:11px; }
     .web-stage { width:92%; }
     .web-open-button { right:10px; bottom:10px; padding-inline:13px; }
