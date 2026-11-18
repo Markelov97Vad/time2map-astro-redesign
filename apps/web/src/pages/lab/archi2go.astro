@@ -8,6 +8,7 @@ import SeoHead from '../../components/SeoHead.astro';
 import site from '../../content/site.yaml';
 import {
   ARCHI2GO_APP_STORE_URL,
+  ARCHI2GO_DOWNLOAD_PATH,
   ARCHI2GO_PLAY_STORE_AVAILABLE,
   ARCHI2GO_PLAY_STORE_URL,
 } from '../../lib/archi2go';
@@ -135,9 +136,9 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
               <span class="visually-hidden">(opens in a new tab)</span>
             </a>
             <div class="mobile-download">
-              <div class="download-qr">
+              <div class="download-qr" data-download-qr-path={ARCHI2GO_DOWNLOAD_PATH}>
                 <span class="download-qr-code" aria-hidden="true">
-                  <img src="/images/use-cases/archi2go/download-qr.png" alt="" width="96" height="96" />
+                  <img src="/images/use-cases/archi2go/download-qr.png" data-download-qr-image alt="" width="96" height="96" />
                 </span>
               </div>
               <div class="download-qr-copy">
@@ -465,6 +466,26 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   <SiteFooter />
 
   <script>
+    import QRCode from 'qrcode';
+
+    // Generate the smart-download URL from the origin currently serving the page.
+    // This keeps preview deployments on preview and production on production.
+    const downloadQr = document.querySelector<HTMLElement>('[data-download-qr-path]');
+    const downloadQrImage = document.querySelector<HTMLImageElement>('[data-download-qr-image]');
+    if (downloadQr && downloadQrImage) {
+      const downloadUrl = new URL(downloadQr.dataset.downloadQrPath ?? '/get/archi2go', window.location.origin).href;
+      QRCode.toDataURL(downloadUrl, {
+        errorCorrectionLevel: 'M',
+        margin: 2,
+        width: 224,
+        color: { dark: '#000000', light: '#ffffff' },
+      }).then((dataUrl) => {
+        downloadQrImage.src = dataUrl;
+      }).catch(() => {
+        // Keep the committed image as a visual fallback if generation fails.
+      });
+    }
+
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Trackpad / horizontal wheel swipe → one step per gesture.
