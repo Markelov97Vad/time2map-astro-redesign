@@ -3,6 +3,13 @@
   "buildCommand": "npm run build -w @time2map/web",
   "installCommand": "npm ci",
   "outputDirectory": "apps/web/dist",
+  "redirects": [
+    {
+      "source": "/get/archi2go",
+      "destination": "/lab/archi2go?download=1",
+      "permanent": false
+    }
+  ],
   "cleanUrls": true,
   "trailingSlash": false
 }

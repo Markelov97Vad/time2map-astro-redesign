@@ -114,7 +114,12 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
     <meta name="apple-itunes-app" content="app-id=6758726197" />
   </SeoHead>
 </head>
-<body class="archi-case-page">
+<body
+  class="archi-case-page"
+  data-app-store-url={appStoreUrl}
+  data-play-store-url={playStoreUrl}
+  data-play-store-available={String(ARCHI2GO_PLAY_STORE_AVAILABLE)}
+>
   <SiteNav />
 
   <main>
@@ -467,6 +472,20 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
 
   <script>
     import QRCode from 'qrcode';
+
+    const page = document.body;
+    const downloadRequested = new URLSearchParams(window.location.search).get('download') === '1';
+    const userAgent = navigator.userAgent || '';
+    if (downloadRequested && /iPhone|iPod/i.test(userAgent) && page.dataset.appStoreUrl) {
+      window.location.replace(page.dataset.appStoreUrl);
+    } else if (
+      downloadRequested
+      && /Android/i.test(userAgent)
+      && page.dataset.playStoreAvailable === 'true'
+      && page.dataset.playStoreUrl
+    ) {
+      window.location.replace(page.dataset.playStoreUrl);
+    }
 
     // Generate the smart-download URL from the origin currently serving the page.
     // This keeps preview deployments on preview and production on production.

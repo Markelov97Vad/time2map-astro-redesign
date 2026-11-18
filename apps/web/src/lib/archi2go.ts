@@ -5,4 +5,4 @@ export const ARCHI2GO_PLAY_STORE_URL = 'https://play.google.com/store/apps/detai
 // intended regions. The hero and smart-link fallback update together.
 export const ARCHI2GO_PLAY_STORE_AVAILABLE = false;
 
-export const ARCHI2GO_DOWNLOAD_PATH = '/get/archi2go';
+export const ARCHI2GO_DOWNLOAD_PATH = '/lab/archi2go?download=1';
