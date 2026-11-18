@@ -21,7 +21,6 @@ const liveUrl = 'https://archi2go.time2map.com';
 const liveHost = new URL(liveUrl).host;
 const appStoreUrl = ARCHI2GO_APP_STORE_URL;
 const playStoreUrl = ARCHI2GO_PLAY_STORE_URL;
-const smartDownloadUrl = new URL(ARCHI2GO_DOWNLOAD_PATH, site.siteUrl).href;
 const heroImage = '/images/use-cases/archi2go-prev.webp';
 const jsonLd = [
   {
@@ -138,8 +137,8 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
             </a>
           </div>
           <div class="desktop-download" aria-label="Get Archi2go on your phone">
-            <a class="download-qr" href={smartDownloadUrl} aria-label="Open the Archi2go mobile download page">
-              <img src="/images/use-cases/archi2go/download-qr.svg" alt="" width="112" height="112" />
+            <a class="download-qr" href={ARCHI2GO_DOWNLOAD_PATH} data-download-qr-link aria-label="Open the Archi2go mobile download page">
+              <img src="/images/use-cases/archi2go/download-qr.svg" data-download-qr-image alt="" width="112" height="112" />
             </a>
             <div class="download-copy">
               <span>Get the mobile app</span>
@@ -449,6 +448,25 @@ const heroMapImage = '/images/use-cases/archi2go/hero-map-bg.webp';
   <SiteFooter />
 
   <script>
+    import QRCode from 'qrcode';
+
+    // Build the QR from the page's current origin. Vercel previews therefore
+    // point to their own smart-link route, while production points to time2map.com.
+    const downloadQrLink = document.querySelector<HTMLAnchorElement>('[data-download-qr-link]');
+    const downloadQrImage = document.querySelector<HTMLImageElement>('[data-download-qr-image]');
+    if (downloadQrLink && downloadQrImage) {
+      QRCode.toDataURL(downloadQrLink.href, {
+        errorCorrectionLevel: 'M',
+        margin: 1,
+        width: 224,
+        color: { dark: '#000000', light: '#ffffff' },
+      }).then((dataUrl) => {
+        downloadQrImage.src = dataUrl;
+      }).catch(() => {
+        // Keep the committed production QR as a no-network/no-JS-safe fallback.
+      });
+    }
+
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Trackpad / horizontal wheel swipe → one step per gesture.
