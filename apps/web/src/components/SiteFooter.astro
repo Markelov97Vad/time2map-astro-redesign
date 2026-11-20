@@ -15,7 +15,9 @@ const isUseCases = path === '/use-cases' || path.startsWith('/use-cases/');
   </div>
   <div class="footer-meta">
     <div class="footer-details">
-      <p>{site.location}</p>
+      <p class="footer-location">
+        <a href={site.locationUrl} target="_blank" rel="noopener">{site.location} <span>↗︎</span></a>
+      </p>
       <p>VAT: {site.vat}</p>
     </div>
     <div class="footer-actions">
@@ -30,6 +32,9 @@ const isUseCases = path === '/use-cases' || path.startsWith('/use-cases/');
         </a>
         <a href={site.social.upworkAgency} target="_blank" rel="noopener" aria-label="time2map on Upwork">
           <img src="/images/icons/upwork.svg" alt="" width="32" height="32" />
+        </a>
+        <a href={site.social.github} target="_blank" rel="noopener" aria-label="time2map on GitHub">
+          <img src="/images/icons/github.svg" alt="" width="32" height="32" />
         </a>
       </nav>
     </div>

@@ -13,7 +13,9 @@ const year = new Date().getFullYear();
       <div class="footer-columns">
         <div class="footer-about text-small">
           <p>{site.tagline}</p>
-          <p>{site.location}</p>
+          <p class="footer-location">
+            <a href={site.locationUrl} target="_blank" rel="noopener">{site.location} <span>↗︎</span></a>
+          </p>
           <p>VAT: {site.vat}</p>
         </div>
         <nav class="footer-links" aria-label="Footer">
@@ -32,6 +34,9 @@ const year = new Date().getFullYear();
         </a>
         <a href={site.social.upworkAgency} target="_blank" rel="noopener" aria-label="Upwork">
           <img src="/images/icons/upwork.svg" alt="" width="32" height="32" />
+        </a>
+        <a href={site.social.github} target="_blank" rel="noopener" aria-label="GitHub">
+          <img src="/images/icons/github.svg" alt="" width="32" height="32" />
         </a>
       </div>
     </div>
@@ -68,6 +73,22 @@ const year = new Date().getFullYear();
     color: #6e6e6e;
     -webkit-text-stroke-color: #a7a7a7;
     font-size: 16px;
+  }
+
+  .footer-location {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .footer-location a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    overflow-wrap: anywhere;
+  }
+
+  .footer-location span {
+    color: var(--color-accent);
   }
 
   .footer-links {

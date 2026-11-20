@@ -696,8 +696,11 @@ html.has-bento-motion .expertise.is-visible .design-art i { animation:bento-node
 .footer-social a { display:grid; place-items:center; width:32px; height:32px; border-radius:50%; opacity:.88; transition:opacity .2s ease; }
 .footer-social a:hover,.footer-social a:focus-visible { opacity:1; }
 .footer-social img { display:block; width:32px; height:32px; }
-.footer-meta { display:grid; grid-template-columns:repeat(2,minmax(150px,1fr)); gap:clamp(30px,5vw,70px); }
-.footer-details { display:grid; align-content:start; gap:12px; color:var(--color-text-light); line-height:1.5; }
+.footer-meta { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(150px,auto); gap:clamp(30px,5vw,70px); }
+.footer-details { display:grid; justify-items:start; align-content:start; gap:12px; color:var(--color-text-light); line-height:1.5; text-align:left; }
+.footer-location { max-width:100%; }
+.footer-location a { display:inline; color:inherit; text-decoration:underline; text-underline-offset:2px; overflow-wrap:anywhere; }
+.footer-location span { color:var(--color-accent); }
 .footer-links { display:grid; justify-items:start; align-content:start; gap:13px; }
 .footer-links a { padding-bottom:3px; border-bottom:1px solid transparent; transition:border-color .2s ease,color .2s ease; }
 .footer-links a:hover { border-color:var(--color-accent); color:var(--color-accent); }
